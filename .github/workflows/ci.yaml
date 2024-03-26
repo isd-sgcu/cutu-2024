@@ -22,7 +22,7 @@ jobs:
         env:
           CGO_ENABLED: 0
           GOOS: linux
-        run: go build -C apps/admin-api -o admin_api ./... && cp apps/admin-api/admin_api .
+        run: go build -C apps/admin_api -o admin_api ./... && cp apps/admin_api/admin_api .
 
       - uses: actions/upload-artifact@v3
         with:
