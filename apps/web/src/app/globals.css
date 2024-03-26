@@ -11,6 +11,7 @@
 
 body {
   color: rgb(var(--foreground-rgb));
+  font: 'Helvetica', sans-serif;
 }
 
 @layer utilities {
