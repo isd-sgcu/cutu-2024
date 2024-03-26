@@ -18,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="flex flex-col h-screen">
+      <body className={`${anuphan.className} flex flex-col h-screen`}>
         {children}
         <footer className="flex flex-col items-center text-xs pb-2">
           <div className="flex">
