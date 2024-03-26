@@ -27,7 +27,7 @@ export default function ShakeComponent({
 
             <div onClick={() => setIsClicked(true)}>
                 {isClicked ? (
-                    <div className="text-center flex flex-col gap-[10px]">
+                    <div onClick={onClick} className="text-center flex flex-col gap-[10px]">
                         <div className={university === 'cu' ? "bg-[#F1678D] w-[245px] h-[245px] rounded-full flex items-center justify-center" : 
                         "bg-[#EF5644] w-[245px] h-[245px] rounded-full flex items-center justify-center" }>
                             <Image src="/shake-icon.svg" alt="shake-icon" width={153} height={158}></Image>
