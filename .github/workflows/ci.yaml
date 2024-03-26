@@ -1,0 +1,35 @@
+name: 'CI'
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build api go application
+        env:
+          CGO_ENABLED: 0
+          GOOS: linux
+        run: go build ./apps/api/... -o api
+
+      - name: Build admin-api go application
+        env:
+          CGO_ENABLED: 0
+          GOOS: linux
+        run: go build ./apps/admin_api/... -o admin_api
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: api
+          path: api
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: admin_api
+          path: admin_api
