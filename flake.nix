@@ -21,6 +21,8 @@
             # goimports, godoc, etc.
             gotools
 
+            gopls
+
             # https://github.com/golangci/golangci-lint
             golangci-lint
           ];
