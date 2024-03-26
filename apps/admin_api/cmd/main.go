@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"flag"
 	"log"
 	"net/http"
@@ -24,16 +23,15 @@ func main() {
 		Addr:     "localhost:6379",
 		Password: "",
 	})
-	if conn.Ping(context.Background()).Err() != nil {
-		log.Fatal("Unable to connect to redis")
-	}
 	hub := newHub()
 	broadcaster := newBroadcaster(hub, conn)
 	go hub.run()
 	go broadcaster.run()
+	handler := newHandler(conn)
 	http.HandleFunc("/", healthCheck)
+	http.HandleFunc("PUT /state", handler.ChangeState)
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
-		serveWs(hub, conn, w, r)
+		serveWs(hub, w, r)
 	})
 	server := &http.Server{
 		Addr:              *addr,

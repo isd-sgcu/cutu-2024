@@ -1,0 +1,9 @@
+version: '3.9'
+
+services:
+  redis:
+    image: redis:7.2.4-bookworm
+    container_name: redis
+    ports:
+      - 6379:6379
+
