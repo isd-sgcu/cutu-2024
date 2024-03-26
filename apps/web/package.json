@@ -1,7 +1,11 @@
 {
-  "name": "frontend",
+  "name": "web",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=10",
+    "pnpm": ">=3"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
