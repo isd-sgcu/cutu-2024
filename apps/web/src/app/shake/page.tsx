@@ -113,7 +113,9 @@ export default function Shake() {
 
     return (
         <div>
-            <ShakeComponent university={university} count={count} onClick={handleRequestMotion}/>
+            <Suspense fallback={<div>Loading...</div>}>
+                <ShakeComponent university={university} count={count} onClick={handleRequestMotion}/>
+            </Suspense>
         </div>
     );
 }

@@ -27,7 +27,7 @@ export default function ShakeComponent({
 
             <div onClick={() => setIsClicked(true)}>
                 {isClicked ? (
-                    <div onClick={onClick} className="text-center flex flex-col gap-[10px]">
+                    <div className="text-center flex flex-col gap-[10px]">
                         <div className={university === 'cu' ? "bg-[#F1678D] w-[245px] h-[245px] rounded-full flex items-center justify-center" : 
                         "bg-[#EF5644] w-[245px] h-[245px] rounded-full flex items-center justify-center" }>
                             <Image src="shake/shake-icon.svg" alt="shake-icon" width={153} height={158}></Image>
@@ -35,11 +35,11 @@ export default function ShakeComponent({
                         <h1 className="font-bold text-[24px] drop-shadow-md">เขย่าเลย!</h1>
                     </div>
                 ) : (
-                    <div className="text-center flex flex-col gap-[10px]">
+                    <div onClick={onClick} className="text-center flex flex-col gap-[10px]">
                         <div className="bg-white w-[245px] h-[245px] rounded-full flex items-center justify-center">
                             <Image src="shake/shake-icon-black.svg" alt="shake-icon" width={153} height={158}></Image>
                         </div>
-                        <h1 className="font-bold text-[24px] drop-shadow-md">กดเพื่อเริ่มเขย่า!{count}</h1>
+                        <h1 className="font-bold text-[24px] drop-shadow-md">กดเพื่อเริ่มเขย่า!</h1>
                     </div>
                 )}
             </div>
