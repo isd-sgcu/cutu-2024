@@ -39,7 +39,7 @@ export default function ShakeComponent({
                         <div className="bg-white w-[245px] h-[245px] rounded-full flex items-center justify-center">
                             <Image src="shake/shake-icon-black.svg" alt="shake-icon" width={153} height={158}></Image>
                         </div>
-                        <h1 className="font-bold text-[24px] drop-shadow-md">กดเพื่อเริ่มเขย่า!</h1>
+                        <h1 className="font-bold text-[24px] drop-shadow-md">กดเพื่อเริ่มเขย่า!{count}</h1>
                     </div>
                 )}
             </div>
