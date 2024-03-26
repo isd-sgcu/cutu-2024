@@ -1,25 +1,49 @@
 package main
 
 import (
-	"fmt"
+	"flag"
 	"log"
 	"net/http"
+	"time"
+
+	"github.com/redis/go-redis/v9"
 )
 
-func handle(w http.ResponseWriter, r *http.Request) {
-	log.Println("Received a request at my domain")
-	w.Write([]byte("Hello, Domain name!"))
+var addr = flag.String("addr", ":8080", "http service address")
+
+func serveHome(w http.ResponseWriter, r *http.Request) {
+	log.Println(r.URL)
+	if r.URL.Path != "/" {
+		http.Error(w, "Not found", http.StatusNotFound)
+		return
+	}
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	http.ServeFile(w, r, "home.html")
 }
 
 func main() {
-	router := http.NewServeMux()
-	router.HandleFunc("/", handle)
-
-	server := http.Server{
-		Addr:    ":8080",
-		Handler: router,
+	flag.Parse()
+  conn := redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "",
+	})
+	hub := newHub()
+  broadcaster := newBroadcaster(hub, conn)
+	go hub.run()
+  go broadcaster.run()
+	http.HandleFunc("/", serveHome)
+	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+		serveWs(hub, w, r)
+	})
+	server := &http.Server{
+		Addr:              *addr,
+		ReadHeaderTimeout: 3 * time.Second,
 	}
-
-	fmt.Println("Server listening on port :8080")
-	server.ListenAndServe()
+	err := server.ListenAndServe()
+	if err != nil {
+		log.Fatal("ListenAndServe: ", err)
+	}
 }
