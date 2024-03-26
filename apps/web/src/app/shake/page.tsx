@@ -4,6 +4,8 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { peekTime, resetTime, tickTime } from "@/utils/timeCounter";
 import { getMobileOperatingSystem } from "@/utils/getMobileOperatingSystem";
+import ChulaShake from './components/ChulaShake';
+import TUShake from './components/TUShake';
 
 let shaking: { x: number; y: number; z: number } | undefined;
 
@@ -29,23 +31,6 @@ export default function Shake() {
     const [time, setTime] = useState(0);
 
     useEffect(() => {
-        // const change = Math.abs(
-        //   motion1.x -
-        //     motion2.current.x +
-        //     motion1.y -
-        //     motion2.current.x +
-        //     motion1.z -
-        //     motion2.current.x
-        // );
-
-        // if (change > 80) {
-        //   setTimeout(() => {
-        //     if (currentTeam.id !== "end") {
-        //       setCount(count + 1);
-        //       tickTime();
-        //     }
-        //   }, 280);
-        // }
         const hypot = Math.hypot(motion1.x, motion1.y, motion1.z);
 
         if (hypot > 30) {
@@ -125,7 +110,7 @@ export default function Shake() {
 
     return (
         <div>
-            <button
+            {/* <button
                 onClick={handleRequestMotion}
                 className="bg-red-500 text-white py-2 px-8 rounded-lg hover:brightness-90"
             >
@@ -134,7 +119,8 @@ export default function Shake() {
             <div>
                 <p>Count: {count}</p>
                 <p>Time: {time}</p>
-            </div>
+            </div> */}
+            <ChulaShake />
         </div>
     );
 }
