@@ -6,6 +6,7 @@ import { peekTime, resetTime, tickTime } from "@/utils/timeCounter";
 import { getMobileOperatingSystem } from "@/utils/getMobileOperatingSystem";
 import ShakeComponent from './components/Shake';
 import { useSearchParams } from "next/navigation";
+import { Suspense } from 'react';
 
 let shaking: { x: number; y: number; z: number } | undefined;
 
@@ -112,7 +113,9 @@ export default function Shake() {
 
     return (
         <div>
-            <ShakeComponent university={university} count={count} onClick={handleRequestMotion}/>
+            <Suspense fallback={<div>Loading...</div>}>
+                <ShakeComponent university={university} count={count} onClick={handleRequestMotion}/>
+            </Suspense>
         </div>
     );
 }
