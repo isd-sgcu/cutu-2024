@@ -20,28 +20,28 @@ export default function RootLayout({
     <html lang="en">
       <body className="flex flex-col h-screen">
         {children}
-      <footer className="flex flex-col items-center text-xs py-2">
-        <div className="flex">
-          <Image
-              src="user/sgcu.svg"
-              width={50}
-              height={50}
-              alt="sgcu"
-          />
-          <Image
-              src="user/isd.svg"
-              width={30}
-              height={30}
-              alt="isd"
-          />
-        </div>
-        <div>
-          พัฒนาโดย ฝ่ายพัฒนาระบบสารสนเทศ
-        </div>
-        <div>
-          องค์การบริหารสโมสรนิสิตจุฬาลงกรณ์มหาวิทยาลัย
-        </div>
-      </footer>
+        <footer className="flex flex-col items-center text-xs pb-2">
+          <div className="flex">
+            <Image
+                src="user/sgcu.svg"
+                width={50}
+                height={50}
+                alt="sgcu"
+            />
+            <Image
+                src="user/isd.svg"
+                width={30}
+                height={30}
+                alt="isd"
+            />
+          </div>
+          <div>
+            พัฒนาโดย ฝ่ายพัฒนาระบบสารสนเทศ
+          </div>
+          <div>
+            องค์การบริหารสโมสรนิสิตจุฬาลงกรณ์มหาวิทยาลัย
+          </div>
+        </footer>
       </body>
     </html>
   );
