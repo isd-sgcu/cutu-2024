@@ -4,8 +4,8 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { peekTime, resetTime, tickTime } from "@/utils/timeCounter";
 import { getMobileOperatingSystem } from "@/utils/getMobileOperatingSystem";
-import ChulaShake from './components/ChulaShake';
-import TUShake from './components/TUShake';
+import ShakeComponent from './components/Shake';
+import { useSearchParams } from "next/navigation";
 
 let shaking: { x: number; y: number; z: number } | undefined;
 
@@ -29,6 +29,8 @@ export default function Shake() {
 
     const [count, setCount] = useState(0);
     const [time, setTime] = useState(0);
+    const searchParams = useSearchParams();
+    const university = searchParams.get("university") || "cu";
 
     useEffect(() => {
         const hypot = Math.hypot(motion1.x, motion1.y, motion1.z);
@@ -110,17 +112,7 @@ export default function Shake() {
 
     return (
         <div>
-            {/* <button
-                onClick={handleRequestMotion}
-                className="bg-red-500 text-white py-2 px-8 rounded-lg hover:brightness-90"
-            >
-                กดกูวววววววววว
-            </button>
-            <div>
-                <p>Count: {count}</p>
-                <p>Time: {time}</p>
-            </div> */}
-            <ChulaShake />
+            <ShakeComponent university={university} count={count} onClick={handleRequestMotion}/>
         </div>
     );
 }
