@@ -1,4 +1,6 @@
 import Image from "next/image";
+import Link from "next/link";
+
 import './style.css'
 
 export default function UserLayout({
@@ -17,12 +19,17 @@ export default function UserLayout({
                 height={50}
                 alt="sgcu"
             />
-            <Image
-                src="user/isd.svg"
-                width={30}
-                height={30}
-                alt="isd"
-            />
+            <Link 
+              href="/credit"
+              className="flex items-center"
+            >
+              <Image
+                  src="user/isd.svg"
+                  width={30}
+                  height={30}
+                  alt="isd"
+              />
+            </Link>
           </div>
           <div>พัฒนาโดย ฝ่ายพัฒนาระบบสารสนเทศ</div>
           <div>องค์การบริหารสโมสรนิสิตจุฬาลงกรณ์มหาวิทยาลัย</div>
