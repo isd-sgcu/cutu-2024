@@ -22,7 +22,7 @@ Made by the Information System Development Department, Student Government of Chu
   - [x] ui @punchpnp
   - [ ] integration
 - [ ] client
-  - [ ] choose cu/tu @TeeGoood
+  - [x] choose cu/tu @TeeGoood
   - [ ] shake frontend @tntons
   - [ ] connect to socket
   - [ ] isd credits
