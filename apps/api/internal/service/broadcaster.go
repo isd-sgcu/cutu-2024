@@ -1,4 +1,4 @@
-package main
+package service
 
 import (
 	"context"
@@ -15,7 +15,7 @@ type Broadcaster struct {
 	state *string
 }
 
-func newBroadcaster(hub *Hub, cache *redis.Client) Broadcaster {
+func NewBroadcaster(hub *Hub, cache *redis.Client) Broadcaster {
 	return Broadcaster{
 		hub:   hub,
 		cache: cache,
@@ -23,7 +23,7 @@ func newBroadcaster(hub *Hub, cache *redis.Client) Broadcaster {
 	}
 }
 
-func (b *Broadcaster) run() {
+func (b *Broadcaster) Run() {
 	for {
 		time.Sleep(5 * time.Second)
 		ctx := context.Background()

@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/isd-sgcu/cutu-2024/internal/service"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -27,13 +28,13 @@ func main() {
 	if conn.Ping(context.Background()).Err() != nil {
 		log.Fatal("Unable to connect to redis")
 	}
-	hub := newHub()
-	broadcaster := newBroadcaster(hub, conn)
-	go hub.run()
-	go broadcaster.run()
+	hub := service.NewHub()
+	broadcaster := service.NewBroadcaster(hub, conn)
+	go hub.Run()
+	go broadcaster.Run()
 	http.HandleFunc("/", healthCheck)
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
-		serveWs(hub, conn, w, r)
+		service.ServeWs(hub, conn, w, r)
 	})
 	server := &http.Server{
 		Addr:              *addr,
