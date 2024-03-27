@@ -1,7 +1,7 @@
 import React from 'react'
-import FootBallSlider from '@/app/display/components/FootBallSlider'
+import FootBallSlider from '@/app/(screen)/display/components/FootBallSlider'
 import Image from 'next/image'
-import QrCode from '@/app/display/components/QrCode';
+import QrCode from '@/app/(screen)/display/components/QrCode';
 
 const DisplayPage = () => {
   return (
