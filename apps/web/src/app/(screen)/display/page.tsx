@@ -23,7 +23,7 @@ const DisplayPage = () => {
                 </div>
                 <Image src={'/slider/thammasat-new-logo.svg'} alt="Team Thammasat" width={240} height={240}/>
             </div>
-            <FootBallSlider />
+            <FootBallSlider ballSize='96' sliderHeight='48' />
         </div>
         <div className='space-y-20 flex items-center justify-center flex-col mt-8'>
             <Image src={'/slider/shake-white.svg'} alt="Shake" width={200} height={200} />
@@ -31,7 +31,7 @@ const DisplayPage = () => {
                 ร่วมเชียร์ด้วยการ
                 <span className='font-bold'>เขย่าโทรศัพท์</span>ได้เลย!
             </div>
-            <QrCode/>
+            <QrCode size='64'/>
         </div>
     </div>
   )

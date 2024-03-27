@@ -1,17 +1,19 @@
 import Image from "next/image";
+import FootBallSlider from "../display/components/FootBallSlider";
+import QrCode from "../display/components/QrCode";
 
 const OverLay = () => {
     return ( 
-        <div className="bg-[#00FF00] w-screen h-screen text-white text-[50px] font-semibold p-32">
+        <div className="bg-[#00FF00] w-screen h-screen text-white text-[50px] font-semibold p-32 flex flex-col justify-between">
             <div className="flex justify-between">
                 <div className="flex flex-col items-center gap-10">
                     <Image
                         src="user/logo.svg"
-                        width={240}
-                        height={390}
+                        width={200}
+                        height={360}
                         alt="live feedback"
                     />
-                    <div className="w-[260px] h-[240px] bg-white">qr</div>
+                    <QrCode size="[260px]" />
                 </div>
                 <div className="flex flex-col items-center gap-[50px]">
                     <div className="flex flex-col items-center gap-10">
@@ -38,6 +40,29 @@ const OverLay = () => {
                         />
                     </div>
                 </div>
+            </div>
+            <div>
+                <div className="flex justify-between">
+                    <div>
+                        <Image
+                            src="overlay/team-cu.svg"
+                            width={170}
+                            height={140}
+                            alt="cu-team"
+                        />
+                        <span>#ทีมจุฬาฯ</span>
+                    </div>
+                    <div>
+                        <Image
+                            src="overlay/team-tu.svg"
+                            width={170}
+                            height={140}
+                            alt="tu-team"
+                        />
+                        <span>#ทีมมธ</span>
+                    </div>
+                </div>
+                <FootBallSlider sliderHeight='32' ballSize='64' />
             </div>
         </div>
     );
