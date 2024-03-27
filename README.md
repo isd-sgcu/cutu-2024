@@ -28,9 +28,9 @@ Made by the Information System Development Department, Student Government of Chu
   - [ ] isd credits
   - [ ] integrate with backend
 - [ ] live feed
-  - [ ] ui @punchanabu @TeeGoood
+  - [x] ui @punchanabu @TeeGoood
   - [ ] connect to socket
-- [ ] components
+- [x] components
   - [x] qr code @punchanabu
   - [x] progress slider @punchanabu
-- [ ] progress slider @TeeGoood
+- [x] progress slider @TeeGoood
