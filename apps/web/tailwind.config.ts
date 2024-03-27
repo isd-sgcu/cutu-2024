@@ -17,7 +17,8 @@ const config: Config = {
         "cu-primary": "#EE457B",
         "cu-secondary": "#F1678C",
         "tu-primary": "#ED1C24",
-        "tu-secondary": "#FBAF44"
+        "tu-secondary": "#FBAF44",
+        "display": "#D9D9D9",
       }
     },
   },
