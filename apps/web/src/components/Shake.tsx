@@ -6,7 +6,7 @@ export default function ShakeComponent({
     count,
     onClick,
 }: {
-    university: string,
+    university: string | string[],
     count: number,
     onClick: () => void,
 }) {

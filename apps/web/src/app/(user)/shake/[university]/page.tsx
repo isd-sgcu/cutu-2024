@@ -1,11 +1,10 @@
 "use client"
 
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { peekTime, resetTime, tickTime } from "@/utils/timeCounter";
 import { getMobileOperatingSystem } from "@/utils/getMobileOperatingSystem";
-import ShakeComponent from './components/Shake';
-import { useSearchParams } from "next/navigation";
+import ShakeComponent from '../../../../components/Shake';
+import { useParams, useSearchParams } from "next/navigation";
 import { Suspense } from 'react';
 
 let shaking: { x: number; y: number; z: number } | undefined;
@@ -30,8 +29,7 @@ export default function Shake() {
 
     const [count, setCount] = useState(0);
     const [time, setTime] = useState(0);
-    const searchParams = useSearchParams();
-    const university = searchParams.get("university") || "cu";
+    const university = useParams().university || 'cu'
 
     useEffect(() => {
         const hypot = Math.hypot(motion1.x, motion1.y, motion1.z);
