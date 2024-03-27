@@ -1,39 +1,32 @@
 import React from 'react'
 import FootBallSlider from '@/app/display/components/FootBallSlider'
 import Image from 'next/image'
-import trophyIcon from '../../../public/slider/trophy.svg';
-import shakeWhiteIcon from '../../../public/slider/shake-white.svg';
 import QrCode from '@/app/display/components/QrCode';
-import TeamChula from '../../../public/slider/team-chula.svg';
-import TeamThammasat from '../../../public/slider/thammasat-new-logo.svg';
-import LiveIcon from '../../../public/slider/live.svg';
-import isdIcon from '../../../public/slider/isd.svg';
-import sgcuIcon from '../../../public/slider/sgcu.svg';
 
 const DisplayPage = () => {
   return (
     <div className='w-auto h-screen flex flex-col items-center bg-gradient-to-r from-cu-pink via-tu-dark-orange to-tu-light-orange space-y-40 p-24'>
     
         <div className='flex justify-between w-full items-center space-x-10'>
-            <Image src= {LiveIcon} alt="Live" className='w-96 h-96' />
-            <Image src={trophyIcon} alt="Trophy" className='w-96 h-96' />
-            <div className='flex items-center justify-center space-x-10'>
-                <Image src={isdIcon} alt="ISD" className='w-40 h-40' />
-                <Image src={sgcuIcon} alt="SGCU" className='w-40 h-40' />
+            <Image src= {'/slider/live.svg'} alt="Live" width={384} height={384}/>
+            <Image src={'/slider/trophy.svg'} alt="Trophy" width={254} height={254} />
+            <div className='flex items-center justify-center space-x-10' >
+                <Image src={'/slider/isd.svg'} alt="ISD"  width={160} height={160}/>
+                <Image src={'/slider/sgcu.svg'} alt="SGCU" width={160} height={160}/>
             </div>
         </div>
         <div className='w-full'>
             <div className='flex justify-between w-full px-20 py-10'>
-                <Image src={TeamChula} alt="Team Chula" className='w-60 h-60' />
+                <Image src={'/slider/team-chula.svg'} alt="Team Chula" width={280} height={280}/>
                 <div className='text-6xl font-bold text-white px-5'>
                     ร่วมส่งพลังให้ทีมที่คุณเชียร์!
                 </div>
-                <Image src={TeamThammasat} alt="Team Thammasat" className='w-60 h-60' />
+                <Image src={'/slider/thammasat-new-logo.svg'} alt="Team Thammasat" width={240} height={240}/>
             </div>
             <FootBallSlider />
         </div>
         <div className='space-y-20 flex items-center justify-center flex-col mt-8'>
-            <Image src={shakeWhiteIcon} alt="Shake" className='w-64 h-64' />
+            <Image src={'/slider/shake-white.svg'} alt="Shake" width={200} height={200} />
             <div className='text-5xl text-white'>
                 ร่วมเชียร์ด้วยการ
                 <span className='font-bold'>เขย่าโทรศัพท์</span>ได้เลย!
