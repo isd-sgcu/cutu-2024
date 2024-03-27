@@ -2,7 +2,7 @@ import Image from "next/image";
 
 const OverLay = () => {
     return ( 
-        <div className="bg-[#00FF00] w-screen h-screen text-white text-[50px] font-semibold p-32">
+        <div className="bg-[#00FF00] w-full h-full text-white text-[50px] font-semibold p-32">
             <div className="flex justify-between">
                 <div className="flex flex-col items-center gap-10">
                     <Image
