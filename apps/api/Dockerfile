@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM golang:1.22.1
+FROM golang:1.22.1 AS builder
 
 # Set destination for COPY
 WORKDIR /app
@@ -15,6 +15,11 @@ COPY *.go ./
 
 # Build
 RUN CGO_ENABLED=0 GOOS=linux go build ./cmd/main.go -o /docker-gs-ping
+
+FROM gcr.io/distroless/base-debian12 as runner
+
+# Copy the binary from the build stage
+COPY --from=builder /docker-gs-ping /
 
 EXPOSE 8080
 

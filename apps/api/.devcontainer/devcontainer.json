@@ -2,14 +2,17 @@
 // README at: https://github.com/devcontainers/templates/tree/main/src/go
 {
 	"name": "CU-TU Unity Ball API",
-	"image": "mcr.microsoft.com/devcontainers/go:1-1.22-bookworm",
+	"service": "api",
+	"dockerComposeFile": "docker-compose.yml",
+	"workspaceFolder": "/workspace",
 	"customizations": {
 		"vscode": {
 			"extensions": [
 				"ms-vscode.go",
 				"ms-azuretools.vscode-docker",
 				"ms-vscode-remote.remote-containers",
-				"ms-vscode.makefile-tools"
+				"ms-vscode.makefile-tools",
+				"tamasfe.even-better-toml"
 			]
 		}
 	}

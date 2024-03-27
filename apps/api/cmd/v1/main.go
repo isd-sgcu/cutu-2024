@@ -3,12 +3,13 @@ package main
 import (
 	"context"
 	"flag"
-	"log"
 	"net/http"
 	"time"
 
+	"github.com/isd-sgcu/cutu-2024/internal/config"
 	"github.com/isd-sgcu/cutu-2024/internal/service"
 	"github.com/redis/go-redis/v9"
+	"github.com/rs/zerolog/log"
 )
 
 var addr = flag.String("addr", ":8080", "http service address")
@@ -20,14 +21,21 @@ func healthCheck(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	log.Ctx(context.Background()).Info().Msg("Starting server")
+	env := config.NewEnvironment()
 	flag.Parse()
 	conn := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
+		Addr:     env.RedisAddr,
 		Password: "",
+		ClientName: "cutu",
 	})
-	if conn.Ping(context.Background()).Err() != nil {
-		log.Fatal("Unable to connect to redis")
+	if err := conn.Ping(context.Background()).Err(); err != nil {
+		log.Fatal().Ctx(context.Background()).Err(err).Msg("Unable to connect to redis")
 	}
+	defer conn.Close()
+
+	log.Info().Ctx(context.Background()).Str("addr", *addr).Str("redis_addr", env.RedisAddr).Msg("Starting server")
+	
 	hub := service.NewHub()
 	broadcaster := service.NewBroadcaster(hub, conn)
 	go hub.Run()
@@ -42,6 +50,6 @@ func main() {
 	}
 	err := server.ListenAndServe()
 	if err != nil {
-		log.Fatal("ListenAndServe: ", err)
+		log.Fatal().Err(err).Msg("Unable to start server")
 	}
 }

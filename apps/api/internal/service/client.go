@@ -111,7 +111,6 @@ func (c *Client) ReadPump() {
 			// broadcast new university count to screen
 		default:
 			log.Print("Invalid type")
-			break
 		}
 	}
 }
