@@ -1,19 +1,17 @@
-import { Router } from "express";
 import { BaseRouter } from "../base/base.router";
 import { PlayerController } from "../controller/player.controller";
 
-export class PlayerRouter implements BaseRouter {
-  router: Router;
-  prefix: string = "/player";
-  playerController: PlayerController;
+export class PlayerRouter extends BaseRouter {
 
-  constructor(playerController: PlayerController) {
-    this.router = Router();
-    this.playerController = playerController;
+  static prefix = '/api'
+  constructor(private readonly playerController: PlayerController) {
+    super(PlayerRouter.prefix);
     this.initRoutes();
   }
 
   initRoutes(): void {
-    this.router.get("/games", this.playerController.getGames.bind(this.playerController));
+    this.router.get("/games/:id", this.playerController.getGames.bind(this.playerController));
   }
+
+
 }

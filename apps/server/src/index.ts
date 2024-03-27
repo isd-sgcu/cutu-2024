@@ -1,27 +1,21 @@
-import { createClient } from "redis";
-import { Server } from "socket.io";
-import { createAdapter } from "@socket.io/redis-adapter";
-import { PlayerService } from "./service/player.service";
-import { PlayerWebSocketController } from "./controller/websocket.controller";
+import express from "express";
+import { initServer } from "./server";
+import { createLogger } from "./utils/logger";
+import { createServer } from "http";
+import { configDotenv } from "dotenv";
 
-const server = require("http").createServer();
+configDotenv({ path: '.env' });
+const logger = createLogger("MainContext");
+const app = express();
+const server = createServer(app);
 
-const pubClient = createClient({ url: "redis://redis:6379" });
-const subClient = pubClient.duplicate();
+logger.info("Starting application");
 
-pubClient.connect();
-subClient.connect();
-
-const io = new Server(server, {
-  adapter: createAdapter(pubClient, subClient),
-  path: '/api'
-});
-
-const webSocketController = new PlayerWebSocketController(io, new PlayerService());
-
-
-io.on("connection", (socket) => webSocketController.onConnection(socket))
-
-server.listen(3000, () => {
-  console.log("Server running on port 3000");
+initServer(app, server).then(() =>
+  server.listen(3000, () => {
+    logger.info("Server running on port 3000");
+  })
+).catch((err) => {
+  logger.error("Error initializing server", err);
+  process.exit(1);
 });

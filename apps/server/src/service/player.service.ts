@@ -1,9 +1,14 @@
-import { RedisClientType } from "redis";
+import { GameRepository } from "../models/game.model";
 
 export class PlayerService {
-  constructor(private readonly redis?: RedisClientType) { }
+  constructor(private readonly gameRepository: GameRepository) { }
 
-  async getGame() {
-    return { title: "ABC", images: [] }
+  async getGame(id: string) {
+    return await this.gameRepository.getGameById(id).catch(err => ({ err }))
+  }
+
+  async getState() {
+    const games = await this.gameRepository.getState();
+    return games
   }
 }
