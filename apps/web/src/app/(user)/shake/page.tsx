@@ -4,6 +4,9 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { peekTime, resetTime, tickTime } from "@/utils/timeCounter";
 import { getMobileOperatingSystem } from "@/utils/getMobileOperatingSystem";
+import ShakeComponent from './components/Shake';
+import { useSearchParams } from "next/navigation";
+import { Suspense } from 'react';
 
 let shaking: { x: number; y: number; z: number } | undefined;
 
@@ -27,25 +30,10 @@ export default function Shake() {
 
     const [count, setCount] = useState(0);
     const [time, setTime] = useState(0);
+    const searchParams = useSearchParams();
+    const university = searchParams.get("university") || "cu";
 
     useEffect(() => {
-        // const change = Math.abs(
-        //   motion1.x -
-        //     motion2.current.x +
-        //     motion1.y -
-        //     motion2.current.x +
-        //     motion1.z -
-        //     motion2.current.x
-        // );
-
-        // if (change > 80) {
-        //   setTimeout(() => {
-        //     if (currentTeam.id !== "end") {
-        //       setCount(count + 1);
-        //       tickTime();
-        //     }
-        //   }, 280);
-        // }
         const hypot = Math.hypot(motion1.x, motion1.y, motion1.z);
 
         if (hypot > 30) {
@@ -125,16 +113,9 @@ export default function Shake() {
 
     return (
         <div>
-            <button
-                onClick={handleRequestMotion}
-                className="bg-red-500 text-white py-2 px-8 rounded-lg hover:brightness-90"
-            >
-                กดกูวววววววววว
-            </button>
-            <div>
-                <p>Count: {count}</p>
-                <p>Time: {time}</p>
-            </div>
+            <Suspense fallback={<div>Loading...</div>}>
+                <ShakeComponent university={university} count={count} onClick={handleRequestMotion}/>
+            </Suspense>
         </div>
     );
 }

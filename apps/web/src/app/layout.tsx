@@ -17,7 +17,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={anuphan.className}>{children}</body>
+      <body className={anuphan.className}>
+        {children}
+      </body>
     </html>
   );
 }
