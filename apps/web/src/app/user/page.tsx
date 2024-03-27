@@ -23,7 +23,7 @@ const User = () => {
                 </div>
                 <div className='flex flex-col items-center gap'>
                     <Image
-                        src="user/logo.svg"
+                        src="user/logo-shadow.svg"
                         width={60}
                         height={60}
                         alt="logo"
