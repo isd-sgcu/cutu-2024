@@ -19,7 +19,7 @@ Made by the Information System Development Department, Student Government of Chu
   - [ ] IaC @ImSoZRious
   - [ ] Ansible @ImSoZRious
 - [ ] admin
-  - [ ] ui @punchpnp
+  - [x] ui @punchpnp
   - [ ] integration
 - [ ] client
   - [ ] choose cu/tu @TeeGoood
