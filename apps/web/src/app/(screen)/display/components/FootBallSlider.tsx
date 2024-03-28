@@ -7,20 +7,34 @@ import { useState } from "react";
 interface FootBallSliderProps {
   sliderHeight: string;
   ballSize: number;
+  setState?: React.Dispatch<React.SetStateAction<"none" | "tu" | "cu">>;
 }
 
 const MAX_LENGTH = 1500;
 
 const FootBallSlider = (props: FootBallSliderProps) => {
+  const [isStart, setIsStart] = useState(true);
   const [position, setPosition] = useState(0);
-  const [tu, setTu] = useState(0);
-  const [cu, setCu] = useState(0);
+  const [tu, setTu] = useState(1);
+  const [cu, setCu] = useState(1);
 
   useEffect(() => {
     console.log((tu - cu)/(tu + cu)*MAX_LENGTH)
     setPosition((tu - cu)/(tu + cu)*MAX_LENGTH)
   }, [tu, cu])
 
+  useEffect(() => {
+      setCu(1);
+      setTu(1);
+      if(props.setState && !isStart){
+        if(tu > cu){
+          props.setState('tu')
+        }
+        else{
+          props.setState('cu')
+        }
+      }
+  }, [isStart])
 
   return (
     <>
@@ -39,8 +53,9 @@ const FootBallSlider = (props: FootBallSliderProps) => {
           #ทีมมธ.
         </div>
       </div>
-      <button className="bg-white w-20 h-20" onClick={() => setCu(cu+50)}>+</button>
-      <button className="bg-white w-20 h-20" onClick={() => setTu(tu+50)}>+</button>
+      <button className="bg-white p-20 text-9xl" onClick={() => setCu(cu+50)}>chula</button>
+      <button className="bg-white p-20 text-9xl" onClick={() => setTu(tu+50)}>tu</button>
+      <button className="bg-white p-20 text-9xl" onClick={() => setIsStart(!isStart)}>reset</button>
     </>
   );
 };
