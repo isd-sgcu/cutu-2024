@@ -1,5 +1,3 @@
-
-
 export class SubmissionPackage {
   gid: string
   key: string

@@ -1,5 +1,3 @@
-
-
 import { Optional } from 'sequelize'
 
 export interface GameHistoryAttributes {
@@ -11,5 +9,5 @@ export interface GameHistoryAttributes {
 }
 
 export interface GameHistoryInput
-  extends Optional<GameHistoryAttributes, 'vote'> { }
-export interface GameHistoryOuput extends Required<GameHistoryAttributes> { }
+  extends Optional<GameHistoryAttributes, 'vote'> {}
+export interface GameHistoryOuput extends Required<GameHistoryAttributes> {}

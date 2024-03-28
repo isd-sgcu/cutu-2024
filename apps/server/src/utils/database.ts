@@ -1,5 +1,3 @@
-
-
 import { Sequelize } from 'sequelize'
 
 function createConnectionPool() {

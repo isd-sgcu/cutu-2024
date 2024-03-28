@@ -1,12 +1,11 @@
-
-
 import { DataTypes, Filterable, Model, WhereOptions } from 'sequelize'
 import { ClientAttributes, ClientInput } from '$/interface/client.interface'
 import { sequelizeConnection } from '$/utils/database'
 
 export class Client
   extends Model<ClientAttributes, ClientInput>
-  implements ClientAttributes {
+  implements ClientAttributes
+{
   public id!: string
   public sid!: string
   public fid!: string
@@ -33,7 +32,7 @@ Client.init(
     },
     fid: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     cid: {
       type: DataTypes.STRING,
@@ -51,9 +50,8 @@ Client.init(
     name: {
       type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: 'Unknown Person'
-    }
-
+      defaultValue: 'Unknown Person',
+    },
   },
   { timestamps: true, sequelize: sequelizeConnection, paranoid: true },
 )

@@ -1,5 +1,3 @@
-
-
 import { BaseRouter } from '$/base/base.router'
 import { PlayerController } from '$/controller/player.controller'
 
@@ -15,6 +13,5 @@ export class PlayerRouter extends BaseRouter {
       '/games/:id',
       this.playerController.getGames.bind(this.playerController),
     )
-
   }
 }

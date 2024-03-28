@@ -1,5 +1,3 @@
-
-
 import express from 'express'
 import { initServer } from './server'
 import { createLogger } from './utils/logger'

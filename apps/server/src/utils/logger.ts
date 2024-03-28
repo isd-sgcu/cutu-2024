@@ -1,5 +1,3 @@
-
-
 import winston from 'winston'
 
 export function createLogger(module: string) {

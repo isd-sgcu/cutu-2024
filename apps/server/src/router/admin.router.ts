@@ -1,5 +1,3 @@
-
-
 import { BaseRouter } from '$/base/base.router'
 import { AdminController } from '$/controller/admin.controller'
 import { basicAuth } from '$/middleware/admin.middleware'

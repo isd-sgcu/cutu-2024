@@ -1,5 +1,3 @@
-
-
 import { Optional } from 'sequelize'
 
 export interface GameAttributes {
@@ -15,8 +13,8 @@ export interface GameAttributes {
   winner: { key: string; total_vote: number }
 }
 
-export interface GameInput extends Optional<GameAttributes, 'id' | 'winner'> { }
-export interface GameOuput extends Required<GameAttributes> { }
+export interface GameInput extends Optional<GameAttributes, 'id' | 'winner'> {}
+export interface GameOuput extends Required<GameAttributes> {}
 
 export interface CreateGameRequest
-  extends Omit<GameAttributes, 'id' | 'winner'> { }
+  extends Omit<GameAttributes, 'id' | 'winner'> {}

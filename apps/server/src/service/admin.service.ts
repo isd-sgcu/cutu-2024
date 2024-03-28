@@ -1,9 +1,7 @@
-
-
 import { Game, GameRepository } from '$/models/game.model'
 
 export class AdminService {
-  constructor(private readonly gameRepository: GameRepository) { }
+  constructor(private readonly gameRepository: GameRepository) {}
 
   async getGame(id: string) {
     return this.gameRepository.getGameById(id).catch((error) => ({ error }))

@@ -1,12 +1,14 @@
-
-
 import { DataTypes, Model } from 'sequelize'
-import { GameHistoryAttributes, GameHistoryInput } from '$/interface/history.interface'
+import {
+  GameHistoryAttributes,
+  GameHistoryInput,
+} from '$/interface/history.interface'
 import { sequelizeConnection } from '$/utils/database'
 
 export class GameHistory
   extends Model<GameHistoryAttributes, GameHistoryInput>
-  implements GameHistoryAttributes {
+  implements GameHistoryAttributes
+{
   public game_id!: string
   public player_id!: string
   public key!: string
@@ -36,8 +38,7 @@ GameHistory.init(
       type: DataTypes.BIGINT,
       allowNull: false,
       defaultValue: 0,
-    }
-
+    },
   },
   { timestamps: true, sequelize: sequelizeConnection, paranoid: true },
 )

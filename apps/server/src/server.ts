@@ -1,5 +1,3 @@
-
-
 import { createClient } from 'redis'
 import { Server } from 'socket.io'
 import { createAdapter } from '@socket.io/redis-adapter'
@@ -25,7 +23,7 @@ export async function initServer(app: Express, server: HTTPServer) {
   const pubClient = createClient({ url: process.env.REDIS_URL })
   const subClient = pubClient.duplicate()
 
-  await pubClient.connect();
+  await pubClient.connect()
 
   await sequelizeConnection
     .authenticate()
@@ -43,7 +41,12 @@ export async function initServer(app: Express, server: HTTPServer) {
   const playerIO = new Server(server, {
     adapter: createAdapter(pubClient, subClient),
     path: `${PlayerRouter.prefix}/ws`,
-    cors: { origin: "*", credentials: true, methods: ["GET", "POST"] },
+    cors: {
+      origin: '*',
+      credentials: true,
+      methods: ['GET', 'POST'],
+      allowedHeaders: ['fid', 'cid', 'name'],
+    },
     allowEIO3: true,
   })
   const playerController = new PlayerController(
