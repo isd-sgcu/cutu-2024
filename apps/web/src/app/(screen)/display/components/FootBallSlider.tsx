@@ -1,12 +1,10 @@
-"use client";
-
+'use client';
 import React, { useEffect } from "react";
 import Image from "next/image";
 import { useState } from "react";
-import { io } from "socket.io-client";
+import { Socket, io } from "socket.io-client";
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
-import Cookies from "js-cookie";
-import {v4 as uuidv4} from 'uuid';
+import Cookies from "universal-cookie";
 
 interface FootBallSliderProps {
   sliderHeight: string;
@@ -14,84 +12,91 @@ interface FootBallSliderProps {
   setState?: React.Dispatch<React.SetStateAction<"none" | "tu" | "cu">>;
 }
 
-const MAX_LENGTH = 1500;
+const MAX_LENGTH = 1300;
 
 const FootBallSlider = (props: FootBallSliderProps) => {
   const [isStart, setIsStart] = useState(true);
   const [position, setPosition] = useState(0);
   const [tu, setTu] = useState(1);
   const [cu, setCu] = useState(1);
-  const [cid, setCid] = useState<string | null>(null);
   let fid: string | null = null;
-
-  const socket = io("wss://api.cutu2024.sgcu.in.th", {
-    path: "/api/ws",
-    auth: { fid: "1234", name: "hehe", cid: '86ccc208-46ef-488c-acbe-f827629b502d' },
-    transports: ['websocket'],
-  });
-
-  function onConnect() {
-    console.log("connect")
-    console.log(socket.id, socket.connected)
-  }
-  function onDisconnect() {
-    console.log("disconnect")
-    console.log(socket.id, socket.connected)
-  }
-
+  let socket: Socket | null = null;
+  const cookies = new Cookies();
+  
   useEffect(() => {
-    socket.on("cid", (serverCid) => {
-      console.log(serverCid);
-      setCid(serverCid);
-      Cookies.set("cid", serverCid, { expires: 365 * 100000 });
-    });
+      const handleConnect = () => {
+          console.log('Client has connected to the server!');
+      };
 
-    socket.on("connect", onConnect);
-    socket.on("disconnect", (reason, details) => {
-      console.log(reason);
-
-      // the low-level reason of the disconnection, for example "xhr post error"
-      console.log(details);
-    });
-
-    socket.on("events", (serverCid) => {
-      console.log(serverCid);
-    });
-
-    socket.on("state", (serverCid) => {
-      console.log(serverCid);
-    });
-
-    socket.on("scoreboard", (serverCid) => {
-      console.log(serverCid);
-      const part = serverCid.split(" ");
-
-      const cuScore = parseInt(part[1]);
-      const tuScore = parseInt(part[2]);
-
-      setCu(cuScore);
-      setTu(tuScore);
-      console.log(position, cu, tu);
-    });
-  }, [])
-  useEffect(() => {
-    //console.log((tu - cu)/(tu + cu) * MAX_LENGTH)
-    setPosition((tu - cu)/(tu + cu) * MAX_LENGTH)
-  }, [tu, cu])
-
-  useEffect(() => {
-      setCu(1);
-      setTu(1);
-
-      if(!props.setState) return;
-
-      if(!isStart){
-        ( tu > cu ) ? props.setState('tu') : props.setState('cu')  
+      const handleScoreBoard = (scoreString: string) => {
+        console.log(scoreString);
+        const parts = scoreString.split(" ");
+        const cuScore = parseInt(parts[1], 10);
+        const tuScore = parseInt(parts[3], 10);
+        console.log('cu:', cuScore, 'tu:', tuScore)
+        setCu(cuScore);
+        setTu(tuScore);
+        const position = (tuScore - cuScore)/(tuScore + cuScore)*MAX_LENGTH;
+        setPosition(position)
+        console.log(cu, tu, position)
       }
-      else{
-        props.setState('none')
-      }
-  }, [isStart])
+
+      const handleCid = (serverCid: string) => {
+          try {
+              console.log('Received cid from server:', serverCid);
+              cookies.set('cid', serverCid);
+              console.log('cid cookie set with value:', serverCid);
+          } catch (error) {
+              console.error('Error handling cid:', error);
+          }
+      };
+
+      const handleDisconnect = () => {
+          console.log('The client has disconnected!');
+      };
+
+      (async () => {
+          const fp = await FingerprintJS.load();
+          const result = await fp.get();
+          fid = result.visitorId;
+          const savedCid = cookies.get('cid');
+          
+          const extraHeaders: { [key: string]: string } = {
+              fid: fid,
+              name: 'pun1'
+          };
+
+          if (savedCid) {
+              extraHeaders.cid = savedCid;
+          }
+          socket = io('wss://api.cutu2024.sgcu.in.th', { 
+              auth: extraHeaders,
+              path: "/api/ws", 
+              transports: ['websocket'],
+          });
+
+          socket.on('connect', handleConnect);
+          socket.on('cid', handleCid);
+          socket.on('scoreboard', handleScoreBoard)
+          socket.on('disconnect', handleDisconnect);
+          return () => {
+              socket?.disconnect();
+          };
+      })();
+  }, []);
+
+  // useEffect(() => {
+  //     setCu(1);
+  //     setTu(1);
+  //     if(props.setState && !isStart){
+  //       if(tu > cu){
+  //         props.setState('tu')
+  //       }
+  //       else{
+  //         props.setState('cu')
+  //       }
+  //     }
+  // }, [isStart])
 
   return (
     <>
