@@ -46,6 +46,7 @@ export async function initServer(app: Express, server: HTTPServer) {
       credentials: true,
       methods: ['GET', 'POST'],
       allowedHeaders: ['fid', 'cid', 'name'],
+      exposedHeaders: ['fid', 'cid', 'name'],
     },
     allowEIO3: true,
   })
