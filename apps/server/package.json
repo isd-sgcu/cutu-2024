@@ -4,10 +4,11 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node dist/index.js",
-    "build": "tsc --build tsconfig.json",
-    "dev": "nodemon src/index.ts"
+    "build": "tsc --project tsconfig.json && tsc-alias",
+    "dev": "nodemon -r tsconfig-paths/register src/index.ts",
+    "format": "prettier --write . '!./.devcontainer/postgres-data' '!./.devcontainer/redis-data' '!./dist/'",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
@@ -30,7 +31,10 @@
   "devDependencies": {
     "@types/express": "^4.17.21",
     "nodemon": "^3.1.0",
+    "prettier": "^3.2.5",
     "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.8",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.4.3"
   }
 }

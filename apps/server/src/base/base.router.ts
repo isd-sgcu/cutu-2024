@@ -1,16 +1,18 @@
-import { Router } from "express";
+
+
+import { Router } from 'express'
 
 export abstract class BaseRouter {
-  router: Router;
-  prefix: string;
-  abstract initRoutes(): void;
+  router: Router
+  prefix: string
+  abstract initRoutes(): void
 
   constructor(prefix: string) {
-    this.router = Router();
+    this.router = Router()
     this.prefix = prefix
   }
 
   getPrefix() {
-    return this.prefix;
+    return this.prefix
   }
 }
