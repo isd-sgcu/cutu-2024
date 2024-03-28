@@ -27,7 +27,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          context: apps/server
+          context: "{{defaultContext}}:apps/server"
           tags: ${{ env.IMAGE_NAME }}:${{ github.ref_type == 'tag' && github.ref_name ||  github.sha }},${{ env.IMAGE_NAME }}:latest
           cache-from: type=gha,ref=${{ env.IMAGE_NAME }}:buildcache
           cache-to: type=gha,ref=${{ env.IMAGE_NAME }}:buildcache,mode=max
