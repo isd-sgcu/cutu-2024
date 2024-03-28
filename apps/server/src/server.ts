@@ -23,6 +23,8 @@ export async function initServer(app: Express, server: HTTPServer) {
   const pubClient = createClient({ url: process.env.REDIS_URL })
   const subClient = pubClient.duplicate()
 
+  await pubClient.connect();
+
   await sequelizeConnection
     .authenticate()
     .then(() => {
@@ -49,16 +51,10 @@ export async function initServer(app: Express, server: HTTPServer) {
     playerController.onConnection.bind(playerController),
   )
 
-  const adminIO = new Server(server, {
-    adapter: createAdapter(pubClient, subClient),
-    path: `${AdminRouter.prefix}/ws`,
-  })
-
   const adminController = new AdminController(
-    adminIO,
+    playerIO,
     new AdminService(gameRepository),
   )
-  adminIO.on('connection', adminController.onConnection.bind(adminController))
 
   const playerRouter = new PlayerRouter(playerController)
   const adminRouter = new AdminRouter(adminController)

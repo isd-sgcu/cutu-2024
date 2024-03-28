@@ -14,7 +14,7 @@ export class AdminService {
   }
 
   async getState() {
-    const games = await this.gameRepository.getState()
+    const games = await this.gameRepository.getLastActiveGame()
     return games
   }
 
@@ -27,5 +27,13 @@ export class AdminService {
       image: game.image,
     } as Game
     return this.gameRepository.createGame(gameModel)
+  }
+
+  async startGame(id: string) {
+    return this.gameRepository.startGame(id)
+  }
+
+  async endGame(id: string) {
+    return this.gameRepository.endGame(id)
   }
 }

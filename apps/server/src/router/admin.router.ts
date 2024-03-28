@@ -27,5 +27,15 @@ export class AdminRouter extends BaseRouter {
       basicAuth,
       this.adminController.getGame.bind(this.adminController),
     )
+    this.router.post(
+      '/games/:id/start',
+      basicAuth,
+      this.adminController.startGame.bind(this.adminController),
+    )
+    this.router.post(
+      '/games/:id/end',
+      basicAuth,
+      this.adminController.endGame.bind(this.adminController),
+    )
   }
 }

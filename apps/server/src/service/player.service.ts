@@ -11,8 +11,21 @@ export class PlayerService {
   }
 
   async getState() {
-    const games = await this.gameRepository.getState()
-    return games
+    const games = await this.gameRepository.getActiveGame()
+    return games?.open === true ? 'playing' : 'waiting'
+  }
+
+  async getLastGame() {
+    return this.gameRepository.getLastActiveGame()
+  }
+
+  async submit(client: Client, action: string, vote: number) {
+    const game = await this.gameRepository.getActiveGame()
+    if (game?.id) {
+      return this.gameRepository.createHistory(game.id, client.id, action, vote)
+    }
+    throw Error('NO GAME ON')
+
   }
 
   async getMyID(ipAddr?: string, cid?: string, sid?: string) {
@@ -28,7 +41,16 @@ export class PlayerService {
     return await client.save()
   }
 
+  async getScoreboard() {
+    const game = await this.gameRepository.getActiveGame()
+    if (game?.id) {
+      return this.gameRepository.calculateVotes(game.id)
+    }
+    throw Error('NO GAME ON')
+  }
+
   async login(cid: string, fid: string, sid: string) {
-    return this.clientRepository.updateSID(cid, fid, sid)
+    const updated = await this.clientRepository.updateSID(cid, fid, sid)
+    return updated
   }
 }

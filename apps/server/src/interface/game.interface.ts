@@ -12,7 +12,7 @@ export interface GameAttributes {
     image: string
   }[]
   image: string
-  winner: { key: string; image: string }
+  winner: { key: string; total_vote: number }
 }
 
 export interface GameInput extends Optional<GameAttributes, 'id' | 'winner'> { }

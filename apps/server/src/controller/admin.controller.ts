@@ -11,26 +11,6 @@ export class AdminController {
     private readonly io: Server,
     private readonly adminService: AdminService,
   ) { }
-
-  async onConnection(socket: Socket) {
-    this.logger.info(`New connection: ${socket.id}`)
-    socket.on('submit', async (message) => {
-      this.logger.info('Received message', message)
-      socket.broadcast.emit('message', message)
-    })
-
-    socket.on('disconnect', () => {
-      this.logger.info(`Disconnected: ${socket.id}`)
-    })
-
-    socket.on('state', (state) => {
-      this.logger.info('Received state', state)
-      socket.emit('state', state)
-    })
-
-    socket.emit('state', await this.adminService.getState())
-  }
-
   async getGames(req: Request, res: Response) {
     const games = await this.adminService.getAllGames()
     res.json(games)
@@ -44,5 +24,29 @@ export class AdminController {
   async createGame(req: Request, res: Response) {
     const game = await this.adminService.createGame(req.body)
     res.json(game)
+  }
+
+  async getGameById(req: Request, res: Response) {
+    const game = await this.adminService.getGame(req.params.id)
+    res.json(game)
+  }
+
+  async getState(req: Request, res: Response) {
+    const state = await this.adminService.getState()
+    res.json(state)
+  }
+
+  async startGame(req: Request, res: Response) {
+    const game = await this.adminService.startGame(req.params.id)
+    res.json(game)
+    this.io.emit("events", 'start')
+    this.io.emit("state", await this.adminService.getState())
+  }
+
+  async endGame(req: Request, res: Response) {
+    const game = await this.adminService.endGame(req.params.id)
+    res.json(game)
+    this.io.emit("events", 'stop')
+    this.io.emit("state", await this.adminService.getState())
   }
 }

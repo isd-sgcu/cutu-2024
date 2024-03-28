@@ -3,16 +3,14 @@
 import { DataTypes, Model } from 'sequelize'
 import { GameHistoryAttributes, GameHistoryInput } from '$/interface/history.interface'
 import { sequelizeConnection } from '$/utils/database'
-import { Game } from './game.model'
-import { Client } from './client.model'
 
 export class GameHistory
   extends Model<GameHistoryAttributes, GameHistoryInput>
   implements GameHistoryAttributes {
-  public id!: string
+  [x: string]: any
   public game_id!: string
   public player_id!: string
-  public action!: string
+  public key!: string
   public vote!: number
 
   public readonly createdAt!: Date
@@ -22,27 +20,17 @@ export class GameHistory
 
 GameHistory.init(
   {
-    id: {
-      type: DataTypes.UUID,
-      primaryKey: true,
-      defaultValue: DataTypes.UUID,
-    },
     game_id: {
       type: DataTypes.UUID,
-      references: {
-        model: Game,
-        key: 'id'
-      }
+      primaryKey: true,
     },
     player_id: {
       type: DataTypes.UUID,
-      references: {
-        model: Client,
-        key: 'id',
-      }
+      primaryKey: true,
     },
-    action: {
+    key: {
       type: DataTypes.STRING,
+      primaryKey: true,
       allowNull: false,
     },
     vote: {
@@ -62,10 +50,6 @@ export class GameHistoryRepository {
 
   async getGameHistoryByGameId(game_id: string) {
     return await GameHistory.findAll({ where: { game_id } })
-  }
-
-  async createEntry(game_id: string, player_id: string, action: string) {
-    const entry = new GameHistory({ game_id, player_id, action })
   }
 
   async createGameHistory(gameHistory: GameHistory) {
