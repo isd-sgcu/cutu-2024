@@ -14,7 +14,7 @@ const page = () => {
 
   return (
     <div
-      className="w-screen h-screen p-4"
+      className="w-screen h-screen pt-20"
       style={{
         background: "linear-gradient(to right, #F1678C, #ED1C24, #FBAF44)",
         backgroundPosition: "center",
@@ -34,7 +34,7 @@ const page = () => {
           width={100}
           height={100}
         />
-        <h1 className="text-4xl text-white font-medium mt-4">For Admin</h1>
+        <h1 className="text-4xl text-white font-bold mt-4">For Admin</h1>
       </div>
       <span className="flex justify-center gap-8 mt-10 text-xl font-bold ">
         <button 

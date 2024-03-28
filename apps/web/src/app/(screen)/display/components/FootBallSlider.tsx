@@ -19,8 +19,8 @@ const FootBallSlider = (props: FootBallSliderProps) => {
   const [cu, setCu] = useState(1);
 
   useEffect(() => {
-    console.log((tu - cu)/(tu + cu)*MAX_LENGTH)
-    setPosition((tu - cu)/(tu + cu)*MAX_LENGTH)
+    //console.log((tu - cu)/(tu + cu) * MAX_LENGTH)
+    setPosition((tu - cu)/(tu + cu) * MAX_LENGTH)
   }, [tu, cu])
 
   useEffect(() => {
@@ -54,9 +54,6 @@ const FootBallSlider = (props: FootBallSliderProps) => {
           #ทีมมธ.
         </div>
       </div>
-      <button className="bg-white p-20 text-9xl" onClick={() => setCu(cu+50)}>chula</button>
-      <button className="bg-white p-20 text-9xl" onClick={() => setTu(tu+50)}>tu</button>
-      <button className="bg-white p-20 text-9xl" onClick={() => setIsStart(!isStart)}>reset</button>
     </>
   );
 };
