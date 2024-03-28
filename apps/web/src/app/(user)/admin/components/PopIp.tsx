@@ -10,7 +10,7 @@ const PopUp = (props: PopUpProps) => {
     const handleChangeState = async () => {
         try{
             if(props.isStart){
-                await axios.post("{{base_url}}/admin-api/games/stop", {
+                await axios.post(`/admin-api/games/stop`, {
                     game_id: "123121321"
                 })
             }
