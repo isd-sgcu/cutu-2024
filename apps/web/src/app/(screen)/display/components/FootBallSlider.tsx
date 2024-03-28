@@ -5,7 +5,7 @@ import { useState } from "react";
 
 interface FootBallSliderProps {
   sliderHeight: string;
-  ballSize: string;
+  ballSize: number;
 }
 
 const FootBallSlider = (props: FootBallSliderProps) => {
@@ -19,8 +19,8 @@ const FootBallSlider = (props: FootBallSliderProps) => {
         </div>
         <div className="flex items-center justify-center space-x-36 relative">
           <Image src={'/slider/shake.svg'}  alt="shake" width = {96} height={96} />
-          <div className={`absolute w-${props.ballSize} h-${props.ballSize}`} style={{ left: `${position}px`, transition: 'left 0.3s ease' }}>
-            <Image src={'slider/ball.svg'} alt="football" fill={true}/>
+          <div className={`absolute w-full`} style={{ left: `${position}px`, transition: 'left 0.3s ease' }}>
+            <Image src={'slider/ball.svg'} alt="football" width={props.ballSize} height={props.ballSize}/>
           </div>
           <Image src={'/slider/shake.svg'} alt="shake" width={96} height={96}/>
         </div>

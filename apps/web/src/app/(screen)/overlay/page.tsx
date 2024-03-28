@@ -62,7 +62,7 @@ const OverLay = () => {
                         <span>#ทีมมธ</span>
                     </div>
                 </div>
-                <FootBallSlider sliderHeight='[50px]' ballSize='64' />
+                <FootBallSlider sliderHeight='[50px]' ballSize={250} />
             </div>
         </div>
     );

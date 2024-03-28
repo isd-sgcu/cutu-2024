@@ -23,7 +23,7 @@ const DisplayPage = () => {
                 </div>
                 <Image src={'/slider/thammasat-new-logo.svg'} alt="Team Thammasat" width={240} height={240}/>
             </div>
-            <FootBallSlider ballSize='96' sliderHeight='48' />
+            <FootBallSlider ballSize={400} sliderHeight='48' />
         </div>
         <div className='space-y-20 flex items-center justify-center flex-col mt-8'>
             <Image src={'/slider/shake-white.svg'} alt="Shake" width={200} height={200} />
