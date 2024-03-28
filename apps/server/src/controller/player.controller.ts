@@ -11,8 +11,9 @@ export class PlayerController {
   ) { }
 
   async onConnection(socket: Socket) {
-    this.logger.info('New connection: ' + JSON.stringify(socket.handshake.headers),)
-    const { cid, fid, name } = socket.handshake.headers
+    const cid = socket.handshake.headers.cid || socket.handshake.auth.cid
+    const fid = socket.handshake.headers.fid || socket.handshake.auth.fid
+    const name = socket.handshake.headers.name || socket.handshake.auth.name
     if (cid && fid) {
       await this.playerService
         .login(cid as string, fid as string, socket.id)
