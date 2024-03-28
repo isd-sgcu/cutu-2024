@@ -1,0 +1,9 @@
+{
+  "arrowParens": "always",
+  "bracketSameLine": true,
+  "semi": false,
+  "endOfLine": "lf",
+  "quoteProps": "as-needed",
+  "singleQuote": true,
+  "insertPragma": false
+}
