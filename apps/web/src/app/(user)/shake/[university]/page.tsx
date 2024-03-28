@@ -6,8 +6,9 @@ import { getMobileOperatingSystem } from "@/utils/getMobileOperatingSystem";
 import ShakeComponent from '../../../../components/Shake';
 import { useParams, useSearchParams } from "next/navigation";
 import { Suspense } from 'react';
-import { io } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 import FingerprintJS from '@fingerprintjs/fingerprintjs';
+import Cookies from 'universal-cookie';
 
 let shaking: { x: number; y: number; z: number } | undefined;
 
@@ -17,9 +18,9 @@ function normalize(x: number, y: number, z: number) {
 }
 
 export default function Shake() {
-
-    const [cid, setCid] = useState<string | null>(null);
     let fid: string | null = null;
+    let socket: Socket | null = null;
+    const cookies = new Cookies();
 
     useEffect(() => {
         const handleConnect = () => {
@@ -27,7 +28,14 @@ export default function Shake() {
         };
 
         const handleCid = (serverCid: string) => {
-            setCid(serverCid);
+            console.log('woo');
+            try {
+                console.log('Received cid from server:', serverCid);
+                cookies.set('cid', serverCid);
+                console.log('cid cookie set with value:', serverCid);
+            } catch (error) {
+                console.error('Error handling cid:', error);
+            }
         };
 
         const handleDisconnect = () => {
@@ -38,22 +46,28 @@ export default function Shake() {
             const fp = await FingerprintJS.load();
             const result = await fp.get();
             fid = result.visitorId;
+            const savedCid = cookies.get('cid');
+            
+            const extraHeaders: { [key: string]: string } = {
+                fid: fid,
+                name: 'john'
+            };
 
-            const socket = io('https://api.cutu2024.sgcu.in.th/', {
-                extraHeaders: {
-                    fid: fid,
-                    name: 'john'
-                }
+            if (savedCid) {
+                extraHeaders.cid = savedCid;
+            }
+            console.log(extraHeaders);
+            socket = io('wss://api.cutu2024.sgcu.in.th', { 
+                auth: extraHeaders,
+                path: "/api/ws", 
+                transports: ['websocket'],
             });
 
             socket.on('connect', handleConnect);
             socket.on('cid', handleCid);
             socket.on('disconnect', handleDisconnect);
-
             return () => {
-                socket.off('connect', handleConnect);
-                socket.off('cid', handleCid);
-                socket.off('disconnect', handleDisconnect);
+                socket?.disconnect();
             };
         })();
     }, []);
@@ -94,8 +108,8 @@ export default function Shake() {
                 };
                 setCount(prevCount => {
                     const newCount = prevCount + 1;
-                    if (fid && cid) {
-                        socket.emit('count', { count: newCount, fid, cid });
+                    if (socket?.connected) {
+                        socket.emit("submit", `${university} ${newCount}`);
                     }
                     return newCount;
                 });

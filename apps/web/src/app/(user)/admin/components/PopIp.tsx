@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 interface PopUpProps{
     isStart: boolean;
@@ -6,17 +7,36 @@ interface PopUpProps{
     setIsShowPopUp: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+interface game{
+    id: string;
+    winner: {};
+    title: string,
+    description: string,
+    open: boolean,
+    actions: [],
+    image: string,
+    updatedAt: string | null,
+    createdAt: string,
+    deletedAt: string | null
+}
+
 const PopUp = (props: PopUpProps) => {
+    const [gameId, setGameId] = useState('');
+
     const handleChangeState = async () => {
         try{
             if(props.isStart){
-                await axios.post(`/admin-api/games/stop`, {
-                    game_id: "123121321"
+                await axios.post(`https://api.cutu2024.sgcu.in.th/admin-api/games/${gameId}/start`, null, {
+                    headers: {
+                        Authorization: "Basic Y3V0dWZvb3RiYWxsY2x1YjIwMjQ6Y3V0dWZvb3RiYWxsY2x1YjIwMjQ1NTU1"
+                    }
                 })
             }
             else{
-                await axios.post("{{base_url}}/admin-api/games/start", {
-                    game_id: "123121321"
+                await axios.post(`https://api.cutu2024.sgcu.in.th/admin-api/games/${gameId}/stop`, null, {
+                    headers: {
+                        Authorization: "Basic Y3V0dWZvb3RiYWxsY2x1YjIwMjQ6Y3V0dWZvb3RiYWxsY2x1YjIwMjQ1NTU1"
+                    }
                 })
             }
             props.setIsStart(prev => !prev);
@@ -28,10 +48,43 @@ const PopUp = (props: PopUpProps) => {
     }
 
     const handleOnClick = (ok: boolean) => {
+        if(!gameId) return;
         props.setIsShowPopUp(prev => !prev);
         if(ok){
             handleChangeState();
         }
+    }
+
+    useEffect(() => {
+        handleGetGameId()
+    }, [])
+
+    const handleGetGameId = async () => {
+        let data: game[] = (await axios.get(`https://api.cutu2024.sgcu.in.th/admin-api/games`, {
+            headers: {
+                Authorization: "Basic Y3V0dWZvb3RiYWxsY2x1YjIwMjQ6Y3V0dWZvb3RiYWxsY2x1YjIwMjQ1NTU1"
+            }
+        })).data
+
+        if(data.length == 0){
+            data = (await axios.post(`https://api.cutu2024.sgcu.in.th/admin-api/games`, {
+                title: "New",
+                description: "Hi",
+                actions: [
+                    {
+                        "key": "CU",
+                        "image": "https://i.imgur.com/tBbKGS2.jpeg"
+                    },
+                    {
+                        "key": "TU",
+                        "image": "https://i.imgur.com/dFkiG4y.jpeg"
+                    }
+                ],
+                image: "https://i.imgur.com/dFkiG4y.jpeg",
+                open: true
+            })).data
+        }
+        setGameId(data[0].id)
     }
 
     return ( 

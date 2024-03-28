@@ -75,19 +75,21 @@ const FootBallSlider = (props: FootBallSliderProps) => {
     });
   }, [])
   useEffect(() => {
-    setPosition((tu - cu)/(tu + cu)*MAX_LENGTH)
+    //console.log((tu - cu)/(tu + cu) * MAX_LENGTH)
+    setPosition((tu - cu)/(tu + cu) * MAX_LENGTH)
   }, [tu, cu])
 
   useEffect(() => {
       setCu(1);
       setTu(1);
-      if(props.setState && !isStart){
-        if(tu > cu){
-          props.setState('tu')
-        }
-        else{
-          props.setState('cu')
-        }
+
+      if(!props.setState) return;
+
+      if(!isStart){
+        ( tu > cu ) ? props.setState('tu') : props.setState('cu')  
+      }
+      else{
+        props.setState('none')
       }
   }, [isStart])
 

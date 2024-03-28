@@ -25,6 +25,10 @@
 
             # https://github.com/golangci/golangci-lint
             golangci-lint
+
+            typescript
+            nodePackages_latest.typescript-language-server
+            nodejs_20
           ];
         };
       });
