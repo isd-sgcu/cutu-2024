@@ -43,7 +43,8 @@ export async function initServer(app: Express, server: HTTPServer) {
   const playerIO = new Server(server, {
     adapter: createAdapter(pubClient, subClient),
     path: `${PlayerRouter.prefix}/ws`,
-    cors: { origin: "*" }
+    cors: { origin: "*", credentials: true, methods: ["GET", "POST"] },
+    allowEIO3: true,
   })
   const playerController = new PlayerController(
     playerIO,
