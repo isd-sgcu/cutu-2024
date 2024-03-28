@@ -26,14 +26,14 @@ const PopUp = (props: PopUpProps) => {
     const handleChangeState = async () => {
         try{
             if(props.isStart){
-                await axios.post(`https://api.cutu2024.sgcu.in.th/admin-api/games/${gameId}/start`, {
+                await axios.post(`https://api.cutu2024.sgcu.in.th/admin-api/games/${gameId}/start`, null, {
                     headers: {
                         Authorization: "Basic Y3V0dWZvb3RiYWxsY2x1YjIwMjQ6Y3V0dWZvb3RiYWxsY2x1YjIwMjQ1NTU1"
                     }
                 })
             }
             else{
-                await axios.post(`https://api.cutu2024.sgcu.in.th/admin-api/games/${gameId}/stop`, {
+                await axios.post(`https://api.cutu2024.sgcu.in.th/admin-api/games/${gameId}/stop`, null, {
                     headers: {
                         Authorization: "Basic Y3V0dWZvb3RiYWxsY2x1YjIwMjQ6Y3V0dWZvb3RiYWxsY2x1YjIwMjQ1NTU1"
                     }
