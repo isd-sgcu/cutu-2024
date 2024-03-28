@@ -1,5 +1,6 @@
 "use client";
-import React from "react";
+
+import React, { useEffect } from "react";
 import Image from "next/image";
 import { useState } from "react";
 
@@ -8,8 +9,18 @@ interface FootBallSliderProps {
   ballSize: number;
 }
 
+const MAX_LENGTH = 1500;
+
 const FootBallSlider = (props: FootBallSliderProps) => {
   const [position, setPosition] = useState(0);
+  const [tu, setTu] = useState(0);
+  const [cu, setCu] = useState(0);
+
+  useEffect(() => {
+    console.log((tu - cu)/(tu + cu)*MAX_LENGTH)
+    setPosition((tu - cu)/(tu + cu)*MAX_LENGTH)
+  }, [tu, cu])
+
 
   return (
     <>
@@ -28,6 +39,8 @@ const FootBallSlider = (props: FootBallSliderProps) => {
           #ทีมมธ.
         </div>
       </div>
+      <button className="bg-white w-20 h-20" onClick={() => setCu(cu+50)}>+</button>
+      <button className="bg-white w-20 h-20" onClick={() => setTu(tu+50)}>+</button>
     </>
   );
 };
