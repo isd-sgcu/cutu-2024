@@ -45,6 +45,6 @@ export default function ShakeComponent({
                         style={{ width: `${(count / 700) * 100}%`}} />
                 </div>
             </div>
-        </div>
+        </div> 
     )
 }
