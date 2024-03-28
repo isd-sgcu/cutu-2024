@@ -37,6 +37,7 @@ export class PlayerController {
           socket.emit('cid', client.cid)
         })
         .catch((err) => {
+          this.logger.error(err)
           socket.disconnect(true)
         })
     } else socket.disconnect(true)
