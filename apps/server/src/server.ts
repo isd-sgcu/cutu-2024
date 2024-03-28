@@ -15,9 +15,11 @@ import { AdminController } from './controller/admin.controller'
 import { AdminService } from './service/admin.service'
 import { sequelizeConnection } from './utils/database'
 import { ClientRepository } from './models/client.model'
+import cors from 'cors'
 
 export async function initServer(app: Express, server: HTTPServer) {
   app.use(express.json())
+  app.use(cors())
   app.use(express.urlencoded({ extended: true }))
 
   const pubClient = createClient({ url: process.env.REDIS_URL })

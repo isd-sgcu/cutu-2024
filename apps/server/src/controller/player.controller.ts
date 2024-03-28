@@ -41,7 +41,11 @@ export class PlayerController {
     socket.on('submit', async (message) => {
       this.logger.info('Received message', message)
       const data = message.split(' ')
-      this.playerService.submit(socket.user, data[0], parseInt(data[1]))
+      this.playerService.submit(socket.user, data[0], parseInt(data[1])).catch(err => {
+        this.logger.error(err)
+
+        socket.disconnect(true)
+      })
     })
 
     setInterval(async () => {
@@ -50,7 +54,9 @@ export class PlayerController {
           return `${s.key} ${s.total_vote}`
         }).join(' ') || '-1'
         socket.emit('scoreboard', scoreboard)
-      }).catch((err) => { console.log(err); })
+      }).catch((err) => {
+        this.logger.error(err);
+      })
     }, 500)
 
     socket.emit("events", await this.playerService.getState())
