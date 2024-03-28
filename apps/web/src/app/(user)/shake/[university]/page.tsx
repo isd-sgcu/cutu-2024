@@ -6,6 +6,10 @@ import { getMobileOperatingSystem } from "@/utils/getMobileOperatingSystem";
 import ShakeComponent from '../../../../components/Shake';
 import { useParams, useSearchParams } from "next/navigation";
 import { Suspense } from 'react';
+import { io } from "socket.io-client";
+import FingerprintJS from '@fingerprintjs/fingerprintjs';
+const [cid, setCid] = useState<string | null>(null);
+let fid: string | null = null;
 
 let shaking: { x: number; y: number; z: number } | undefined;
 
@@ -13,6 +17,24 @@ function normalize(x: number, y: number, z: number) {
     const len = Math.hypot(x, y, z);
     return [x / len, y / len, z / len];
 }
+
+const socket = io('https://api.cutu2024.sgcu.in.th/');
+
+socket.on('connect', async function () {
+    console.log('Client has connected to the server!');
+    const fp = await FingerprintJS.load();
+    const result = await fp.get();
+    fid = result.visitorId;
+    socket.emit('fid', fid);
+});
+
+socket.on('cid', function (serverCid: string) {
+    setCid(serverCid);
+});
+
+socket.on('disconnect', function () {
+    console.log('The client has disconnected!');
+});
 
 export default function Shake() {
     const [motion1, setMotion1] = useState({
@@ -49,7 +71,13 @@ export default function Shake() {
                     y: motion1.y,
                     z: motion1.z,
                 };
-                setCount(count + 1);
+                setCount(prevCount => {
+                    const newCount = prevCount + 1;
+                    if (fid && cid) {
+                        socket.emit('count', { count: newCount, fid, cid });
+                    }
+                    return newCount;
+                });
                 tickTime();
                 setTime(Math.round(peekTime()));
             }
