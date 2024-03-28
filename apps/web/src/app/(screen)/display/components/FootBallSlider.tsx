@@ -26,13 +26,14 @@ const FootBallSlider = (props: FootBallSliderProps) => {
   useEffect(() => {
       setCu(1);
       setTu(1);
-      if(props.setState && !isStart){
-        if(tu > cu){
-          props.setState('tu')
-        }
-        else{
-          props.setState('cu')
-        }
+
+      if(!props.setState) return;
+
+      if(!isStart){
+        ( tu > cu ) ? props.setState('tu') : props.setState('cu')  
+      }
+      else{
+        props.setState('none')
       }
   }, [isStart])
 
