@@ -51,7 +51,7 @@ export default function Shake() {
                 extraHeaders.cid = savedCid;
             }
             console.log(extraHeaders);
-            const socket = io('https://api.cutu2024.sgcu.in.th', { extraHeaders, path: "/api/ws", transports: ['websocket'] });
+            const socket = io('wss://api.cutu2024.sgcu.in.th', { extraHeaders, path: "/api/ws", transports: ['websocket'] });
             socket.on('connect', handleConnect);
             socket.on('cid', handleCid);
             socket.on('disconnect', handleDisconnect);
