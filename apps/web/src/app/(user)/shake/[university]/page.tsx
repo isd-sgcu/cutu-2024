@@ -28,8 +28,14 @@ export default function Shake() {
         };
 
         const handleCid = (serverCid: string) => {
-            console.log('Received cid from server:');
-            cookies.set('cid', serverCid);
+            console.log('woo');
+            try {
+                console.log('Received cid from server:', serverCid);
+                cookies.set('cid', serverCid);
+                console.log('cid cookie set with value:', serverCid);
+            } catch (error) {
+                console.error('Error handling cid:', error);
+            }
         };
 
         const handleDisconnect = () => {
@@ -51,15 +57,17 @@ export default function Shake() {
                 extraHeaders.cid = savedCid;
             }
             console.log(extraHeaders);
-            const socket = io('wss://api.cutu2024.sgcu.in.th', { extraHeaders, path: "/api/ws", transports: ['websocket'] });
+            socket = io('wss://api.cutu2024.sgcu.in.th', { 
+                auth: extraHeaders,
+                path: "/api/ws", 
+                transports: ['websocket'],
+            });
+
             socket.on('connect', handleConnect);
             socket.on('cid', handleCid);
             socket.on('disconnect', handleDisconnect);
-
             return () => {
-                socket.off('connect', handleConnect);
-                socket.off('cid', handleCid);
-                socket.off('disconnect', handleDisconnect);
+                socket?.disconnect();
             };
         })();
     }, []);
@@ -100,8 +108,8 @@ export default function Shake() {
                 };
                 setCount(prevCount => {
                     const newCount = prevCount + 1;
-                    if (socket) {
-                        socket?.emit('events', `${university} ${count}`);
+                    if (socket?.connected) {
+                        socket.emit("submit", `${university} ${count}`);
                     }
                     return newCount;
                 });
