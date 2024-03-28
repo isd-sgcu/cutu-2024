@@ -8,8 +8,6 @@ import { useParams, useSearchParams } from "next/navigation";
 import { Suspense } from 'react';
 import { io } from "socket.io-client";
 import FingerprintJS from '@fingerprintjs/fingerprintjs';
-const [cid, setCid] = useState<string | null>(null);
-let fid: string | null = null;
 
 let shaking: { x: number; y: number; z: number } | undefined;
 
@@ -18,25 +16,48 @@ function normalize(x: number, y: number, z: number) {
     return [x / len, y / len, z / len];
 }
 
-const socket = io('https://api.cutu2024.sgcu.in.th/');
-
-socket.on('connect', async function () {
-    console.log('Client has connected to the server!');
-    const fp = await FingerprintJS.load();
-    const result = await fp.get();
-    fid = result.visitorId;
-    socket.emit('fid', fid);
-});
-
-socket.on('cid', function (serverCid: string) {
-    setCid(serverCid);
-});
-
-socket.on('disconnect', function () {
-    console.log('The client has disconnected!');
-});
-
 export default function Shake() {
+
+    const [cid, setCid] = useState<string | null>(null);
+    let fid: string | null = null;
+
+    useEffect(() => {
+        const handleConnect = () => {
+            console.log('Client has connected to the server!');
+        };
+
+        const handleCid = (serverCid: string) => {
+            setCid(serverCid);
+        };
+
+        const handleDisconnect = () => {
+            console.log('The client has disconnected!');
+        };
+
+        (async () => {
+            const fp = await FingerprintJS.load();
+            const result = await fp.get();
+            fid = result.visitorId;
+
+            const socket = io('https://api.cutu2024.sgcu.in.th/', {
+                extraHeaders: {
+                    fid: fid,
+                    name: 'john'
+                }
+            });
+
+            socket.on('connect', handleConnect);
+            socket.on('cid', handleCid);
+            socket.on('disconnect', handleDisconnect);
+
+            return () => {
+                socket.off('connect', handleConnect);
+                socket.off('cid', handleCid);
+                socket.off('disconnect', handleDisconnect);
+            };
+        })();
+    }, []);
+
     const [motion1, setMotion1] = useState({
         x: 0,
         y: 0,
