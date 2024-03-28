@@ -8,9 +8,10 @@ export class PlayerController {
   constructor(
     private readonly io: Server,
     private readonly playerService: PlayerService,
-  ) {}
+  ) { }
 
   async onConnection(socket: Socket) {
+    this.logger.info('New connection: ' + JSON.stringify(socket.handshake.headers),)
     const { cid, fid, name } = socket.handshake.headers
     if (cid && fid) {
       await this.playerService
