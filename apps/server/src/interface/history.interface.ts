@@ -7,7 +7,7 @@ export interface GameHistoryAttributes {
   player_id: string
   key: string
   vote: number
-  total_vote?: number
+  total_vote?: string
 }
 
 export interface GameHistoryInput

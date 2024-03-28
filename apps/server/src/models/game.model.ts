@@ -96,18 +96,27 @@ export class GameRepository {
       return keys.then((keys) => {
         return keys?.map((key: string) => {
           const vote = votes.find((vote) => vote.key === key)
-          return { key, total_vote: vote?.dataValues.total_vote || 0 }
+          return { key, total_vote: parseInt(vote?.dataValues.total_vote || '0') }
         })
       })
     })
   }
 
   async endGame(game_id: string) {
-    return Game.update({ open: false }, { where: {} }).then(() =>
-      GameHistory.findAll({ where: { game_id }, attributes: ['key', [fn('sum', col('vote')), 'total_vote']], group: ['key'] })).then((votes) => {
-        const winner = votes.reduce((prev: any, current: any) => (prev.total_vote > current.total_vote ? prev : current), { key: '', total_vote: 0 }) as { key: string, total_vote: number }
-        Game.update({ winner }, { where: { id: game_id } })
+    return Game.update({ open: false }, { where: {} }).then(() => {
+      const keys = Game.findOne({ where: { id: game_id }, attributes: ['actions'] }).then(res => res?.actions.map((action: any) => action.key))
+      return GameHistory.findAll({ where: { game_id }, attributes: ['key', [fn('sum', col('vote')), 'total_vote']], group: ['key'] }).then(async (votes) => {
+        return keys.then((keys) => {
+          return keys?.map((key: string) => {
+            const vote = votes.find((vote) => vote.key === key)
+            return { key, total_vote: parseInt(vote?.dataValues.total_vote || '0') }
+          })
+        })
+      }).then((votes) => {
+        const winner = votes?.reduce((prev, current) => (prev.total_vote > current.total_vote ? prev : current))
+        return Game.update({ winner }, { where: { id: game_id }, returning: true })
       })
+    })
   }
 }
 

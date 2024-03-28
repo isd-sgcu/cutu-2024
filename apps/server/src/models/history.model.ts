@@ -7,7 +7,6 @@ import { sequelizeConnection } from '$/utils/database'
 export class GameHistory
   extends Model<GameHistoryAttributes, GameHistoryInput>
   implements GameHistoryAttributes {
-  [x: string]: any
   public game_id!: string
   public player_id!: string
   public key!: string
