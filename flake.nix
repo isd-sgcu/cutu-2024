@@ -29,6 +29,10 @@
             typescript
             nodePackages_latest.typescript-language-server
             nodejs_20
+
+            k6
+
+            kubectl
           ];
         };
       });
