@@ -1,0 +1,6 @@
+dist/
+node_modules/
+.devcontainer/postgres-data/
+.devcontainer/redis-data/
+.env*
+!.env.sample

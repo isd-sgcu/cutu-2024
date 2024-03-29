@@ -1,8 +1,10 @@
-"use client";
-
+'use client';
 import React, { useEffect } from "react";
 import Image from "next/image";
 import { useState } from "react";
+import { Socket, io } from "socket.io-client";
+import FingerprintJS from "@fingerprintjs/fingerprintjs";
+import Cookies from "universal-cookie";
 
 interface FootBallSliderProps {
   sliderHeight: string;
@@ -10,7 +12,7 @@ interface FootBallSliderProps {
   setState?: React.Dispatch<React.SetStateAction<"none" | "tu" | "cu">>;
 }
 
-const MAX_LENGTH = 1500;
+const MAX_LENGTH = 1300;
 
 const FootBallSlider = (props: FootBallSliderProps) => {
   const [isStart, setIsStart] = useState(true);
@@ -21,23 +23,79 @@ const FootBallSlider = (props: FootBallSliderProps) => {
   
 
   useEffect(() => {
-    //console.log((tu - cu)/(tu + cu) * MAX_LENGTH)
-    setPosition((tu - cu)/(tu + cu) * MAX_LENGTH)
-  }, [tu, cu])
+      const handleConnect = () => {
+          console.log('Client has connected to the server!');
+      };
 
-  useEffect(() => {
-      setCu(1);
-      setTu(1);
-
-      if(!props.setState) return;
-
-      if(!isStart){
-        ( tu > cu ) ? props.setState('tu') : props.setState('cu')  
+      const handleScoreBoard = (scoreString: string) => {
+        console.log(scoreString);
+        const parts = scoreString.split(" ");
+        const cuScore = parseInt(parts[1], 10);
+        const tuScore = parseInt(parts[3], 10);
+        console.log('cu:', cuScore, 'tu:', tuScore)
+        setCu(cuScore);
+        setTu(tuScore);
+        const position = (tuScore - cuScore)/(tuScore + cuScore)*MAX_LENGTH;
+        setPosition(position)
+        console.log(cu, tu, position)
       }
-      else{
-        props.setState('none')
-      }
-  }, [isStart])
+
+      const handleCid = (serverCid: string) => {
+          try {
+              console.log('Received cid from server:', serverCid);
+              cookies.set('cid', serverCid);
+              console.log('cid cookie set with value:', serverCid);
+          } catch (error) {
+              console.error('Error handling cid:', error);
+          }
+      };
+
+      const handleDisconnect = () => {
+          console.log('The client has disconnected!');
+      };
+
+      (async () => {
+          const fp = await FingerprintJS.load();
+          const result = await fp.get();
+          fid = result.visitorId;
+          const savedCid = cookies.get('cid');
+          
+          const extraHeaders: { [key: string]: string } = {
+              fid: fid,
+              name: 'pun1'
+          };
+
+          if (savedCid) {
+              extraHeaders.cid = savedCid;
+          }
+          socket = io('wss://api.cutu2024.sgcu.in.th', { 
+              auth: extraHeaders,
+              path: "/api/ws", 
+              transports: ['websocket'],
+          });
+
+          socket.on('connect', handleConnect);
+          socket.on('cid', handleCid);
+          socket.on('scoreboard', handleScoreBoard)
+          socket.on('disconnect', handleDisconnect);
+          return () => {
+              socket?.disconnect();
+          };
+      })();
+  }, []);
+
+  // useEffect(() => {
+  //     setCu(1);
+  //     setTu(1);
+  //     if(props.setState && !isStart){
+  //       if(tu > cu){
+  //         props.setState('tu')
+  //       }
+  //       else{
+  //         props.setState('cu')
+  //       }
+  //     }
+  // }, [isStart])
 
   return (
     <>

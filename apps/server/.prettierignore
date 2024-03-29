@@ -1,0 +1,4 @@
+.devcontainer/postgres-data
+.devcontainer/redis-data
+dist/
+node_modules/
