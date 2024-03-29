@@ -13,7 +13,7 @@ const OverLay = () => {
                         height={120}
                         alt="live feedback"
                     />
-                    <QrCode size={200} />
+                    <QrCode size={270} imageUrl='/qrcode.png'/>
                 </div>
                 <div className="flex flex-col items-center gap-[50px]">
                     <div className="flex flex-col items-center gap-10">

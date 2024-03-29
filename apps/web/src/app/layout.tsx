@@ -17,6 +17,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/user/logo.svg" sizes="any" />
+      </head>
       <body className={anuphan.className}>
         {children}
       </body>

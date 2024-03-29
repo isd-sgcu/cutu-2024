@@ -36,7 +36,7 @@ const DisplayPage = () => {
                         ร่วมเชียร์ด้วยการ
                         <span className='font-bold'>เขย่าโทรศัพท์</span>ได้เลย!
                     </div>
-                    <QrCode size={200} />
+                    <QrCode size={350} imageUrl='/qrcode.png'/>
                 </div>
             </>
         }
