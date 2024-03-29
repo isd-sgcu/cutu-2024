@@ -18,6 +18,8 @@ const FootBallSlider = (props: FootBallSliderProps) => {
   const [tu, setTu] = useState(1);
   const [cu, setCu] = useState(1);
 
+  
+
   useEffect(() => {
     //console.log((tu - cu)/(tu + cu) * MAX_LENGTH)
     setPosition((tu - cu)/(tu + cu) * MAX_LENGTH)
