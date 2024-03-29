@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  IMAGE_NAME: ghcr.io/isd-sgcu/cutu2024-backend
+  IMAGE_NAME: registry.digitalocean.com/cutu2024/cutu2024-backend
 
 jobs:
   build:
