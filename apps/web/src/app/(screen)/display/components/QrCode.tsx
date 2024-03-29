@@ -6,14 +6,10 @@ interface QrCodeProps {
     size: number
 }
 
-const QrCode: React.FC<QrCodeProps> = ({imageUrl, size}) => {
+const QrCode: React.FC<QrCodeProps> = ({size}) => {
   return (
     <div className={`bg-white flex justify-center items-center text-4xl font-bold overflow-hidden`}>
-        {imageUrl ? (
-            <Image src={imageUrl} alt="QR Code" width={size} height={size}/>
-        ) : (
-            'QR'
-        )}
+          <Image src={"/user/qrcode.svg"} alt="QR Code" width={size} height={size}/>
     </div>
   );
 }
