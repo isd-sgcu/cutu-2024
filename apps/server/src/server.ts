@@ -14,11 +14,16 @@ import { AdminService } from './service/admin.service'
 import { sequelizeConnection } from './utils/database'
 import { ClientRepository } from './models/client.model'
 import cors from 'cors'
+import { createLogger } from './utils/logger'
+import createMorganLogger from './middleware/logger.middleware'
 
 export async function initServer(app: Express, server: HTTPServer) {
   app.use(cors())
+  app.use(createMorganLogger(createLogger('')))
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
+
+  const logger = createLogger('InitServer')
 
   const pubClient = createClient({ url: process.env.REDIS_URL })
   const subClient = pubClient.duplicate()
@@ -28,10 +33,10 @@ export async function initServer(app: Express, server: HTTPServer) {
   await sequelizeConnection
     .authenticate()
     .then(() => {
-      console.log('Connection has been established successfully.')
+      logger.info(' Database Connection has been established successfully.')
     })
     .catch((err) => {
-      console.error('Unable to connect to the database:', err)
+      logger.error('Unable to connect to the database:', { err })
     })
   sequelizeConnection.sync({ force: process.env.FORCE_DB_SYNC === 'true' })
 
@@ -46,7 +51,6 @@ export async function initServer(app: Express, server: HTTPServer) {
       credentials: true,
       methods: ['GET', 'POST'],
       allowedHeaders: ['fid', 'cid', 'name'],
-      exposedHeaders: ['fid', 'cid', 'name'],
     },
     allowEIO3: true,
   })

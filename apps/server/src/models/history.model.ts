@@ -4,11 +4,11 @@ import {
   GameHistoryInput,
 } from '$/interface/history.interface'
 import { sequelizeConnection } from '$/utils/database'
+import { RedisClientType } from '@redis/client'
 
 export class GameHistory
   extends Model<GameHistoryAttributes, GameHistoryInput>
-  implements GameHistoryAttributes
-{
+  implements GameHistoryAttributes {
   public game_id!: string
   public player_id!: string
   public key!: string
@@ -44,15 +44,7 @@ GameHistory.init(
 )
 
 export class GameHistoryRepository {
-  async getAllGameHistorys(): Promise<GameHistory[]> {
-    return GameHistory.findAll()
-  }
+  constructor(private readonly redis: RedisClientType) { }
 
-  async getGameHistoryByGameId(game_id: string) {
-    return await GameHistory.findAll({ where: { game_id } })
-  }
-
-  async createGameHistory(gameHistory: GameHistory) {
-    return GameHistory.create(gameHistory)
-  }
+  getHistory(game_id: string) { }
 }

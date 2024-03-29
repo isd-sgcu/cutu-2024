@@ -8,14 +8,14 @@ export class AdminController {
   constructor(
     private readonly io: Server,
     private readonly adminService: AdminService,
-  ) {}
-  async getGames(req: Request, res: Response) {
-    const games = await this.adminService.getAllGames()
+  ) { }
+  async listGames(req: Request, res: Response) {
+    const games = await this.adminService.listGames()
     res.json(games)
   }
 
-  async getGame(req: Request, res: Response) {
-    const game = await this.adminService.getGame(req.params.id)
+  async getGameByID(req: Request, res: Response) {
+    const game = await this.adminService.getGameByID(req.params.id)
     res.json(game)
   }
 
@@ -24,13 +24,8 @@ export class AdminController {
     res.json(game)
   }
 
-  async getGameById(req: Request, res: Response) {
-    const game = await this.adminService.getGame(req.params.id)
-    res.json(game)
-  }
-
-  async getState(req: Request, res: Response) {
-    const state = await this.adminService.getState()
+  async getGameState(req: Request, res: Response) {
+    const state = await this.adminService.getGameState()
     res.json(state)
   }
 
@@ -38,13 +33,13 @@ export class AdminController {
     const game = await this.adminService.startGame(req.params.id)
     res.json(game)
     this.io.emit('events', 'start')
-    this.io.emit('state', await this.adminService.getState())
+    this.io.emit('state', await this.adminService.getGameState().then(game => game.id))
   }
 
   async endGame(req: Request, res: Response) {
     const game = await this.adminService.endGame(req.params.id)
     res.json(game)
     this.io.emit('events', 'stop')
-    this.io.emit('state', await this.adminService.getState())
+    this.io.emit('state', await this.adminService.getGameState().then(game => game.id))
   }
 }

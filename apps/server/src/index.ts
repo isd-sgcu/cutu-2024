@@ -3,8 +3,16 @@ import { initServer } from './server'
 import { createLogger } from './utils/logger'
 import { createServer } from 'http'
 import { configDotenv } from 'dotenv'
+import winston from 'winston'
 
 configDotenv({ path: '.env' })
+winston.addColors({
+  error: 'red',
+  warn: 'yellow',
+  info: 'green',
+  http: 'magenta',
+  debug: 'white',
+})
 const logger = createLogger('MainContext')
 const app = express()
 const server = createServer(app)

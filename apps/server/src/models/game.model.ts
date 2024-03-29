@@ -5,8 +5,7 @@ import { GameHistory } from './history.model'
 
 export class Game
   extends Model<GameAttributes, GameInput>
-  implements GameAttributes
-{
+  implements GameAttributes {
   public id!: string
   public title!: string
   public description!: string
@@ -69,18 +68,17 @@ export class GameRepository {
   async getLastActiveGame() {
     const game = await Game.findOne({
       order: [['updatedAt', 'DESC']],
-      attributes: ['id'],
+      attributes: ['id', 'open'],
       limit: 1,
-    }).then((res) => res?.id)
+    }).then((res) => ({
+      id: res?.id,
+      status: res?.open ? 'playing' : 'waiting',
+    }))
     return game
   }
 
   async createGame(game: Game) {
     return Game.create(game)
-  }
-
-  async getActiveGame() {
-    return Game.findOne({ where: { open: true } })
   }
 
   async createHistory(
@@ -96,8 +94,15 @@ export class GameRepository {
   }
 
   async startGame(game_id: string) {
-    return Game.update({ open: false }, { where: {} }).then(() =>
-      Game.update({ open: true }, { where: { id: game_id } }),
+    return Game.findOne({ where: { open: true } }).then(async (game) => {
+      await game?.update({ open: false })
+      return Game.update({ open: true }, { where: { id: game_id }, returning: true }).then((res) => {
+        if (!res[1][0]) {
+          throw Error('Game not found')
+        }
+        return res[1][0]
+      })
+    }
     )
   }
 
@@ -123,14 +128,14 @@ export class GameRepository {
     })
   }
 
-  async endGame(game_id: string) {
-    return Game.update({ open: false }, { where: {} }).then(() => {
+  async endGame(id: string) {
+    return Game.update({ open: false }, { where: { id } }).then(() => {
       const keys = Game.findOne({
-        where: { id: game_id },
+        where: { id },
         attributes: ['actions'],
       }).then((res) => res?.actions.map((action: any) => action.key))
       return GameHistory.findAll({
-        where: { game_id },
+        where: { game_id: id },
         attributes: ['key', [fn('sum', col('vote')), 'total_vote']],
         group: ['key'],
       })
@@ -151,7 +156,7 @@ export class GameRepository {
           )
           return Game.update(
             { winner },
-            { where: { id: game_id }, returning: true },
+            { where: { id }, returning: true },
           )
         })
     })

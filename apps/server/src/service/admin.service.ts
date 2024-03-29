@@ -1,17 +1,17 @@
 import { Game, GameRepository } from '$/models/game.model'
 
 export class AdminService {
-  constructor(private readonly gameRepository: GameRepository) {}
+  constructor(private readonly gameRepository: GameRepository) { }
 
-  async getGame(id: string) {
+  async getGameByID(id: string) {
     return this.gameRepository.getGameById(id).catch((error) => ({ error }))
   }
 
-  async getAllGames() {
+  async listGames() {
     return this.gameRepository.getAllGames()
   }
 
-  async getState() {
+  async getGameState() {
     const games = await this.gameRepository.getLastActiveGame()
     return games
   }
