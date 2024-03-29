@@ -13,9 +13,10 @@ interface FootBallSliderProps {
 }
 
 const MAX_LENGTH = 1300;
+const cookies = new Cookies(null, { path: '/' });
 
 const FootBallSlider = (props: FootBallSliderProps) => {
-  const [isStart, setIsStart] = useState(true);
+  const [isStart, setIsStart] = useState(false);
   const [position, setPosition] = useState(0);
   const [tu, setTu] = useState(1);
   const [cu, setCu] = useState(1);
@@ -28,16 +29,16 @@ const FootBallSlider = (props: FootBallSliderProps) => {
       };
 
       const handleScoreBoard = (scoreString: string) => {
-        console.log(scoreString);
+        //console.log(scoreString);
         const parts = scoreString.split(" ");
         const cuScore = parseInt(parts[1], 10);
         const tuScore = parseInt(parts[3], 10);
-        console.log('cu:', cuScore, 'tu:', tuScore)
+        //console.log('cu:', cuScore, 'tu:', tuScore)
         setCu(cuScore);
         setTu(tuScore);
         const position = (tuScore - cuScore)/(tuScore + cuScore)*MAX_LENGTH;
         setPosition(position)
-        console.log(cu, tu, position)
+        //console.log(cu, tu, position)
       }
 
       const handleCid = (serverCid: string) => {
@@ -50,6 +51,24 @@ const FootBallSlider = (props: FootBallSliderProps) => {
           }
       };
 
+      const handleEvents = (events: string) => {
+        console.log(events)
+        setIsStart(events != "stop")
+        setCu(1);
+        setTu(1);
+        //console.log('set score')
+        if(props.setState != undefined){
+          if(events == "stop"){
+            //console.log("set stop")
+            tu > cu ? props.setState('tu') :  props.setState('cu')
+          }
+          else{
+            //console.log('set none')
+            props.setState('none')
+          }
+        }
+      }
+
       const handleDisconnect = () => {
           console.log('The client has disconnected!');
       };
@@ -57,7 +76,7 @@ const FootBallSlider = (props: FootBallSliderProps) => {
       (async () => {
           const fp = await FingerprintJS.load();
           const result = await fp.get();
-          fid = result.visitorId;
+          const fid = result.visitorId;
           const savedCid = cookies.get('cid');
           
           const extraHeaders: { [key: string]: string } = {
@@ -68,7 +87,7 @@ const FootBallSlider = (props: FootBallSliderProps) => {
           if (savedCid) {
               extraHeaders.cid = savedCid;
           }
-          socket = io('wss://api.cutu2024.sgcu.in.th', { 
+          const socket = io('wss://api.cutu2024.sgcu.in.th', { 
               auth: extraHeaders,
               path: "/api/ws", 
               transports: ['websocket'],
@@ -78,6 +97,7 @@ const FootBallSlider = (props: FootBallSliderProps) => {
           socket.on('cid', handleCid);
           socket.on('scoreboard', handleScoreBoard)
           socket.on('disconnect', handleDisconnect);
+          socket.on('events', handleEvents);
           return () => {
               socket?.disconnect();
           };
@@ -85,17 +105,18 @@ const FootBallSlider = (props: FootBallSliderProps) => {
   }, []);
 
   // useEffect(() => {
+  //     console.log('useEffect isStart')
   //     setCu(1);
   //     setTu(1);
-  //     if(props.setState && !isStart){
-  //       if(tu > cu){
-  //         props.setState('tu')
+  //     if(props.setState){
+  //       if(!isStart){
+  //         tu > cu ? props.setState('tu') :  props.setState('cu')
   //       }
   //       else{
-  //         props.setState('cu')
+  //         props.setState('none')
   //       }
   //     }
-  // }, [isStart])
+  // }, [ isStart ])
 
   return (
     <>

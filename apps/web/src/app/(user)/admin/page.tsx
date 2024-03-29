@@ -21,7 +21,7 @@ const page = () => {
         backgroundSize: "cover",
       }}
     >
-      {isShowPopUp && <PopUp isStart setIsShowPopUp={setIsShowPopUp} setIsStart={setIsStart} />}
+      {isShowPopUp && <PopUp isStart={isStart} setIsShowPopUp={setIsShowPopUp} setIsStart={setIsStart} />}
       <div className="h-1/2 flex flex-col justify-center items-center">
         <div className="flex-col space-y-2 flex justify-center items-center mb-4">
           <Image src={"/admin/live.svg"} alt="live" width={50} height={50} />

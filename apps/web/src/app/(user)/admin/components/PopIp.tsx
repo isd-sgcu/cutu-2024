@@ -31,8 +31,10 @@ const PopUp = (props: PopUpProps) => {
 
     const handleChangeState = async () => {
         try{
-            await axios.post(`https://api.cutu2024.sgcu.in.th/admin-api/games/${gameId}/${props.isStart ? "start": "stop"}`, null, AUTH_HEADER)
+            const res = await axios.post(`https://api.cutu2024.sgcu.in.th/admin-api/games/${gameId}/${!props.isStart ? "start": "end"}`, null, AUTH_HEADER)
+            console.log(res)
             props.setIsStart(prev => !prev);
+            console.log("game", props.isStart ? "stop" : "start")
         }
         catch(error){
             console.log("err: ", (error as Error).message);
@@ -80,7 +82,7 @@ const PopUp = (props: PopUpProps) => {
     return ( 
         <div className="fixed top-0 bottom-0 left-0 right-0 bg-black bg-opacity-20  flex justify-center items-center z-10">
             <div className="bg-white p-4 rounded-lg text-2xl">
-                <div>ยืนยันที่จะ "<span className="font-bold">{props.isStart ? "เริ่มเกมใหม่" : "หยุดเกม" }</span>"</div>
+                <div>ยืนยันที่จะ "<span className="font-bold">{props.isStart ? "หยุดเกม" : "เริ่มเกมใหม่" }</span>"</div>
                 <div className="flex justify-between mt-2 px-2">
                     <button onClick={() => handleOnClick(true)} className="bg-red-400 p-2 rounded-lg">ตกลง</button>
                     <button onClick={() => handleOnClick(false)} className="bg-red-400 p-2 rounded-lg">ยกเลิก</button>
