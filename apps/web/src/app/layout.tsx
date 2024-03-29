@@ -18,6 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <title>CU-TU 2024</title>
         <link rel="icon" href="/user/logo.svg" sizes="any" />
       </head>
       <body className={anuphan.className}>
