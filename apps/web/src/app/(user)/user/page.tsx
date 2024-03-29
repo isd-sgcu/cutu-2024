@@ -9,7 +9,7 @@ const User = () => {
             className='text-white font-semibold p-10 h-full'
             style={{ background: 'linear-gradient(to bottom, #F1678C, #EE457B, #ED1C24, #FBAF44)' }}
         >
-            <div className='flex flex-col justify-between w-fit mx-auto h-full max-h-[500px] space-y-4'>
+            <div className='flex flex-col justify-between w-fit mx-auto h-full  space-y-4'>
                 <div className='flex flex-col items-center gap-2'>
                     <Image
                         src="user/live.svg"
