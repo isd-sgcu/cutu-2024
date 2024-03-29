@@ -4,7 +4,7 @@ import QrCode from "../display/components/QrCode";
 
 const OverLay = () => {
     return ( 
-        <div className="bg-[#00FF00] w-screen h-screen text-white text-[40px] font-semibold p-28 flex flex-col justify-between">
+        <div className="bg-[#3dff3d] w-screen h-screen text-white text-[40px] font-semibold p-28 flex flex-col justify-between">
             <div className="flex justify-between">
                 <div className="flex flex-col items-center gap-10">
                     <Image
