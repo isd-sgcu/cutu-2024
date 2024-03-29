@@ -42,7 +42,7 @@ export default function ShakeComponent({
                 </div>
                 <div className="w-full h-[16px] bg-white rounded-[20px] mb-[20px]">
                     <div className={university == 'cu' ? "h-full bg-[#EE477C] rounded-[20px]" : "h-full bg-[#FF6625] rounded-[20px]"}
-                        style={{ width: `${(count / 700) * 100}%`}} />
+                        style={{ width: `${(count / 500) * 100}%`}} />
                 </div>
             </div>
         </div> 
