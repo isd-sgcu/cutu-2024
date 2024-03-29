@@ -32,9 +32,19 @@ export default function ShakeComponent({
                 <p>ร่วมส่งพลังให้ทีมที่คุณเชียร์!</p>
                 <div onClick={() => { onClick(); setIsClicked(true);}}>
                     {isClicked ? (
-                        <Image src="../shake/pink-shake.svg" alt="pink-shake-icon" width={150} height={150}></Image>
+                        <div className="flex flex-col items-center justify-center space-y-2 drop-shadow-lg">
+                            <div className="w-44 h-44 bg-cu-pink rounded-full flex justify-center iems-center">
+                                <Image src="../shake/pink-shake.svg" alt="pink-shake-icon" width={100} height={100}></Image>
+                            </div>
+                            <span className="text-white drop-shadow-lg text-lg font-bold">เขย่าเลย!</span>
+                        </div>
                     ) : (
-                        <Image src="../shake/white-shake.svg" alt="white-shake-icon" width={150} height={150}></Image>
+                        <div className="flex flex-col items-center justify-center space-y-2 drop-shadow-lg">
+                            <div className="w-44 h-44 bg-white rounded-full flex justify-center items-center">
+                                <Image src="../shake/white-shake.svg" alt="white-shake-icon" width={100} height={100}></Image>
+                            </div>
+                            <span className="text-white drop-shadow-lg text-lg font-bold">กดเพื่อเริ่มเขย่า!</span>
+                        </div>
                     )}
                 </div>
                 <div className="self-end mb-[-15px]">
