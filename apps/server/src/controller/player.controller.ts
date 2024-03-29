@@ -58,7 +58,7 @@ export class PlayerController {
         })
     })
 
-    setInterval(async () => {
+    const intervalHandle = setInterval(async () => {
       await this.playerService
         .getScoreboard()
         .then((score) => {
@@ -79,6 +79,7 @@ export class PlayerController {
 
     socket.on('disconnect', () => {
       this.logger.info(`Disconnected: ${socket.id}`)
+      clearInterval(intervalHandle)
     })
   }
 
