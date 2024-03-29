@@ -14,6 +14,22 @@ body {
   font: 'Helvetica', sans-serif;
 }
 
+/*this is for grid 21 x 12 this css will draw a grid line overlay for you*/
+/* body::after {
+  content: '';
+  display: block;
+  position: fixed; 
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: linear-gradient(90deg, transparent 95.2%, rgba(0,0,0,0.5) 95.2%), 
+                    linear-gradient(0deg, transparent 91.66%, rgba(0,0,0,0.5) 91.66%);
+  pointer-events: none;
+  z-index: 9999;
+  background-size: 4.76% 8.33%; 
+} */
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
