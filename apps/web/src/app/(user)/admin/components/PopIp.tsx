@@ -20,25 +20,18 @@ interface game{
     deletedAt: string | null
 }
 
+const AUTH_HEADER = {
+    headers: {
+        Authorization: "Basic Y3V0dWZvb3RiYWxsY2x1YjIwMjQ6Y3V0dWZvb3RiYWxsY2x1YjIwMjQ1NTU1"
+    }
+};
+
 const PopUp = (props: PopUpProps) => {
     const [gameId, setGameId] = useState('');
 
     const handleChangeState = async () => {
         try{
-            if(props.isStart){
-                await axios.post(`https://api.cutu2024.sgcu.in.th/admin-api/games/${gameId}/start`, null, {
-                    headers: {
-                        Authorization: "Basic Y3V0dWZvb3RiYWxsY2x1YjIwMjQ6Y3V0dWZvb3RiYWxsY2x1YjIwMjQ1NTU1"
-                    }
-                })
-            }
-            else{
-                await axios.post(`https://api.cutu2024.sgcu.in.th/admin-api/games/${gameId}/stop`, null, {
-                    headers: {
-                        Authorization: "Basic Y3V0dWZvb3RiYWxsY2x1YjIwMjQ6Y3V0dWZvb3RiYWxsY2x1YjIwMjQ1NTU1"
-                    }
-                })
-            }
+            await axios.post(`https://api.cutu2024.sgcu.in.th/admin-api/games/${gameId}/${props.isStart ? "start": "stop"}`, null, AUTH_HEADER)
             props.setIsStart(prev => !prev);
         }
         catch(error){
@@ -60,16 +53,12 @@ const PopUp = (props: PopUpProps) => {
     }, [])
 
     const handleGetGameId = async () => {
-        let data: game[] = (await axios.get(`https://api.cutu2024.sgcu.in.th/admin-api/games`, {
-            headers: {
-                Authorization: "Basic Y3V0dWZvb3RiYWxsY2x1YjIwMjQ6Y3V0dWZvb3RiYWxsY2x1YjIwMjQ1NTU1"
-            }
-        })).data
+        let data: game[] = (await axios.get(`https://api.cutu2024.sgcu.in.th/admin-api/games`, AUTH_HEADER)).data
 
         if(data.length == 0){
             data = (await axios.post(`https://api.cutu2024.sgcu.in.th/admin-api/games`, {
-                title: "New",
-                description: "Hi",
+                title: "game",
+                description: "new game",
                 actions: [
                     {
                         "key": "CU",
@@ -84,6 +73,7 @@ const PopUp = (props: PopUpProps) => {
                 open: true
             })).data
         }
+        
         setGameId(data[0].id)
     }
 

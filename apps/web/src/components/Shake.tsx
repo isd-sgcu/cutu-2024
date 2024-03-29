@@ -30,7 +30,7 @@ export default function ShakeComponent({
                 <Image src={university == 'cu' ? "../shake/chula-logo.svg" : "../shake/tu-logo.svg"} alt="chula-logo" width={65} height={104} ></Image>
                 <h1 className="font-bold">{university == 'cu' ? '#ทีมจุฬาฯ' : '#ทีมมธ.'}</h1>
                 <p>ร่วมส่งพลังให้ทีมที่คุณเชียร์!</p>
-                <div onClick={() => {setIsClicked(true); onClick;}}>
+                <div onClick={() => { onClick(); setIsClicked(true);}}>
                     {isClicked ? (
                         <Image src="../shake/pink-shake.svg" alt="pink-shake-icon" width={150} height={150}></Image>
                     ) : (
