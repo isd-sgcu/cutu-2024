@@ -1,8 +1,15 @@
 import Image from "next/image";
 import QrCode from "../../display/components/QrCode";
 import FootBallSlider from "../../display/components/FootBallSlider";
+interface OverLayProps {
+    data : {
+        status: string;
+        tu: number;
+        cu: number;
+    }
+}
 
-const Page = () => {
+const Page = ({data} : OverLayProps) => {
     return (  
         <div className="w-full h-full bg-[#3dff3d] text-white text-3xl font-bold flex flex-col justify-between p-[50px]">
             <div className="flex justify-between">
@@ -62,20 +69,20 @@ const Page = () => {
                         <span>#ทีมมธ</span>
                     </div>
                 </div>
-                <FootBallSlider sliderHeight='[20px]' ballSize={0} />
+                <FootBallSlider sliderHeight='[20px]' ballSize={0} data = {data}/>
             </div>
         </div>
     );
 }
  
 
-const overlay = () => {
+const OverLay = ({data}: OverLayProps) => {
     return (  
         <div className="w-[3840px] h-[1080px] flex">
-            <Page />
-            <Page />
+            <Page data = {data}/>
+            <Page data = {data}/>
         </div>
     );
 }
  
-export default overlay;
+export default OverLay;

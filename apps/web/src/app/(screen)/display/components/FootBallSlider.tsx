@@ -10,111 +10,30 @@ interface FootBallSliderProps {
   sliderHeight: string;
   ballSize: number;
   setState?: React.Dispatch<React.SetStateAction<"none" | "tu" | "cu">>;
+  data : {
+    status: string;
+    tu: number;
+    cu: number;
+  };
 }
+
 
 const MAX_LENGTH = 1300;
 const cookies = new Cookies(null, { path: '/' });
 
 const FootBallSlider = (props: FootBallSliderProps) => {
-  const [isStart, setIsStart] = useState(false);
   const [position, setPosition] = useState(0);
-  const [tu, setTu] = useState(1);
-  const [cu, setCu] = useState(1);
+
+  const { status, tu, cu } = props.data;
 
   useEffect(() => {
-      const handleConnect = () => {
-          console.log('Client has connected to the server!');
-      };
-
-      const handleScoreBoard = (scoreString: string) => {
-        //console.log(scoreString);
-        const parts = scoreString.split(" ");
-        const cuScore = parseInt(parts[1], 10);
-        const tuScore = parseInt(parts[3], 10);
-        //console.log('cu:', cuScore, 'tu:', tuScore)
-        setCu(cuScore);
-        setTu(tuScore);
-        const position = (tuScore - cuScore)/(tuScore + cuScore)*MAX_LENGTH;
+      const handleChangePosition= (tu: number, cu: number) => {
+        const position = (tu - cu)/(tu + cu)*MAX_LENGTH;
         setPosition(position)
-        //console.log(cu, tu, position)
       }
+      handleChangePosition(tu, cu);
+  }, [tu, cu, status]);
 
-      const handleCid = (serverCid: string) => {
-          try {
-              console.log('Received cid from server:', serverCid);
-              cookies.set('cid', serverCid);
-              console.log('cid cookie set with value:', serverCid);
-          } catch (error) {
-              console.error('Error handling cid:', error);
-          }
-      };
-
-      const handleEvents = (events: string) => {
-        console.log(events)
-        setIsStart(events != "stop")
-        setCu(1);
-        setTu(1);
-        //console.log('set score')
-        if(props.setState != undefined){
-          if(events == "stop"){
-            //console.log("set stop")
-            tu > cu ? props.setState('tu') :  props.setState('cu')
-          }
-          else{
-            //console.log('set none')
-            props.setState('none')
-          }
-        }
-      }
-
-      const handleDisconnect = () => {
-          console.log('The client has disconnected!');
-      };
-
-      (async () => {
-          const fp = await FingerprintJS.load();
-          const result = await fp.get();
-          const fid = result.visitorId;
-          const savedCid = cookies.get('cid');
-          
-          const extraHeaders: { [key: string]: string } = {
-              fid: fid,
-              name: 'pun1'
-          };
-
-          if (savedCid) {
-              extraHeaders.cid = savedCid;
-          }
-          const socket = io('wss://api.cutu2024.sgcu.in.th', { 
-              auth: extraHeaders,
-              path: "/api/ws", 
-              transports: ['websocket'],
-          });
-
-          socket.on('connect', handleConnect);
-          socket.on('cid', handleCid);
-          socket.on('scoreboard', handleScoreBoard)
-          socket.on('disconnect', handleDisconnect);
-          socket.on('events', handleEvents);
-          return () => {
-              socket?.disconnect();
-          };
-      })();
-  }, []);
-
-  // useEffect(() => {
-  //     console.log('useEffect isStart')
-  //     setCu(1);
-  //     setTu(1);
-  //     if(props.setState){
-  //       if(!isStart){
-  //         tu > cu ? props.setState('tu') :  props.setState('cu')
-  //       }
-  //       else{
-  //         props.setState('none')
-  //       }
-  //     }
-  // }, [ isStart ])
 
   return (
     <>

@@ -9,13 +9,31 @@ import { io } from "socket.io-client";
 
 const cookies = new Cookies(null, { path: '/' });
 
-const Display= () => {
-  const [state, setState] = useState<'cu' | 'tu' | 'none'>('none');
-  const [isStart, setIsStart] = useState(false);
-  const [tu, setTu] = useState(62);
-  const [cu, setCu] = useState(48);
+interface DisplayProps {
+    data: {
+        status: string;
+        tu: number;
+        cu: number;
+    };
+}
 
-  
+const Display= ({ data }: DisplayProps) => {
+
+  const [state, setState] = useState<'cu' | 'tu' | 'none'>('none');
+  const { status, tu, cu } = data;
+
+  useEffect(() => {
+        if (status == 'stop') {
+            if (tu > cu) {
+                setState('tu');
+            } else if (tu < cu) {
+                setState('cu');
+            } else {
+                setState('cu');
+            }
+        }
+  },[status]);
+
   return (
     <div className='w-auto h-screen flex'>
         {state == 'none' &&
@@ -60,7 +78,7 @@ const Display= () => {
                 </div>
             </>
         }
-        {/* {state == 'tu' && 
+        {state == 'tu' && 
                 <>
                     <div className='w-1/2 h-full flex items-center justify-center flex-col bg-gradient-to-b from-tu-dark-orange via-tu-orange to-tu-light-orange space-y-10'>
                         <div className='flex items-center justify-center'>
@@ -108,7 +126,7 @@ const Display= () => {
                     </div>
                 </div>
             </>
-        } */}
+        }
     </div>
   )
 }
