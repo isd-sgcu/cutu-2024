@@ -75,11 +75,12 @@ export class PlayerController {
     })
 
     socket.on('submit', async (message) => {
-      this.logger.info('Received message', message)
-      const data = message.split(' ')
+      this.logger.debug("Received message: " + String(message).trim())
+      const data = String(message).trim().split(' ')
       this.playerService
         .submit(socket.user, data[0], parseInt(data[1]))
         .then((game) => {
+          this.logger.debug(`Incremented: ${String(message).trim()}`)
           if (game.id && game.game)
             return this.playerService
               .getScoreboard(game.id, game.game.actions.map((a) => a.key))
@@ -89,7 +90,7 @@ export class PlayerController {
         }
         )
         .catch((err) => {
-          this.logger.error(err)
+          this.logger.warn("Failed to increment: " + err)
           socket.disconnect(true)
         })
     })

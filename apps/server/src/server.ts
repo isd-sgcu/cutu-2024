@@ -20,6 +20,9 @@ import { GameHistoryRepository } from './models/history.model'
 
 export async function initServer(app: Express, server: HTTPServer) {
   app.use(cors())
+  app.get('/healthz', (req, res) => {
+    res.send('OK')
+  })
   app.use(createMorganLogger(createLogger('')))
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
@@ -75,10 +78,6 @@ export async function initServer(app: Express, server: HTTPServer) {
 
   app.use(playerRouter.prefix, playerRouter.router)
   app.use(adminRouter.prefix, adminRouter.router)
-
-  app.get('/healthz', (req, res) => {
-    res.send('OK')
-  })
 
   return app
 }
