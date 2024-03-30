@@ -6,18 +6,14 @@ export const options = {
     stages: [
       {
         duration: "30s",
-        target: 1,
+        target: 10,
       },
       {
         duration: "2m",
-        target: 1500
+        target: 2500
       },
       {
-        duration: "3m",
-        target: 1500,
-      },
-      {
-        duration: "3m",
+        duration: "1m",
         target: 0
       }
     ],
@@ -73,9 +69,10 @@ function handleOpen(socket, team) {
 
   // main loop
   socket.setInterval(() => {
-    const msg = `42["submit","${team} 1"]`;
     // console.log(`Sending ${msg}`);
-    socket.send(msg);
-  }, 500)
+    const k = randomIntBetween(0, 3) + randomIntBetween(0, 3);
+    const s = `42["submit","${team} ${k}"]`;
+    socket.send(s);
+  }, 1000)
 }
 
