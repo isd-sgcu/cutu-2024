@@ -2,12 +2,28 @@ name: 'CD'
 
 on:
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to change to'
+        default: 'latest'
+        required: false
+        type: string
+
+env:
+  IMAGE_NAME: registry.digitalocean.com/cutu2024/cutu2024-backend
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Set new image tag
+        uses: actions-hub/kubectl@master
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+        with:
+          args: set image deployment/cutu2024-backend cutu2024-backend=${{ env.IMAGE_NAME }}:${{ inputs.tag }}
+
       - name: Rollout new deployment
         uses: actions-hub/kubectl@master
         env:

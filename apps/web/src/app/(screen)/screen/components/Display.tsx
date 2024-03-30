@@ -19,6 +19,8 @@ const Display= ({ data }: DisplayProps) => {
   const [state, setState] = useState<'cu' | 'tu' | 'none'>('none');
   const { status, tu, cu } = data;
 
+  
+
   useEffect(() => {
         if (status == 'stop') {
             if (tu > cu) {

@@ -52,7 +52,7 @@ const FootBallSlider = (props: FootBallSliderProps) => {
             transition: "left 0.3s ease",
           }}
         >
-          <div className="relative w-[150px] h-[150px]"><Image
+          <div className="relative w-[250px] h-[250px]"><Image
             src={"slider/ball.svg"}
             fill
             objectFit="contain"

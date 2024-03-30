@@ -7,9 +7,8 @@ import ShakeComponent from '../../../../components/Shake';
 import { useParams, useSearchParams } from "next/navigation";
 import { Suspense } from 'react';
 import { io, Socket } from "socket.io-client";
-import FingerprintJS from '@fingerprintjs/fingerprintjs';
 import Cookies from 'universal-cookie';
-
+import { v4 as uuidv4 } from 'uuid';
 let shaking: { x: number; y: number; z: number } | undefined;
 
 function normalize(x: number, y: number, z: number) {
@@ -19,9 +18,18 @@ function normalize(x: number, y: number, z: number) {
 
 export default function Shake() {
     let fid: string | null = null;
-    //let socket: Socket | null = null;
     const cookies = new Cookies();
-    const [ socketState, setSocketState ] = useState<Socket | null>(null)
+    const [ socketState, setSocketState ] = useState<Socket | null>(null)    
+
+    /* const temp = setTimeout(() => {
+        setCount(prevCount => {
+            const newCount = prevCount + 1;
+            if (socketState?.connected) {
+                socketState.emit("submit", `${university} 1`);
+            }
+            return newCount;
+        });
+    }, 100)  */
 
     useEffect(() => {
         const handleConnect = () => {
@@ -44,20 +52,24 @@ export default function Shake() {
         };
 
         (async () => {
-            const fp = await FingerprintJS.load();
-            const result = await fp.get();
-            fid = result.visitorId;
+            fid = cookies.get('fid');
+            if (!fid) {
+                fid = uuidv4(); 
+                cookies.set('fid', fid);
+            }
+
+
             const savedCid = cookies.get('cid');
             
             const extraHeaders: { [key: string]: string } = {
-                fid: fid,
+                fid: fid || '',
                 name: 'john'
             };
 
             if (savedCid) {
                 extraHeaders.cid = savedCid;
             }
-            console.log(extraHeaders);
+
             const socket = io('wss://api.cutu2024.sgcu.in.th', { 
                 auth: extraHeaders,
                 path: "/api/ws", 
@@ -178,14 +190,6 @@ export default function Shake() {
         <>
             <Suspense fallback={<div>Loading...</div>} >
                 <ShakeComponent university={university} count={count} onClick={handleRequestMotion}/>
-                {/* <button className="bg-yellow-300" onClick={() => {
-                    setCount(prevCount => {
-                        const newCount = prevCount + 1;
-                        console.log('sdsd')
-                        socketState?.emit("submit", `${university} ${newCount}`);
-                        return newCount;
-                    });
-                }}>shake</button> */}
             </Suspense>
         </>
     );
