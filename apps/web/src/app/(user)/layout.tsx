@@ -16,8 +16,8 @@ export default function UserLayout({
             <div className="flex items-center rounded-full bg-white w-20 h-20 justify-center ">
               <Image
                   src="user/sgcu.svg"
-                  width={50}
-                  height={50}
+                  width={40}
+                  height={40}
                   alt="sgcu"
                  
               />
