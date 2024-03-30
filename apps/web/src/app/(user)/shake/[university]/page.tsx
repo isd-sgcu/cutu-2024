@@ -7,9 +7,8 @@ import ShakeComponent from '../../../../components/Shake';
 import { useParams, useSearchParams } from "next/navigation";
 import { Suspense } from 'react';
 import { io, Socket } from "socket.io-client";
-import FingerprintJS from '@fingerprintjs/fingerprintjs';
 import Cookies from 'universal-cookie';
-
+import { v4 as uuidv4 } from 'uuid';
 let shaking: { x: number; y: number; z: number } | undefined;
 
 function normalize(x: number, y: number, z: number) {
@@ -55,9 +54,7 @@ export default function Shake() {
         (async () => {
             fid = cookies.get('fid');
             if (!fid) {
-                const fp = await FingerprintJS.load();
-                const result = await fp.get();
-                fid = result.visitorId;
+                fid = uuidv4(); 
                 cookies.set('fid', fid);
             }
 
@@ -65,7 +62,7 @@ export default function Shake() {
             const savedCid = cookies.get('cid');
             
             const extraHeaders: { [key: string]: string } = {
-                fid: fid,
+                fid: fid || '',
                 name: 'john'
             };
 
