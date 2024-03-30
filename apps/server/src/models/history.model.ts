@@ -52,12 +52,10 @@ GameHistory.init(
 
 export class GameHistoryRepository {
   logger = createLogger('GameHistoryRepository')
+  private keys: string[] = []
   constructor(
     private readonly redis: RedisClientType<
-      RedisDefaultModules,
-      RedisFunctions,
-      RedisScripts
-    >,
+      RedisDefaultModules, RedisFunctions, RedisScripts>
   ) { }
 
   async createHistory(
@@ -86,11 +84,7 @@ export class GameHistoryRepository {
   }
 
   async summaryGame(game_id: string) {
-    const game = await Game.findByPk(game_id)
-    if (!game) {
-      throw new Error('Game not found')
-    }
-    const keys = await this.redis.keys(`game::${game_id}::*`)
+    const keys = this.keys.map((key) => `game::${game_id}::${key}`)
     const votes = await this.redis.mGet(keys)
 
     return keys.map((key, index) => ({
@@ -115,11 +109,15 @@ export class GameHistoryRepository {
 
   async startGame(id: string, reset: boolean) {
     return Game.findByPk(id).then(async (game) => {
-      if (game && reset) {
-        game.actions.forEach((action) => {
-          this.redis.set(`game::${id}::${action.key}`, 0)
-        })
-        await GameHistory.update({ vote: 0 }, { where: { game_id: id } })
+
+      if (game) {
+        this.keys = game.actions.map((action) => action.key)
+        if (reset) {
+          game.actions.forEach((action) => {
+            this.redis.set(`game::${id}::${action.key}`, 0)
+          })
+          await GameHistory.update({ vote: 0 }, { where: { game_id: id } })
+        }
       }
     }).then(() => "OK").catch((err) => {
       this.logger.error(err)

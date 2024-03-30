@@ -49,18 +49,6 @@ export class PlayerService {
     return await client.save()
   }
 
-  async getScoreboard() {
-    const game = await this.gameRepository.getLastActiveGame()
-    if (game?.id && game.status === 'playing') {
-      return this.gameHistoryRepository
-        .summaryGame(game.id)
-        .then((score) =>
-          score?.map((s) => `${s.key} ${s.vote}`).join(' '),
-        )
-    }
-    return undefined
-  }
-
   async login(cid: string, fid: string, sid: string) {
     return await this.clientRepository
       .updateSID(cid, fid, sid)
@@ -78,5 +66,17 @@ export class PlayerService {
 
   async getScreenState() {
     return await this.gameHistoryRepository.getScreenState()
+  }
+
+  async getScoreboard() {
+    const game = await this.gameRepository.getLastActiveGame()
+    if (game?.id && game.status === 'playing') {
+      return this.gameHistoryRepository
+        .summaryGame(game.id)
+        .then((score) =>
+          score?.map((s) => `${s.key} ${s.vote}`).join(' '),
+        )
+    }
+    return undefined
   }
 }

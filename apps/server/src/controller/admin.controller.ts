@@ -47,6 +47,7 @@ export class AdminController {
       'state',
       await this.adminService.getGameState().then((game) => game.id),
     )
+    this.io.engine.emit('stop')
   }
 
   async getGameSummary(req: Request, res: Response) {
@@ -58,7 +59,7 @@ export class AdminController {
     if (req.params.state !== 'full' && req.params.state !== 'overlay')
       return res.status(400)
     const response = await this.adminService.setScreenState(req.params.state)
-    this.io.sockets.emit('screen', req.params.state)
+    this.io.sockets.to('scoreboard').emit('screen', req.params.state)
     res.json(response)
   }
 }

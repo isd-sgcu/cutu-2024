@@ -5,11 +5,19 @@ import { createLogger } from '$/utils/logger'
 
 export class PlayerController {
   private readonly logger = createLogger('PlayerController')
+  private interval: NodeJS.Timeout | null = null
   constructor(
     private readonly io: Server,
     private readonly playerService: PlayerService,
   ) {
-    this.setupScoreboardEmitter()
+    this.interval = setInterval(async () => {
+      await this.playerService
+        .getScreenState()
+        .then(state => this.io.sockets.to('scoreboard').emit('screen', state))
+        .catch((err) => {
+          this.logger.error(err)
+        })
+    }, 5000)
   }
 
   async authenticateSocket(socket: Socket) {
@@ -45,26 +53,6 @@ export class PlayerController {
     } else socket.disconnect(true)
   }
 
-  setupScoreboardEmitter() {
-    setInterval(async () => {
-      await this.playerService
-        .getScoreboard()
-        .then((score) => this.io.sockets.emit('scoreboard', score))
-        .catch((err) => {
-          this.logger.error(err)
-        })
-    }, 200)
-
-    setInterval(async () => {
-      await this.playerService
-        .getScreenState()
-        .then(state => this.io.sockets.emit('screen', state))
-        .catch((err) => {
-          this.logger.error(err)
-        })
-    }, 5000)
-  }
-
   async onConnection(socket: Socket) {
     this.logger.info(`New connection: ${socket.id}`)
 
@@ -74,6 +62,8 @@ export class PlayerController {
       socket.emit('events', game.status)
     })
 
+    socket.on('subscribe', (m, cb) => socket.join('scoreboard') && cb("OK"))
+
     socket.on('submit', async (message) => {
       this.logger.info('Received message', message)
       const data = message.split(' ')
@@ -82,6 +72,12 @@ export class PlayerController {
         .catch((err) => {
           this.logger.error(err)
           socket.disconnect(true)
+        })
+      await this.playerService
+        .getScoreboard()
+        .then((score) => this.io.sockets.to('scoreboard').emit('scoreboard', score))
+        .catch((err) => {
+          this.logger.error(err)
         })
     })
 
