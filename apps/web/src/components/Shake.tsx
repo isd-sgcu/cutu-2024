@@ -25,7 +25,7 @@ export default function ShakeComponent({
             <Link href="../user" className="flex justify-start">
                 <Image src="../shake/arrow-back.svg" alt="arrow-back" width={25} height={25} />                    
             </Link>
-            <div className="h-full flex flex-col items-center justify-between space-y-2 mb-10">
+            <div className="h-full flex flex-col items-center space-y-5 mb-10">
                 <Image src="../shake/cu-tu-ball-logo.svg" alt="cu-tu-ball-logo" width={60} height={104} ></Image>
                 <Image src={university == 'cu' ? "../shake/chula-logo.svg" : "../shake/tu-logo.svg"} alt="chula-logo" width={65} height={104} ></Image>
                 <h1 className="font-bold">{university == 'cu' ? '#ทีมจุฬาฯ' : '#ทีมมธ.'}</h1>
@@ -47,15 +47,15 @@ export default function ShakeComponent({
                         </div>
                     )}
                 </div>
-                <>
-                <div className="self-end mb-[-15px]">
+                <div className="flex w-full flex-col space-y-2">
+                <div className="self-end">
                     <Image src="../shake/fire-icon.svg" alt="fire-icon" width={36} height={36}></Image>
                 </div>
                 <div className="w-full h-[16px] bg-white rounded-[20px] mb-[20px]">
                     <div className={university == 'cu' ? "h-full bg-[#EE477C] rounded-[20px]" : "h-full bg-[#FF6625] rounded-[20px]"}
                         style={{ width: `${Math.min((count / 500) * 100, 100)}%`}} />
                 </div>
-                </>
+                </div>
             </div>
         </div> 
     )
