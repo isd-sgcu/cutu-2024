@@ -43,6 +43,6 @@ jobs:
         with:
           push: true
           context: "{{defaultContext}}:apps/server"
-          tags: ${{ env.IMAGE_NAME }}:latest
+          tags: ${{ env.IMAGE_NAME }}:${{ inputs.tag }}
           cache-from: type=gha,ref=${{ env.IMAGE_NAME }}:buildcache
           cache-to: type=gha,ref=${{ env.IMAGE_NAME }}:buildcache,mode=max
