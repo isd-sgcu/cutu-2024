@@ -49,7 +49,7 @@ const FootBallSlider = (props: FootBallSliderProps) => {
           style={{
             left: `${position}%`,
             transform: `translateX(-${position}%)`,
-            transition: "left 0.3s ease",
+            transition: "left 2s ease",
           }}
         >
           <div className="relative w-[250px] h-[250px]"><Image

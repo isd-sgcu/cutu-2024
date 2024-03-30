@@ -6,13 +6,7 @@ import Display from "./components/Display";
 import Cookies from "universal-cookie";
 import { Socket, io } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
-import {
-  TransitionGroup,
-  CSSTransition,
-  Transition,
-} from "react-transition-group";
-
-import "./style.css";
+import { TransitionGroup, Transition } from "react-transition-group";
 
 const Screen = () => {
   let fid: string | null = null;
@@ -23,7 +17,9 @@ const Screen = () => {
     tu: 50,
   });
   const cookies = new Cookies(null, { httpOnly: true });
-  const nodeRef = useRef(null);
+  const overlayRef = useRef(null);
+  const displayRef = useRef(null);
+
   console.log(data);
   //console.log('show: ', showedPage)
 
@@ -108,29 +104,35 @@ const Screen = () => {
     })();
   }, []);
 
-  const defaultStyle = {
-    transition: `opacity 700ms ease-in-out`,
-    opacity: 1,
-  };
-
-  const transitionStyles = {
-    entering: { opacity: 1 },
-    entered: { opacity: 1 },
-    exiting: { opacity: 0 },
-    exited: { opacity: 0 },
-  };
-
   return (
     <div className="bg-[#3dff3d]">
       <TransitionGroup>
         {showedPage == "overlay" ? (
-          <CSSTransition key="overlay" timeout={700} classNames="item" appear>
-            <OverLay data={data} />
-          </CSSTransition>
+          <Transition key="overlay" timeout={700} classNames="item">
+            {(state) => (
+              <div
+                style={{
+                  transition: "opacity 500ms ease",
+                  opacity: state == "entered" ? 1 : 0,
+                }}
+              >
+                <OverLay data={data} />
+              </div>
+            )}
+          </Transition>
         ) : (
-          <CSSTransition key="display" timeout={700} classNames="item" appear>
-            <Display data={data} />
-          </CSSTransition>
+          <Transition key="display" timeout={700} classNames="item">
+            {(state) => (
+              <div
+                style={{
+                  transition: "opacity 500ms ease",
+                  opacity: state == "entered" ? 1 : 0,
+                }}
+              >
+                <Display data={data} />
+              </div>
+            )}
+          </Transition>
         )}
       </TransitionGroup>
       {/* <button
