@@ -14,9 +14,9 @@ FROM node:20.12.0-alpine3.19 AS runner
 
 WORKDIR /app
 
-COPY --from=builder /build/dist/ ./dist/
 COPY package*.json ./
 RUN npm install --omit=dev
+COPY --from=builder /build/dist/ ./dist/
 
 EXPOSE 3000
 

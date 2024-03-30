@@ -67,17 +67,33 @@ export class GameHistoryRepository {
     key: string,
     vote: number,
   ) {
+    const allKeys = await this.redis.get(`game_key::${game_id}`)
     const total = await this.redis.incrBy(`game::${game_id}::${key}`, vote)
-    this.redis.keys(`game::${game_id}::*`).then(async (keys) => {
-      keys.forEach(async (k) => {
-        if (k !== `game::${game_id}::${key}`) {
+    if (!allKeys) {
+      this.redis.keys(`game::${game_id}::*`).then(async (keys) => {
+        const allKeys: string[] = []
+        keys.forEach(async (k) => {
+          const thisKey = k.split("::")[2]
+          allKeys.push(thisKey)
+          if (thisKey != key) {
+            const kTotal = parseInt((await this.redis.get(k)) || '0')
+            const decrease = Math.floor((Math.abs(total - kTotal) * vote) / 100)
+            const remain = kTotal - decrease
+            if (remain > 0) this.redis.decrBy(k, decrease)
+          }
+        })
+        await this.redis.set(`game_key::${game_id}`, allKeys.join(","))
+      })
+    } else {
+      allKeys.split(",").forEach(async k => {
+        if (k != key) {
           const kTotal = parseInt((await this.redis.get(k)) || '0')
           const decrease = Math.floor((Math.abs(total - kTotal) * vote) / 100)
           const remain = kTotal - decrease
           if (remain > 0) this.redis.decrBy(k, decrease)
         }
       })
-    })
+    }
   }
 
   async getHistoryByPlayerID(game_id: string, player_id: string) {

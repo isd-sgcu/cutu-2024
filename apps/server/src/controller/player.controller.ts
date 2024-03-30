@@ -60,7 +60,7 @@ export class PlayerController {
           this.playerService
             .getScoreboard(
               game.id,
-              game.game.actions.map((a) => a.key),
+              game.game.actions.map((a: any) => a.key),
             )
             .then((score) => {
               socket.emit('scoreboard', score)

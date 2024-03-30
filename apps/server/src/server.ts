@@ -46,7 +46,7 @@ export async function initServer(app: Express, server: HTTPServer) {
     })
   sequelizeConnection.sync({ force: process.env.FORCE_DB_SYNC === 'true' })
 
-  const gameRepository = new GameRepository()
+  const gameRepository = new GameRepository(pubClient)
   const clientRepository = new ClientRepository()
   const gameHistoryRepository = new GameHistoryRepository(pubClient)
 

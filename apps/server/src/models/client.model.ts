@@ -1,6 +1,7 @@
 import { DataTypes, Filterable, Model, WhereOptions } from 'sequelize'
 import { ClientAttributes, ClientInput } from '$/interface/client.interface'
 import { sequelizeConnection } from '$/utils/database'
+import { RedisClientType, RedisDefaultModules, RedisFunctions, RedisScripts } from 'redis'
 
 export class Client
   extends Model<ClientAttributes, ClientInput>

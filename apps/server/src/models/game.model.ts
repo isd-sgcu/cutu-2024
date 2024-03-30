@@ -2,6 +2,8 @@ import { DataTypes, Model, col, fn } from 'sequelize'
 import { GameAttributes, GameInput } from '$/interface/game.interface'
 import { sequelizeConnection } from '$/utils/database'
 import { GameHistory } from './history.model'
+import { RedisClientType, RedisDefaultModules, RedisFunctions, RedisScripts } from 'redis'
+import { createLogger } from '$/utils/logger'
 
 export class Game
   extends Model<GameAttributes, GameInput>
@@ -57,7 +59,19 @@ Game.init(
   { timestamps: true, sequelize: sequelizeConnection, paranoid: true },
 )
 
+const LAST_ACTIVE_CACHE_KEY = "db::last_active"
+
 export class GameRepository {
+  logger = createLogger('GameRepository')
+
+  constructor(
+    private readonly redis: RedisClientType<
+      RedisDefaultModules,
+      RedisFunctions,
+      RedisScripts
+    >,
+  ) {}
+
   async getAllGames(): Promise<Game[]> {
     return Game.findAll()
   }
@@ -67,6 +81,16 @@ export class GameRepository {
   }
 
   async getLastActiveGame() {
+    const cache = await this.redis.get(LAST_ACTIVE_CACHE_KEY)
+    if (cache) {
+      try {
+        const game = JSON.parse(cache)
+        return game
+      } catch (e) {
+        this.logger.warn(`last active cache is not JSON ${cache}`)
+        await this.redis.del(LAST_ACTIVE_CACHE_KEY)
+      }
+    }
     const game = await Game.findOne({
       order: [['updatedAt', 'DESC']],
       attributes: ['id', 'open', 'actions'],
@@ -76,10 +100,12 @@ export class GameRepository {
       game: res,
       status: res?.open ? 'playing' : 'waiting',
     }))
+    await this.redis.set(LAST_ACTIVE_CACHE_KEY, JSON.stringify(game))
     return game
   }
 
   async createGame(game: Game) {
+    await this.redis.set(`game_key::${game.id}`, game.actions.map(x => x.key).join(','))
     return Game.create(game)
   }
 
@@ -96,6 +122,7 @@ export class GameRepository {
   }
 
   async startGame(game_id: string) {
+    await this.redis.del(LAST_ACTIVE_CACHE_KEY)
     return Game.findOne({ where: { open: true } }).then(async (game) => {
       await game?.update({ open: false })
       return Game.update(
@@ -111,6 +138,7 @@ export class GameRepository {
   }
 
   async endGame(id: string) {
+    await this.redis.del(LAST_ACTIVE_CACHE_KEY)
     return Game.update({ open: false }, { where: { id } }).then(() => {
       const keys = Game.findOne({
         where: { id },
