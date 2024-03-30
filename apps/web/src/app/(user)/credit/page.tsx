@@ -10,9 +10,8 @@ const Credit = () => {
       }}
     >
       <Link
-        className="underline hover:no-underline"
+        className="flex justify-start underline hover:no-underline"
         href="/user"
-        className="flex justify-start"
       >
         <Image
           src="../shake/arrow-back.svg"
