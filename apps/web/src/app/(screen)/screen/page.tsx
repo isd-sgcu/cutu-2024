@@ -108,15 +108,27 @@ const Screen = () => {
     })();
   }, []);
 
+  const defaultStyle = {
+    transition: `opacity 700ms ease-in-out`,
+    opacity: 1,
+  };
+
+  const transitionStyles = {
+    entering: { opacity: 1 },
+    entered: { opacity: 1 },
+    exiting: { opacity: 0 },
+    exited: { opacity: 0 },
+  };
+
   return (
     <div className="bg-[#3dff3d]">
       <TransitionGroup>
         {showedPage == "overlay" ? (
-          <CSSTransition key="overlay" timeout={700} classNames="item" in appear enter>
+          <CSSTransition key="overlay" timeout={700} classNames="item">
             <OverLay data={data} />
           </CSSTransition>
         ) : (
-          <CSSTransition key="display" timeout={700} classNames="item" in appear enter>
+          <CSSTransition key="display" timeout={700} classNames="item">
             <Display data={data} />
           </CSSTransition>
         )}

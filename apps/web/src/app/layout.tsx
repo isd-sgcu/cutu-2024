@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { Anuphan } from "next/font/google";
-import "./globals.css";
 import React from "react";
 import { GoogleAnalytics } from "@next/third-parties/google";
+
+import "./globals.css";
 
 const anuphan = Anuphan({ subsets: ["latin"] });
 
