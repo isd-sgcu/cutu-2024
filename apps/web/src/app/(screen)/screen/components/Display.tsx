@@ -7,7 +7,10 @@ import QrCode from '@/app/(screen)/display/components/QrCode';
 
 const Display= () => {
   const [state, setState] = useState<'cu' | 'tu' | 'none'>('none');
-  
+  const [isStart, setIsStart] = useState(false);
+  const [tu, setTu] = useState(62);
+  const [cu, setCu] = useState(48);
+
   
   return (
     <div className='w-auto h-screen flex'>
