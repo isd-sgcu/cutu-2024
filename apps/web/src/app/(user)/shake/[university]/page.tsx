@@ -19,7 +19,6 @@ function normalize(x: number, y: number, z: number) {
 
 export default function Shake() {
     let fid: string | null = null;
-    //let socket: Socket | null = null;
     const cookies = new Cookies();
     const [ socketState, setSocketState ] = useState<Socket | null>(null)    
 

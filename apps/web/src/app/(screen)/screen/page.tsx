@@ -11,20 +11,17 @@ const Screen = () => {
     const [showedPage, setShowPage] = useState<"overlay" | "display">("overlay");
     const [ data, setData ] = useState({
         status: "waiting",
-        cu: 0,
-        tu: 0
+        cu: 50,
+        tu: 50
     })
     const cookies = new Cookies( null, { path: "/" } )
-    //console.log(data)
+    console.log(data)
 
     useEffect(() => {
         const handleConnect = (socket: Socket) => {
             console.log('Client has connected to the server!');
-            setTimeout(() => {
-                console.log('Subscribing');
-                socket.emit('subscribe', '123');
-                console.log(data.status)
-            }, 3000);
+            console.log('Subscribing');
+            socket.emit('subscribe', '123');
         };
 
         const handleScoreBoard = (scoreString: string) => {

@@ -10,7 +10,6 @@ interface OverLayProps {
 }
 
 const Page = ({data} : OverLayProps) => {
-    console.log(data)
     return (  
         <div className="w-full h-full bg-[#3dff3d] text-white text-3xl font-bold flex flex-col justify-between p-[50px]">
             <div className="flex justify-between">
