@@ -66,7 +66,14 @@ export class GameHistoryRepository {
     key: string,
     vote: number,
   ) {
-    return await this.redis.incrBy(`game::${game_id}::${key}`, vote)
+    const total = await this.redis.incrBy(`game::${game_id}::${key}`, vote)
+    this.redis.keys(`game::${game_id}::*`).then((keys) => {
+      keys.forEach(async (k) => {
+        if (k !== `game::${game_id}::${key}`) {
+          this.redis.decrBy(k, Math.floor((total - parseInt(await this.redis.get(k) || '0')) * vote / 100))
+        }
+      })
+    })
   }
 
   async getHistoryByPlayerID(game_id: string, player_id: string) {
