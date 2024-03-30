@@ -71,7 +71,7 @@ export class GameHistoryRepository {
       keys.forEach(async (k) => {
         if (k !== `game::${game_id}::${key}`) {
           const kTotal = parseInt(await this.redis.get(k) || '0')
-          const decrease = ((Math.floor((total - kTotal) * vote / 100)))
+          const decrease = ((Math.floor(Math.abs(total - kTotal) * vote / 100)))
           const remain = kTotal - decrease
           if (remain > 0) this.redis.decrBy(k, decrease)
         }
