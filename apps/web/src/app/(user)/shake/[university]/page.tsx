@@ -111,7 +111,7 @@ export default function Shake() {
                 setCount(prevCount => {
                     const newCount = prevCount + 1;
                     if (socketState?.connected) {
-                        socketState.emit("submit", `${university} ${newCount}`);
+                        socketState.emit("submit", `${university} ${newCount - prevCount}`);
                     }
                     return newCount;
                 });
