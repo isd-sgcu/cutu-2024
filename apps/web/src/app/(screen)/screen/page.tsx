@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import OverLay from "./components/Overlay";
 import Display from "./components/Display";
 import Cookies from "universal-cookie";
-import FingerprintJS from "@fingerprintjs/fingerprintjs";
 import { Socket, io } from "socket.io-client";
 import { v4 as uuidv4 } from 'uuid';
 
