@@ -16,7 +16,7 @@ export default function ShakeComponent({
 
     return(
         <div 
-            className="h-full px-[2.5rem] pt-[1.5rem] text-white w-auto"
+            className="h-screen px-[2.5rem] pt-[1.5rem] text-white w-auto"
             style={university == 'cu' ?
                     { background: 'linear-gradient(to bottom, #EE457B 0%, #F1678D 35%, #F6ADCD 90%, #FFFFFF 100%)' } :
                     { background: 'linear-gradient(to bottom, #AA1E23 0%, #F06143 35%, #FBAF44 90%, #FFFFFF 100%)' }
@@ -25,7 +25,7 @@ export default function ShakeComponent({
             <Link href="../user" className="flex justify-start">
                 <Image src="../shake/arrow-back.svg" alt="arrow-back" width={25} height={25} />                    
             </Link>
-            <div className="h-full max-h-[600px] flex flex-col items-center justify-between">
+            <div className="h-full flex flex-col items-center justify-between space-y-4 mb-10">
                 <Image src="../shake/cu-tu-ball-logo.svg" alt="cu-tu-ball-logo" width={60} height={104} ></Image>
                 <Image src={university == 'cu' ? "../shake/chula-logo.svg" : "../shake/tu-logo.svg"} alt="chula-logo" width={65} height={104} ></Image>
                 <h1 className="font-bold">{university == 'cu' ? '#ทีมจุฬาฯ' : '#ทีมมธ.'}</h1>
