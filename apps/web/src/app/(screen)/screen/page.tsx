@@ -14,8 +14,9 @@ const Screen = () => {
         cu: 50,
         tu: 50
     })
-    const cookies = new Cookies( null, { path: "/" } )
+    const cookies = new Cookies( null, {httpOnly: true} )
     console.log(data)
+    //console.log('show: ', showedPage)
 
     useEffect(() => {
         const handleConnect = (socket: Socket) => {
@@ -31,13 +32,13 @@ const Screen = () => {
             const cuScore = Math.round(parseFloat(parts[1]));
             const tuScore = Math.round(parseFloat(parts[3]));
             
-            //console.log({cuScore, tuScore}  )
+            //console.log({cuScore, tuScore})
             setData(data => ({...data, cu: cuScore, tu: tuScore}))
         }
 
         const handleScreen = (screen: string) => {
-            //console.log(screen);
-            //setShowPage('full' ? 'overlay' : 'display')
+            console.log(screen);
+            setShowPage(screen == 'overlay' ? 'overlay' : 'display')
         }
 
         const handleCid = (serverCid: string) => {
@@ -105,7 +106,7 @@ const Screen = () => {
     return (  
         <div>
             {showedPage == "overlay" ? <OverLay data={data}/> : <Display data={data}/>}
-            <button className="w-[200px] h-[200px] bg-white" onClick={() => setShowPage(prev => prev == "overlay" ? "display" : "overlay")}>เปลี่ยนหน้า</button>
+            {/* <button className="w-[200px] h-[200px] bg-white" onClick={() => setShowPage(prev => prev == "overlay" ? "display" : "overlay")}>เปลี่ยนหน้า</button> */}
         </div>
     );
 }
