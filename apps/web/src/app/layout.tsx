@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Anuphan } from "next/font/google";
 import "./globals.css";
 import React from "react";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 const anuphan = Anuphan({ subsets: ["latin"] });
 
@@ -21,9 +22,9 @@ export default function RootLayout({
         <title>CU-TU 2024</title>
         <link rel="icon" href="/user/logo.svg" sizes="any" />
       </head>
-      <body className={anuphan.className}>
-        {children}
-      </body>
+      <body className={anuphan.className}>{children}</body>
+
+      <GoogleAnalytics gaId="G-96K5LPMG23" />
     </html>
   );
 }

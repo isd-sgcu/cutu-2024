@@ -9,7 +9,11 @@ const Credit = () => {
           "linear-gradient(to bottom, #F1678C, #EE457B, #ED1C24, #FBAF44)",
       }}
     >
-      <Link href="/user" className="flex justify-start">
+      <Link
+        className="underline hover:no-underline"
+        href="/user"
+        className="flex justify-start"
+      >
         <Image
           src="../shake/arrow-back.svg"
           alt="arrow-back"
@@ -30,16 +34,26 @@ const Credit = () => {
         <div className="flex flex-col justify-between h-full max-h-[420px]">
           <section className="flex flex-col items-center">
             <h2 className="font-bold mb-1">พัฒนาโดย</h2>
-            <span className="text-center">
-              ฝ่ายพัฒนาระบบสารสนเทศ <br /> องค์การบริหารสโมสรนิสิต <br />{" "}
-              จุฬาลงกรณ์มหาวิทยาลัย
-            </span>
+            <Link
+              className="underline hover:no-underline"
+              href="https://isd.sgcu.in.th"
+            >
+              <span className="text-center">
+                ฝ่ายพัฒนาระบบสารสนเทศ <br /> องค์การบริหารสโมสรนิสิต <br />{" "}
+                จุฬาลงกรณ์มหาวิทยาลัย
+              </span>
+            </Link>
           </section>
           <section className="flex flex-col items-center">
             <h2 className="font-bold mb-1">Project Manager</h2>
             <ul className="flex flex-col items-center">
               <li>
-                <a href="https://github.com/betich">ปณิธิ มักเที่ยงตรง</a>
+                <Link
+                  className="underline hover:no-underline"
+                  href="https://github.com/betich"
+                >
+                  ปณิธิ มักเที่ยงตรง
+                </Link>
               </li>
             </ul>
           </section>
@@ -47,9 +61,12 @@ const Credit = () => {
             <h2 className="font-bold mb-1">UX/UI Designer</h2>
             <ul className="flex flex-col items-center">
               <li>
-                <a href="https://www.instagram.com/klonqdoublek/">
+                <Link
+                  className="underline hover:no-underline"
+                  href="https://www.instagram.com/klonqdoublek/"
+                >
                   พิชญา พูลเพียร
-                </a>
+                </Link>
               </li>
             </ul>
           </section>
@@ -57,30 +74,68 @@ const Credit = () => {
             <h2 className="font-bold mb-1">Developers</h2>
             <ul className="flex flex-col items-center">
               <li>
-                <a href="https://github.com/ImSoZRious">ปัณณวิชญ์ โลหะนิมิต</a>
+                <Link
+                  className="underline hover:no-underline"
+                  href="https://github.com/ImSoZRious"
+                >
+                  ปัณณวิชญ์ โลหะนิมิต
+                </Link>
               </li>
               <li>
-                <a href="https://github.com/PatrickChoDev">ธนภัทร โชติพันธ์</a>
+                <Link
+                  className="underline hover:no-underline"
+                  href="https://github.com/PatrickChoDev"
+                >
+                  ธนภัทร โชติพันธ์
+                </Link>
               </li>
               <li>
-                <a href="https://github.com/teetri">ธนฤต ตรีมหาฤกษ์</a>
+                <Link
+                  className="underline hover:no-underline"
+                  href="https://github.com/teetri"
+                >
+                  ธนฤต ตรีมหาฤกษ์
+                </Link>
               </li>
               <li>
-                <a href="https://github.com/tntons">สหรัถ นวมจิตร</a>
+                <Link
+                  className="underline hover:no-underline"
+                  href="https://github.com/tntons"
+                >
+                  สหรัถ นวมจิตร
+                </Link>
               </li>
               <li>
-                <a href="https://github.com/TeeGoood">ชยพล อาภายะธรรม</a>
+                <Link
+                  className="underline hover:no-underline"
+                  href="https://github.com/TeeGoood"
+                >
+                  ชยพล อาภายะธรรม
+                </Link>
               </li>
               <li>
-                <a href="https://github.com/punchanabu">
+                <Link
+                  className="underline hover:no-underline"
+                  href="https://github.com/punchanabu"
+                >
                   สิรวิชญ์ ชนะบูรณาศักดิ์
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="https://github.com/boomchanotai">ชโณทัย กระแจ่ม</a>
+                <Link
+                  className="underline hover:no-underline"
+                  href="https://github.com/boomchanotai"
+                >
+                  ชโณทัย กระแจ่ม
+                </Link>
               </li>
               <li>
-                <a href="https://github.com/punchpnp">นันท์นภัส พีรนพวัฒน์</a>
+                <Link
+                  className="underline hover:no-underline"
+                  href="https://github.com/punchpnp"
+                >
+                  นันท์นภัส พีรนพวัฒน์
+                </Link>
               </li>
             </ul>
           </section>
