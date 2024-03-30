@@ -10,7 +10,7 @@ import { io } from "socket.io-client";
 const cookies = new Cookies(null, { path: '/' });
 
 const Display= () => {
-  const [state, setState] = useState<'cu' | 'tu' | 'none'>('none');
+  const [state, setState] = useState<'cu' | 'tu' | 'none'>('cu');
   const [isStart, setIsStart] = useState(false);
   const [tu, setTu] = useState(62);
   const [cu, setCu] = useState(48);
@@ -23,6 +23,7 @@ const Display= () => {
       };
 
       const handleScoreBoard = (scoreString: string) => {
+        console.log(scoreString);
         // TODO : handle scoreboard
         // NOTE: expect the the score to be percentage
       }
@@ -86,6 +87,7 @@ const Display= () => {
           };
       })();
   }, []);
+  
   return (
     <div className='w-auto h-screen flex'>
         {state == 'none' &&
@@ -113,8 +115,8 @@ const Display= () => {
                         
                     <div className='flex items-center justify-center flex-col space-y-10'>
                         <div className='flex flex-col items-center justify-center space-y-6 self-center'>
-                            <Image src = '/shake/chula-logo.svg' width={200} height={244} alt='logo' />
-                            <span className='text-5xl font-semibold text-white'>#ทีมจุฬาฯ</span>
+                            <Image src = '/shake/tu-logo.svg' width={200} height={244} alt='logo' />
+                            <span className='text-5xl font-semibold text-white'>#ทีมมธ</span>
                         </div>
                     </div>
                     <div className='flex items-center justify-center'>
@@ -130,28 +132,55 @@ const Display= () => {
                 </div>
             </>
         }
-        {/*TODO: implement winning and losing */}
-        {/* {state !== 'none' && <div className='text-[200px] font-bold text-white mt-[200px] [text-shadow:_1px_1px_1px_rgb(0_0_0)]'>Winner</div>}
-
         {state == 'tu' && 
-                <Image 
-                    src='/user/tu-component.svg'
-                    height={800}
-                    width={800}
-                    className='mx-auto my-auto'
-                    alt='tu'
-                />
+                <>
+                    <div className='w-1/2 h-full flex items-center justify-center flex-col bg-gradient-to-b from-tu-dark-orange via-tu-orange to-tu-light-orange space-y-10'>
+                        <div className='flex items-center justify-center'>
+                            <div className='text-white font-semibold flex items-center justify-center' style={{ fontSize: '16rem' }}>Winner</div>
+                        </div>
+                        <div className='flex items-center justify-center flex-col space-y-10'>
+                            <div className='flex flex-col items-center justify-center space-y-6 self-center'>
+                                <Image src = '/shake/tu-logo.svg' width={400} height={400} alt='logo' />
+                            </div>
+                        </div>
+                    </div>
+                    <div className='w-1/2 h-full flex items-center justify-center flex-col bg-gradient-to-b from-tu-dark-orange via-tu-orange to-tu-light-orange space-y-10'>
+                        <div className='flex items-center justify-center'>
+                            <div className='text-white font-semibold flex items-center justify-center' style={{ fontSize: '16rem' }}>Winner</div>
+                        </div>
+                        <div className='flex items-center justify-center flex-col space-y-10'>
+                            <div className='flex flex-col items-center justify-center space-y-6 self-center'>
+                                <Image src = '/shake/tu-logo.svg' width={400} height={400} alt='logo' />
+                            </div>
+                        </div>
+                    </div>
+                </>
         }
 
         {state == 'cu' &&
-                <Image 
-                    src='/user/cu-component.svg'
-                    height={800}
-                    width={800}
-                    className='mx-auto my-auto'
-                    alt='cu'
-                />
-        } */}
+                <>
+                <div className='w-1/2 h-full flex items-center justify-center flex-col bg-gradient-to-b from-cu-dark-pink via-cu-pink to-cu-light-pink space-y-10'>
+                    <div className='flex items-center justify-center'>
+                        <div className='text-white font-semibold flex items-center justify-center' style={{ fontSize: '16rem' }}>Winner</div>
+                    </div>
+                    <div className='flex items-center justify-center flex-col space-y-10'>
+                        <div className='flex flex-col items-center justify-center space-y-6 self-center'>
+                            <Image src = '/shake/chula-logo.svg' width={400} height={400} alt='logo' />
+                        </div>
+                    </div>
+                </div>
+                <div className='w-1/2 h-full flex items-center justify-center flex-col bg-gradient-to-b from-cu-dark-pink via-cu-pink to-cu-light-pink space-y-10'>
+                    <div className='flex items-center justify-center'>
+                        <div className='text-white font-semibold flex items-center justify-center' style={{ fontSize: '16rem' }}>Winner</div>
+                    </div>
+                    <div className='flex items-center justify-center flex-col space-y-10'>
+                        <div className='flex flex-col items-center justify-center space-y-6 self-center'>
+                            <Image src = '/shake/chula-logo.svg' width={400} height={400} alt='logo' />
+                        </div>
+                    </div>
+                </div>
+            </>
+        }
     </div>
   )
 }
