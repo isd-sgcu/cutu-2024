@@ -17,6 +17,10 @@ function createConnectionPool() {
         ],
         write: { host: process.env.DB_HOST || 'db' },
       },
+      pool: {
+        max: 30,
+        idle: 10000,
+      },
       sync: {
         force: (process.env.NODE_ENV || 'development') !== 'production',
       },
