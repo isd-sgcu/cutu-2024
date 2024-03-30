@@ -3,11 +3,8 @@
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import QrCode from '@/app/(screen)/display/components/QrCode';
-import Cookies from "universal-cookie";
-import FingerprintJS from "@fingerprintjs/fingerprintjs";
-import { io } from "socket.io-client";
 
-const cookies = new Cookies(null, { path: '/' });
+
 
 interface DisplayProps {
     data: {
@@ -78,6 +75,7 @@ const Display= ({ data }: DisplayProps) => {
                 </div>
             </>
         }
+
         {state == 'tu' && 
                 <>
                     <div className='w-1/2 h-full flex items-center justify-center flex-col bg-gradient-to-b from-tu-dark-orange via-tu-orange to-tu-light-orange space-y-10'>
