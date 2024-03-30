@@ -16,7 +16,7 @@ export default function ShakeComponent({
 
     return(
         <div 
-            className="h-full px-[2.5rem] pt-[1.5rem] text-white"
+            className="h-full px-[2.5rem] pt-[1.5rem] text-white w-auto"
             style={university == 'cu' ?
                     { background: 'linear-gradient(to bottom, #EE457B 0%, #F1678D 35%, #F6ADCD 90%, #FFFFFF 100%)' } :
                     { background: 'linear-gradient(to bottom, #AA1E23 0%, #F06143 35%, #FBAF44 90%, #FFFFFF 100%)' }
@@ -52,7 +52,7 @@ export default function ShakeComponent({
                 </div>
                 <div className="w-full h-[16px] bg-white rounded-[20px] mb-[20px]">
                     <div className={university == 'cu' ? "h-full bg-[#EE477C] rounded-[20px]" : "h-full bg-[#FF6625] rounded-[20px]"}
-                        style={{ width: `${(count / 500) * 100}%`}} />
+                        style={{ width: `${Math.min((count / 500) * 100, 100)}%`}} />
                 </div>
             </div>
         </div> 
