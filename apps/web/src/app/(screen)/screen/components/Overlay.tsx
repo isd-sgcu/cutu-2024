@@ -77,6 +77,7 @@ const Page = ({data} : OverLayProps) => {
  
 
 const OverLay = ({data}: OverLayProps) => {
+
     return (  
         <div className="w-[3840px] h-[1080px] flex">
             <Page data = {data}/>

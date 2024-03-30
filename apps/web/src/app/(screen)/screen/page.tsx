@@ -104,7 +104,7 @@ const Screen = () => {
     }, []);   
 
     return (  
-        <div>
+        <div className="bg-[#3dff3d]">
             {showedPage == "overlay" ? <OverLay data={data}/> : <Display data={data}/>}
             {/* <button className="w-[200px] h-[200px] bg-white" onClick={() => setShowPage(prev => prev == "overlay" ? "display" : "overlay")}>เปลี่ยนหน้า</button> */}
         </div>
