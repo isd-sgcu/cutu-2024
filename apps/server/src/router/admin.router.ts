@@ -13,7 +13,7 @@ export class AdminRouter extends BaseRouter {
     this.router.get(
       '/games',
       basicAuth,
-      this.adminController.getGames.bind(this.adminController),
+      this.adminController.listGames.bind(this.adminController),
     )
     this.router.post(
       '/games',
@@ -21,9 +21,14 @@ export class AdminRouter extends BaseRouter {
       this.adminController.createGame.bind(this.adminController),
     )
     this.router.get(
+      '/games/state',
+      basicAuth,
+      this.adminController.getGameState.bind(this.adminController),
+    )
+    this.router.get(
       '/games/:id',
       basicAuth,
-      this.adminController.getGame.bind(this.adminController),
+      this.adminController.getGameByID.bind(this.adminController),
     )
     this.router.post(
       '/games/:id/start',
@@ -34,6 +39,16 @@ export class AdminRouter extends BaseRouter {
       '/games/:id/end',
       basicAuth,
       this.adminController.endGame.bind(this.adminController),
+    )
+    this.router.put(
+      '/screen/state/:state',
+      basicAuth,
+      this.adminController.setScreenState.bind(this.adminController),
+    )
+    this.router.get(
+      '/games/:id/summary',
+      basicAuth,
+      this.adminController.getGameSummary.bind(this.adminController),
     )
   }
 }
