@@ -23,6 +23,7 @@ const Display= () => {
       };
 
       const handleScoreBoard = (scoreString: string) => {
+        console.log(scoreString);
         // TODO : handle scoreboard
         // NOTE: expect the the score to be percentage
       }
@@ -113,8 +114,8 @@ const Display= () => {
                         
                     <div className='flex items-center justify-center flex-col space-y-10'>
                         <div className='flex flex-col items-center justify-center space-y-6 self-center'>
-                            <Image src = '/shake/chula-logo.svg' width={200} height={244} alt='logo' />
-                            <span className='text-5xl font-semibold text-white'>#ทีมจุฬาฯ</span>
+                            <Image src = '/shake/tu-logo.svg' width={200} height={244} alt='logo' />
+                            <span className='text-5xl font-semibold text-white'>#ทีมมธ</span>
                         </div>
                     </div>
                     <div className='flex items-center justify-center'>
