@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Anuphan } from "next/font/google";
 import "./globals.css";
-
+import React from "react";
 
 const anuphan = Anuphan({ subsets: ["latin"] });
 
@@ -22,7 +22,9 @@ export default function RootLayout({
         <link rel="icon" href="/user/logo.svg" sizes="any" />
       </head>
       <body className={anuphan.className}>
+        <React.StrictMode>
         {children}
+        </React.StrictMode>
       </body>
     </html>
   );
