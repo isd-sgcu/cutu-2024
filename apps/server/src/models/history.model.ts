@@ -70,7 +70,10 @@ export class GameHistoryRepository {
     this.redis.keys(`game::${game_id}::*`).then((keys) => {
       keys.forEach(async (k) => {
         if (k !== `game::${game_id}::${key}`) {
-          this.redis.decrBy(k, Math.floor((total - parseInt(await this.redis.get(k) || '0')) * vote / 100))
+          const kTotal = parseInt(await this.redis.get(k) || '0')
+          const decrease = ((Math.floor((total - kTotal) * vote / 100)))
+          const remain = kTotal - decrease
+          if (remain > 0) this.redis.decrBy(k, decrease)
         }
       })
     })
