@@ -22,7 +22,7 @@ export default function Shake() {
     const cookies = new Cookies();
     const [ socketState, setSocketState ] = useState<Socket | null>(null)    
 
-    const temp = setTimeout(() => {
+    /* const temp = setTimeout(() => {
         setCount(prevCount => {
             const newCount = prevCount + 1;
             if (socketState?.connected) {
@@ -30,7 +30,7 @@ export default function Shake() {
             }
             return newCount;
         });
-    }, 100) 
+    }, 100)  */
 
     useEffect(() => {
         const handleConnect = () => {
