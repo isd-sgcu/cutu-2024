@@ -47,6 +47,7 @@ export default function ShakeComponent({
                         </div>
                     )}
                 </div>
+                <>
                 <div className="self-end mb-[-15px]">
                     <Image src="../shake/fire-icon.svg" alt="fire-icon" width={36} height={36}></Image>
                 </div>
@@ -54,6 +55,7 @@ export default function ShakeComponent({
                     <div className={university == 'cu' ? "h-full bg-[#EE477C] rounded-[20px]" : "h-full bg-[#FF6625] rounded-[20px]"}
                         style={{ width: `${Math.min((count / 500) * 100, 100)}%`}} />
                 </div>
+                </>
             </div>
         </div> 
     )
