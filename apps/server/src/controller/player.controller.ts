@@ -47,12 +47,6 @@ export class PlayerController {
   async onConnection(socket: Socket) {
     this.logger.info(`New connection: ${socket.id}`)
 
-    await this.authenticateSocket(socket)
-    await this.playerService.getGameState().then((game) => {
-      socket.emit('state', game.id)
-      socket.emit('events', game.status)
-    })
-
     socket.on('subscribe', (m, cb) => {
       socket.join('scoreboard');
       this.playerService.getGameState().then((game) => {
@@ -90,6 +84,12 @@ export class PlayerController {
 
     socket.on('disconnect', () => {
       this.logger.info(`Disconnected: ${socket.id}`)
+    })
+
+    await this.authenticateSocket(socket)
+    await this.playerService.getGameState().then((game) => {
+      socket.emit('state', game.id)
+      socket.emit('events', game.status)
     })
   }
 
