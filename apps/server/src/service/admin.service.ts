@@ -16,7 +16,7 @@ export class AdminService {
   }
 
   async getGameState() {
-    const games = await this.gameRepository.getLastActiveGame()
+    const games = await this.gameHistoryRepository.getLastActiveGame()
     return games
   }
 

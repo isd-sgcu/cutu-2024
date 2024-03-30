@@ -109,28 +109,6 @@ export class GameRepository {
     })
   }
 
-  async calculateVotes(game_id: string) {
-    const keys = Game.findOne({
-      where: { id: game_id },
-      attributes: ['actions'],
-    }).then((res) => res?.actions.map((action: any) => action.key))
-    return GameHistory.findAll({
-      where: { game_id },
-      attributes: ['key', [fn('sum', col('vote')), 'total_vote']],
-      group: ['key'],
-    }).then(async (votes) => {
-      return keys.then((keys) => {
-        return keys?.map((key: string) => {
-          const vote = votes.find((vote) => vote.key === key)
-          return {
-            key,
-            total_vote: parseInt(vote?.dataValues.total_vote || '0'),
-          }
-        })
-      })
-    })
-  }
-
   async endGame(id: string) {
     return Game.update({ open: false }, { where: { id } }).then(() => {
       const keys = Game.findOne({

@@ -20,7 +20,7 @@ export class PlayerService {
   }
 
   async submit(client: Client, action: string, vote: number) {
-    const game = await this.gameRepository.getLastActiveGame()
+    const game = await this.gameHistoryRepository.getLastActiveGame()
     if (game && game.id && game.status === 'playing') {
       await this.gameHistoryRepository.createHistory(
         game.id,

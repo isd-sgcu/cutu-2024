@@ -66,19 +66,7 @@ export class GameHistoryRepository {
     key: string,
     vote: number,
   ) {
-    await this.redis.incrBy(`game::${game_id}::${key}`, vote)
-    return GameHistory.findOne({ where: { game_id, player_id, key } }).then(
-      async (res) => {
-        if (res) {
-          return GameHistory.increment(
-            { vote },
-            { where: { game_id, player_id, key } },
-          )
-        } else {
-          return GameHistory.create({ game_id, player_id, key, vote })
-        }
-      },
-    )
+    return await this.redis.incrBy(`game::${game_id}::${key}`, vote)
   }
 
   async getHistoryByPlayerID(game_id: string, player_id: string) {
@@ -115,14 +103,12 @@ export class GameHistoryRepository {
   async startGame(id: string, reset: boolean) {
     return Game.findByPk(id)
       .then(async (game) => {
-        if (game) {
-          if (reset) {
-            game.actions.forEach((action) => {
-              this.redis.set(`game::${id}::${action.key}`, 0)
-            })
-            await GameHistory.update({ vote: 0 }, { where: { game_id: id } })
-          }
+        if (game && reset) {
+          game.actions.forEach((action) => {
+            this.redis.set(`game::${id}::${action.key}`, 0)
+          })
         }
+        return this.redis.set('state::game', id)
       })
       .then(() => 'OK')
       .catch((err) => {
@@ -130,4 +116,26 @@ export class GameHistoryRepository {
         throw new Error("Can't set game redis keys")
       })
   }
+
+  async getLastActiveGame() {
+    return await this.redis.get('state::game').then((game) => {
+      if (game) {
+        return Game.findByPk(game).then((res) => ({
+          id: res?.id,
+          game: res,
+          status: res?.open ? 'playing' : 'waiting',
+        }))
+      }
+      return Game.findOne({
+        order: [['updatedAt', 'DESC']],
+        attributes: ['id', 'open', 'actions'],
+        limit: 1,
+      }).then((res) => ({
+        id: res?.id,
+        game: res,
+        status: res?.open ? 'playing' : 'waiting',
+      }))
+    })
+  }
+
 }
