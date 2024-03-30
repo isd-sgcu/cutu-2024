@@ -23,6 +23,7 @@ const Screen = () => {
             setTimeout(() => {
                 console.log('Subscribing');
                 socket.emit('subscribe', '123');
+                console.log(data.status)
             }, 3000);
         };
 
@@ -34,7 +35,7 @@ const Screen = () => {
             const tuScore = Math.round(parseFloat(parts[3]));
             
             //console.log({cuScore, tuScore}  )
-            setData({...data, cu: cuScore, tu: tuScore})
+            setData(data => ({...data, cu: cuScore, tu: tuScore}))
         }
 
         const handleScreen = (screen: string) => {
@@ -54,7 +55,7 @@ const Screen = () => {
 
         const handleEvents = (events: string) => {
             console.log(events)
-            setData({...data, status: events})
+            setData(data =>  ({...data, status: events}))
         }
 
         const handleDisconnect = () => {
@@ -97,10 +98,10 @@ const Screen = () => {
             socket.on('events', handleEvents);
             socket.on('screen', handleScreen);
             
-            
             return () => {
                 socket?.disconnect();
             };
+            
         })();
     }, []);   
 

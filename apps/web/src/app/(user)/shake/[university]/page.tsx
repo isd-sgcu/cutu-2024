@@ -21,7 +21,17 @@ export default function Shake() {
     let fid: string | null = null;
     //let socket: Socket | null = null;
     const cookies = new Cookies();
-    const [ socketState, setSocketState ] = useState<Socket | null>(null)
+    const [ socketState, setSocketState ] = useState<Socket | null>(null)    
+
+    /* const temp = setTimeout(() => {
+        setCount(prevCount => {
+            const newCount = prevCount + 1;
+            if (socketState?.connected) {
+                socketState.emit("submit", `${university} 1`);
+            }
+            return newCount;
+        });
+    }, 100) */
 
     useEffect(() => {
         const handleConnect = () => {
