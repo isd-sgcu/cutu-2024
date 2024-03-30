@@ -5,19 +5,7 @@ import { sequelizeConnection } from '$/utils/database'
 export class Client
   extends Model<ClientAttributes, ClientInput>
   implements ClientAttributes
-{
-  public id!: string
-  public sid!: string
-  public fid!: string
-  public cid!: string
-  public isSuspended!: boolean
-  public ipAddr!: string
-  public name!: string
-
-  public readonly createdAt!: Date
-  public readonly updatedAt!: Date
-  public readonly deletedAt!: Date
-}
+{ }
 
 Client.init(
   {

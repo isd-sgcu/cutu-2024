@@ -5,19 +5,7 @@ import { GameHistory } from './history.model'
 
 export class Game
   extends Model<GameAttributes, GameInput>
-  implements GameAttributes {
-  public id!: string
-  public title!: string
-  public description!: string
-  public open!: boolean
-  public actions!: { key: string; image: string }[]
-  public image!: string
-  public winner!: { key: string; total_vote: number }
-
-  public readonly createdAt!: Date
-  public readonly updatedAt!: Date
-  public readonly deletedAt!: Date
-}
+  implements GameAttributes { }
 
 Game.init(
   {
