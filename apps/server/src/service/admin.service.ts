@@ -36,6 +36,18 @@ export class AdminService {
     return this.gameRepository.startGame(id)
   }
 
+  async getScoreboard(game_id: string, game_keys: string[]) {
+    return this.gameHistoryRepository
+      .summaryGame(game_id, game_keys)
+      .then((score) => {
+        const total_vote = score.reduce((acc, s) => acc + s.vote, 0)
+        if (total_vote === 0) {
+          return score.map((s) => `${s.key} ${(100 / score.length).toFixed(2)}`).join(' ')
+        }
+        return score?.map((s) => `${s.key} ${(s.vote / total_vote * 100).toFixed(2)}`).join(' ')
+      })
+  }
+
   async endGame(id: string) {
     return this.gameRepository.endGame(id)
   }

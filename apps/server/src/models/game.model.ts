@@ -104,7 +104,7 @@ export class GameRepository {
         if (!res[1][0]) {
           throw Error('Game not found')
         }
-        return res[1][0]
+        return res[1][0] as Game
       })
     })
   }

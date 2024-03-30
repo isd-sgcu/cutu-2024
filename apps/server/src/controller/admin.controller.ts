@@ -41,6 +41,7 @@ export class AdminController {
       'state',
       await this.adminService.getGameState().then((game) => game.id),
     )
+    this.io.sockets.to('scoreboard').emit('scoreboard', await this.adminService.getScoreboard(game.id, game.actions.map((a) => a.key)))
   }
 
   async endGame(req: Request, res: Response) {
