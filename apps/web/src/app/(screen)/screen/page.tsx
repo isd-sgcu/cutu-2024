@@ -16,7 +16,6 @@ const Screen = () => {
     })
     const cookies = new Cookies( null, { path: "/" } )
 
-
     useEffect(() => {
         const handleConnect = () => {
             console.log('Client has connected to the server!');
@@ -80,7 +79,7 @@ const Screen = () => {
 
     return (  
         <div>
-            {showedPage == "overlay" ? <OverLay /> : <Display />}
+            {showedPage == "overlay" ? <OverLay data={data}/> : <Display data={data}/>}
             <button className="w-[200px] h-[200px] bg-white" onClick={() => setShowPage(prev => prev == "overlay" ? "display" : "overlay")}>เปลี่ยนหน้า</button>
         </div>
     );
