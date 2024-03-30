@@ -11,7 +11,7 @@ interface OverLayProps {
 
 const Page = ({data} : OverLayProps) => {
     return (  
-        <div className="w-full h-full bg-[#3dff3d] text-white text-3xl font-bold flex flex-col justify-between p-[50px]">
+        <div className="w-full h-full bg-[#3dff3d] text-white text-3xl font-bold flex flex-col justify-between p-[50px] pb-[100px]">
             <div className="flex justify-between">
                 <div className="flex flex-col items-center gap-10">
                     <Image
@@ -49,7 +49,7 @@ const Page = ({data} : OverLayProps) => {
                 </div>
             </div>
             <div>
-                <div className="flex justify-between mb-4">
+                <div className="flex justify-between mb-[50px]">
                     <div className="flex flex-col items-center">
                         <Image
                             src="overlay/team-cu.svg"
