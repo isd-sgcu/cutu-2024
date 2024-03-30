@@ -5,9 +5,6 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
-  '@fingerprintjs/fingerprintjs':
-    specifier: ^4.2.2
-    version: 4.2.2
   axios:
     specifier: ^1.6.8
     version: 1.6.8
@@ -26,12 +23,12 @@ dependencies:
   socket.io-client:
     specifier: ^4.7.5
     version: 4.7.5
-  uuid:
-    specifier: ^9.0.1
-    version: 9.0.1
   universal-cookie:
     specifier: ^7.1.0
     version: 7.1.0
+  uuid:
+    specifier: ^9.0.1
+    version: 9.0.1
 
 devDependencies:
   '@types/js-cookie':
@@ -68,12 +65,6 @@ packages:
     resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
     engines: {node: '>=10'}
     dev: true
-
-  /@fingerprintjs/fingerprintjs@4.2.2:
-    resolution: {integrity: sha512-scD+pDgNZW78LuFAr7ms2yxmDx2NWC4+K5iiOjPT2ZlTlHFbLsORUzLJI2rcKicxxLtHbvf3A7BU1drVr4iHGg==}
-    dependencies:
-      tslib: 2.6.2
-    dev: false
 
   /@isaacs/cliui@8.0.2:
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
@@ -240,12 +231,13 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /@types/js-cookie@3.0.6:
-    resolution: {integrity: sha512-wkw9yd1kEXOPnvEeEV1Go1MmxtBJL0RR79aOTAApecWFVu7w0NNXNqhcWgvw2YgZDYadliXkl14pa3WXw5jlCQ==}
-    dev: true
   /@types/cookie@0.6.0:
     resolution: {integrity: sha512-4Kh9a6B2bQciAhf7FSuMRRkUWecJgJu9nPnx3yzpsfXX/c50REIqpHY4C82bXP90qrLtXtkDxTZosYO3UpOwlA==}
     dev: false
+
+  /@types/js-cookie@3.0.6:
+    resolution: {integrity: sha512-wkw9yd1kEXOPnvEeEV1Go1MmxtBJL0RR79aOTAApecWFVu7w0NNXNqhcWgvw2YgZDYadliXkl14pa3WXw5jlCQ==}
+    dev: true
 
   /@types/node@20.11.30:
     resolution: {integrity: sha512-dHM6ZxwlmuZaRmUPfv1p+KrdD1Dci04FbdEm/9wEMouFqxYoFl5aMkt0VMAUtYRQDyYvD41WJLukhq/ha3YuTw==}

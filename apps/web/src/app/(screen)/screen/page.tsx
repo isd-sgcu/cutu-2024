@@ -4,10 +4,11 @@ import { useEffect, useState } from "react";
 import OverLay from "./components/Overlay";
 import Display from "./components/Display";
 import Cookies from "universal-cookie";
-import FingerprintJS from "@fingerprintjs/fingerprintjs";
 import { Socket, io } from "socket.io-client";
+import { v4 as uuidv4 } from 'uuid';
 
 const Screen = () => {
+    let fid: string | null = null;
     const [showedPage, setShowPage] = useState<"overlay" | "display">("overlay");
     const [ data, setData ] = useState({
         status: "waiting",
@@ -61,20 +62,17 @@ const Screen = () => {
         };
 
         (async () => {
-            const savedCid = cookies.get('cid');
-
-            if(!cookies.get('fid')){
-                const fp = await FingerprintJS.load();
-                const result = await fp.get();
-                const fid = result.visitorId;
-                cookies.set('fid', fid)
+            fid = cookies.get('fid');
+            if (!fid) {
+                fid = uuidv4(); 
+                cookies.set('fid', fid);
             }
-
-            const fid = cookies.get('fid')
-            
+        
+            const savedCid = cookies.get('cid');
+        
             const extraHeaders: { [key: string]: string } = {
-                fid: fid,
-                name: 'pun1'
+                fid: fid || '',
+                name: 'john'
             };
 
             if (savedCid) {
