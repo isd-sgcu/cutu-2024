@@ -8,31 +8,31 @@ export class PlayerController {
   constructor(
     private readonly io: Server,
     private readonly playerService: PlayerService,
-  ) { }
+  ) {
+  }
 
-  async onConnection(socket: Socket) {
-    const cid = socket.handshake.headers.cid || socket.handshake.auth.cid
-    const fid = socket.handshake.headers.fid || socket.handshake.auth.fid
-    const name = socket.handshake.headers.name || socket.handshake.auth.name
+  async authenticateSocket(socket: Socket) {
+    const cid = (socket.handshake.headers.cid ||
+      socket.handshake.auth.cid) as string
+    const fid = (socket.handshake.headers.fid ||
+      socket.handshake.auth.fid) as string
+    const name = (socket.handshake.headers.name ||
+      socket.handshake.auth.name) as string
+
+    const ip = (socket.handshake.headers['x-forwarded-for'] ||
+      socket.handshake.address) as string
+
     if (cid && fid) {
       await this.playerService
-        .login(cid as string, fid as string, socket.id)
-        .then((client) => {
-          if (client[0] === 0) return socket.disconnect(true)
-          socket.user = client[1][0]
-        })
+        .login(cid, fid, socket.id)
+        .then((client) => (socket.user = client))
         .catch((err) => {
           this.logger.error(err)
           socket.disconnect(true)
         })
     } else if (name && fid) {
       await this.playerService
-        .register(
-          name as string,
-          fid as string,
-          socket.id,
-          socket.handshake.address,
-        )
+        .register(name, fid, socket.id, ip)
         .then((client) => {
           socket.user = client
           socket.emit('cid', client.cid)
@@ -42,44 +42,54 @@ export class PlayerController {
           socket.disconnect(true)
         })
     } else socket.disconnect(true)
+  }
 
+  async onConnection(socket: Socket) {
     this.logger.info(`New connection: ${socket.id}`)
-    socket.emit('state', await this.playerService.getLastGame())
+
+    await this.authenticateSocket(socket)
+    await this.playerService.getGameState().then((game) => {
+      socket.emit('state', game.id)
+      socket.emit('events', game.status)
+    })
+
+    socket.on('subscribe', (m, cb) => {
+      socket.join('scoreboard');
+      this.playerService.getGameState().then((game) => {
+        if (game.id && game.game && game.status === 'playing')
+          this.playerService
+            .getScoreboard(game.id, game.game.actions.map((a) => a.key))
+            .then((score) => {
+              socket.emit('scoreboard', score)
+            })
+      })
+    })
 
     socket.on('submit', async (message) => {
-      this.logger.info('Received message', message)
-      const data = message.split(' ')
+      this.logger.debug("Received message: " + String(message).trim())
+      const data = String(message).trim().split(' ')
       this.playerService
         .submit(socket.user, data[0], parseInt(data[1]))
+        .then((game) => {
+          this.logger.debug(`Incremented: ${String(message).trim()}`)
+          if (game.id && game.game) {
+            this.logger.debug("Getting scoreboard updated")
+            return this.playerService
+              .getScoreboard(game.id, game.game.actions.map((a) => a.key))
+              .then((score) =>
+                this.io.to('scoreboard').emit('scoreboard', score),
+              )
+          }
+        }
+        )
         .catch((err) => {
-          this.logger.error(err)
-
+          this.logger.warn("Failed to increment: " + err)
           socket.disconnect(true)
         })
     })
 
-    const intervalHandle = setInterval(async () => {
-      await this.playerService
-        .getScoreboard()
-        .then((score) => {
-          const scoreboard =
-            score
-              ?.map((s) => {
-                return `${s.key} ${s.total_vote}`
-              })
-              .join(' ') || '-1'
-          socket.emit('scoreboard', scoreboard)
-        })
-        .catch((err) => {
-          this.logger.error(err)
-        })
-    }, 500)
-
-    socket.emit('events', await this.playerService.getState())
-
     socket.on('disconnect', () => {
       this.logger.info(`Disconnected: ${socket.id}`)
-      clearInterval(intervalHandle)
     })
   }
 

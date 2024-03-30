@@ -14,29 +14,40 @@ import { AdminService } from './service/admin.service'
 import { sequelizeConnection } from './utils/database'
 import { ClientRepository } from './models/client.model'
 import cors from 'cors'
+import { createLogger } from './utils/logger'
+import createMorganLogger from './middleware/logger.middleware'
+import { GameHistoryRepository } from './models/history.model'
 
 export async function initServer(app: Express, server: HTTPServer) {
   app.use(cors())
+  app.get('/healthz', (req, res) => {
+    res.send('OK')
+  })
+  app.use(createMorganLogger(createLogger('')))
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
+
+  const logger = createLogger('InitServer')
 
   const pubClient = createClient({ url: process.env.REDIS_URL })
   const subClient = pubClient.duplicate()
 
   await pubClient.connect()
+  await subClient.connect()
 
   await sequelizeConnection
     .authenticate()
     .then(() => {
-      console.log('Connection has been established successfully.')
+      logger.info(' Database Connection has been established successfully.')
     })
     .catch((err) => {
-      console.error('Unable to connect to the database:', err)
+      logger.error('Unable to connect to the database:', { err })
     })
   sequelizeConnection.sync({ force: process.env.FORCE_DB_SYNC === 'true' })
 
   const gameRepository = new GameRepository()
   const clientRepository = new ClientRepository()
+  const gameHistoryRepository = new GameHistoryRepository(pubClient)
 
   const playerIO = new Server(server, {
     adapter: createAdapter(pubClient, subClient),
@@ -46,13 +57,12 @@ export async function initServer(app: Express, server: HTTPServer) {
       credentials: true,
       methods: ['GET', 'POST'],
       allowedHeaders: ['fid', 'cid', 'name'],
-      exposedHeaders: ['fid', 'cid', 'name'],
     },
     allowEIO3: true,
   })
   const playerController = new PlayerController(
     playerIO,
-    new PlayerService(gameRepository, clientRepository),
+    new PlayerService(gameRepository, clientRepository, gameHistoryRepository),
   )
   playerIO.on(
     'connection',
@@ -61,7 +71,7 @@ export async function initServer(app: Express, server: HTTPServer) {
 
   const adminController = new AdminController(
     playerIO,
-    new AdminService(gameRepository),
+    new AdminService(gameRepository, gameHistoryRepository),
   )
 
   const playerRouter = new PlayerRouter(playerController)
@@ -69,10 +79,6 @@ export async function initServer(app: Express, server: HTTPServer) {
 
   app.use(playerRouter.prefix, playerRouter.router)
   app.use(adminRouter.prefix, adminRouter.router)
-
-  app.get('/healthz', (req, res) => {
-    res.send('OK')
-  })
 
   return app
 }
