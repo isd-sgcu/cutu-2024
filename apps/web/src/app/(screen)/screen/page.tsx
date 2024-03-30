@@ -124,23 +124,23 @@ const Screen = () => {
     <div className="bg-[#3dff3d]">
       <TransitionGroup>
         {showedPage == "overlay" ? (
-          <CSSTransition key="overlay" timeout={700} classNames="item">
+          <CSSTransition key="overlay" timeout={700} classNames="item" appear>
             <OverLay data={data} />
           </CSSTransition>
         ) : (
-          <CSSTransition key="display" timeout={700} classNames="item">
+          <CSSTransition key="display" timeout={700} classNames="item" appear>
             <Display data={data} />
           </CSSTransition>
         )}
       </TransitionGroup>
-      <button
+      {/* <button
         className="w-[200px] h-[200px] bg-white"
         onClick={() =>
           setShowPage((prev) => (prev == "overlay" ? "display" : "overlay"))
         }
       >
         เปลี่ยนหน้า
-      </button>
+      </button> */}
     </div>
   );
 };
