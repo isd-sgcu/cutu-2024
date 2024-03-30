@@ -90,6 +90,7 @@ export class PlayerController {
 
     socket.on('disconnect', () => {
       this.logger.info(`Disconnected: ${socket.id}`)
+      clearInterval(intervalHandle)
     })
   }
 

@@ -3,17 +3,13 @@ import Image from 'next/image';
 
 interface QrCodeProps {
     imageUrl?: string;
-    size: string
+    size: number
 }
 
-const QrCode: React.FC<QrCodeProps> = ({imageUrl, size}) => {
+const QrCode: React.FC<QrCodeProps> = ({size}) => {
   return (
-    <div className={`w-${size} h-${size} bg-white flex justify-center items-center text-4xl font-bold overflow-hidden`}>
-        {imageUrl ? (
-            <Image src={imageUrl} alt="QR Code" fill={true}/>
-        ) : (
-            'QR'
-        )}
+    <div className={`bg-white flex justify-center items-center text-4xl font-bold overflow-hidden`}>
+          <Image src={"/user/qrcode.svg"} alt="QR Code" width={size} height={size}/>
     </div>
   );
 }

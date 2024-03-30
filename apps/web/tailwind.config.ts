@@ -24,6 +24,7 @@ const config: Config = {
         "cu-secondary": "#F1678C",
         "tu-primary": "#ED1C24",
         "tu-secondary": "#FBAF44",
+        "tu-text" : "#EC473F",
         "display": "#D9D9D9",
       }
     },

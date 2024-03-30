@@ -6,6 +6,9 @@ import { getMobileOperatingSystem } from "@/utils/getMobileOperatingSystem";
 import ShakeComponent from '../../../../components/Shake';
 import { useParams, useSearchParams } from "next/navigation";
 import { Suspense } from 'react';
+import { io, Socket } from "socket.io-client";
+import FingerprintJS from '@fingerprintjs/fingerprintjs';
+import Cookies from 'universal-cookie';
 
 let shaking: { x: number; y: number; z: number } | undefined;
 
@@ -15,6 +18,62 @@ function normalize(x: number, y: number, z: number) {
 }
 
 export default function Shake() {
+    let fid: string | null = null;
+    //let socket: Socket | null = null;
+    const cookies = new Cookies();
+    const [ socketState, setSocketState ] = useState<Socket | null>(null)
+
+    useEffect(() => {
+        const handleConnect = () => {
+            console.log('Client has connected to the server!');
+        };
+
+        const handleCid = (serverCid: string) => {
+            console.log('woo');
+            try {
+                console.log('Received cid from server:', serverCid);
+                cookies.set('cid', serverCid);
+                console.log('cid cookie set with value:', serverCid);
+            } catch (error) {
+                console.error('Error handling cid:', error);
+            }
+        };
+
+        const handleDisconnect = () => {
+            console.log('The client has disconnected!');
+        };
+
+        (async () => {
+            const fp = await FingerprintJS.load();
+            const result = await fp.get();
+            fid = result.visitorId;
+            const savedCid = cookies.get('cid');
+            
+            const extraHeaders: { [key: string]: string } = {
+                fid: fid,
+                name: 'john'
+            };
+
+            if (savedCid) {
+                extraHeaders.cid = savedCid;
+            }
+            console.log(extraHeaders);
+            const socket = io('wss://api.cutu2024.sgcu.in.th', { 
+                auth: extraHeaders,
+                path: "/api/ws", 
+                transports: ['websocket'],
+            });
+
+            socket.on('connect', handleConnect);
+            socket.on('cid', handleCid);
+            socket.on('disconnect', handleDisconnect);
+            setSocketState(socket)
+            return () => {
+                socket?.disconnect();
+            };
+        })();
+    }, []);
+
     const [motion1, setMotion1] = useState({
         x: 0,
         y: 0,
@@ -49,7 +108,13 @@ export default function Shake() {
                     y: motion1.y,
                     z: motion1.z,
                 };
-                setCount(count + 1);
+                setCount(prevCount => {
+                    const newCount = prevCount + 1;
+                    if (socketState?.connected) {
+                        socketState.emit("submit", `${university} ${newCount - prevCount}`);
+                    }
+                    return newCount;
+                });
                 tickTime();
                 setTime(Math.round(peekTime()));
             }
@@ -110,10 +175,18 @@ export default function Shake() {
     };
 
     return (
-        <div>
-            <Suspense fallback={<div>Loading...</div>}>
+        <>
+            <Suspense fallback={<div>Loading...</div>} >
                 <ShakeComponent university={university} count={count} onClick={handleRequestMotion}/>
+                {/* <button className="bg-yellow-300" onClick={() => {
+                    setCount(prevCount => {
+                        const newCount = prevCount + 1;
+                        console.log('sdsd')
+                        socketState?.emit("submit", `${university} ${newCount}`);
+                        return newCount;
+                    });
+                }}>shake</button> */}
             </Suspense>
-        </div>
+        </>
     );
 }
