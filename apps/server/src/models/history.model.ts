@@ -95,7 +95,7 @@ export class GameHistoryRepository {
 
     return keys.map((key, index) => ({
       key: key.split('::')[2],
-      vote: votes[index],
+      vote: parseInt(votes[index] || '0'),
     }))
   }
 

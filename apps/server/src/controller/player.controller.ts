@@ -62,7 +62,17 @@ export class PlayerController {
       socket.emit('events', game.status)
     })
 
-    socket.on('subscribe', (m, cb) => socket.join('scoreboard') && cb('OK'))
+    socket.on('subscribe', (m, cb) => {
+      socket.join('scoreboard');
+      this.playerService.getGameState().then((game) => {
+        if (game.id && game.game && game.status === 'playing')
+          this.playerService
+            .getScoreboard(game.id, game.game.actions.map((a) => a.key))
+            .then((score) => {
+              socket.emit('scoreboard', score)
+            })
+      })
+    })
 
     socket.on('submit', async (message) => {
       this.logger.info('Received message', message)
@@ -70,7 +80,6 @@ export class PlayerController {
       this.playerService
         .submit(socket.user, data[0], parseInt(data[1]))
         .then((game) => {
-          console.log(game)
           if (game.id && game.game)
             return this.playerService
               .getScoreboard(game.id, game.game.actions.map((a) => a.key))
