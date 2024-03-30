@@ -4,11 +4,18 @@ import {
   GameHistoryInput,
 } from '$/interface/history.interface'
 import { sequelizeConnection } from '$/utils/database'
+import {
+  RedisClientType,
+  RedisDefaultModules,
+  RedisFunctions,
+  RedisScripts,
+} from 'redis'
+import { createLogger } from '$/utils/logger'
+import { Game } from './game.model'
 
 export class GameHistory
   extends Model<GameHistoryAttributes, GameHistoryInput>
-  implements GameHistoryAttributes
-{
+  implements GameHistoryAttributes {
   public game_id!: string
   public player_id!: string
   public key!: string
@@ -44,15 +51,101 @@ GameHistory.init(
 )
 
 export class GameHistoryRepository {
-  async getAllGameHistorys(): Promise<GameHistory[]> {
-    return GameHistory.findAll()
+  logger = createLogger('GameHistoryRepository')
+  constructor(
+    private readonly redis: RedisClientType<
+      RedisDefaultModules,
+      RedisFunctions,
+      RedisScripts
+    >,
+  ) { }
+
+  async createHistory(
+    game_id: string,
+    player_id: string,
+    key: string,
+    vote: number,
+  ) {
+    const total = await this.redis.incrBy(`game::${game_id}::${key}`, vote)
+    this.redis.keys(`game::${game_id}::*`).then(async (keys) => {
+      keys.forEach(async (k) => {
+        if (k !== `game::${game_id}::${key}`) {
+          const kTotal = parseInt(await this.redis.get(k) || '0')
+          const decrease = ((Math.floor(Math.abs(total - kTotal) * vote / 100)))
+          const remain = kTotal - decrease
+          if (remain > 0) this.redis.decrBy(k, decrease)
+        }
+      })
+    })
   }
 
-  async getGameHistoryByGameId(game_id: string) {
-    return await GameHistory.findAll({ where: { game_id } })
+  async getHistoryByPlayerID(game_id: string, player_id: string) {
+    return GameHistory.findAll({ where: { game_id, player_id } })
   }
 
-  async createGameHistory(gameHistory: GameHistory) {
-    return GameHistory.create(gameHistory)
+  async getHistoryByGameID(game_id: string) {
+    return GameHistory.findAll({ where: { game_id } })
   }
+
+  async summaryGame(game_id: string, game_keys: string[]) {
+    const keys = game_keys.map((key) => `game::${game_id}::${key}`)
+    const votes = await this.redis.mGet(keys)
+
+    return keys.map((key, index) => ({
+      key: key.split('::')[2],
+      vote: parseInt(votes[index] || '0'),
+    }))
+  }
+
+  async setScreenState(state: 'full' | 'overlay') {
+    return this.redis.set('state::screen', state).catch((err) => {
+      this.logger.error(err)
+      throw new Error("Can't set screen state")
+    })
+  }
+
+  async getScreenState() {
+    return await this.redis
+      .get('state::screen')
+      .then((state) => state || 'full')
+  }
+
+  async startGame(id: string, reset: boolean) {
+    return Game.findByPk(id)
+      .then(async (game) => {
+        if (game && reset) {
+          game.actions.forEach((action) => {
+            this.redis.set(`game::${id}::${action.key}`, 0)
+          })
+        }
+        return this.redis.set('state::game', id)
+      })
+      .then(() => 'OK')
+      .catch((err) => {
+        this.logger.error(err)
+        throw new Error("Can't set game redis keys")
+      })
+  }
+
+  async getLastActiveGame() {
+    return await this.redis.get('state::game').then((game) => {
+      if (game) {
+        return Game.findByPk(game).then((res) => ({
+          id: res?.id,
+          game: res,
+          status: res?.open ? 'playing' : 'waiting',
+        }))
+      }
+      return Game.findOne({
+        order: [['updatedAt', 'DESC']],
+        attributes: ['id', 'open', 'actions'],
+        limit: 1,
+      }).then((res) => ({
+        id: res?.id,
+        game: res,
+        status: res?.open ? 'playing' : 'waiting',
+      }))
+    })
+  }
+
 }

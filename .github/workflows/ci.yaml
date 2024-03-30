@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 env:
   IMAGE_NAME: registry.digitalocean.com/cutu2024/cutu2024-backend
@@ -39,6 +40,6 @@ jobs:
         with:
           push: true
           context: "{{defaultContext}}:apps/server"
-          tags: ${{ env.IMAGE_NAME }}:${{ github.ref_type == 'tag' && github.ref_name ||  github.sha }},${{ env.IMAGE_NAME }}:latest
+          tags: ${{ env.IMAGE_NAME }}:latest
           cache-from: type=gha,ref=${{ env.IMAGE_NAME }}:buildcache
           cache-to: type=gha,ref=${{ env.IMAGE_NAME }}:buildcache,mode=max

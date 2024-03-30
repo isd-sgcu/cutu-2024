@@ -19,8 +19,9 @@ function normalize(x: number, y: number, z: number) {
 
 export default function Shake() {
     let fid: string | null = null;
-    let socket: Socket | null = null;
+    //let socket: Socket | null = null;
     const cookies = new Cookies();
+    const [ socketState, setSocketState ] = useState<Socket | null>(null)
 
     useEffect(() => {
         const handleConnect = () => {
@@ -57,7 +58,7 @@ export default function Shake() {
                 extraHeaders.cid = savedCid;
             }
             console.log(extraHeaders);
-            socket = io('wss://api.cutu2024.sgcu.in.th', { 
+            const socket = io('wss://api.cutu2024.sgcu.in.th', { 
                 auth: extraHeaders,
                 path: "/api/ws", 
                 transports: ['websocket'],
@@ -66,6 +67,7 @@ export default function Shake() {
             socket.on('connect', handleConnect);
             socket.on('cid', handleCid);
             socket.on('disconnect', handleDisconnect);
+            setSocketState(socket)
             return () => {
                 socket?.disconnect();
             };
@@ -108,8 +110,8 @@ export default function Shake() {
                 };
                 setCount(prevCount => {
                     const newCount = prevCount + 1;
-                    if (socket?.connected) {
-                        socket.emit("submit", `${university} ${newCount}`);
+                    if (socketState?.connected) {
+                        socketState.emit("submit", `${university} ${newCount - prevCount}`);
                     }
                     return newCount;
                 });
@@ -173,10 +175,18 @@ export default function Shake() {
     };
 
     return (
-        <div>
-            <Suspense fallback={<div>Loading...</div>}>
+        <>
+            <Suspense fallback={<div>Loading...</div>} >
                 <ShakeComponent university={university} count={count} onClick={handleRequestMotion}/>
+                {/* <button className="bg-yellow-300" onClick={() => {
+                    setCount(prevCount => {
+                        const newCount = prevCount + 1;
+                        console.log('sdsd')
+                        socketState?.emit("submit", `${university} ${newCount}`);
+                        return newCount;
+                    });
+                }}>shake</button> */}
             </Suspense>
-        </div>
+        </>
     );
 }
