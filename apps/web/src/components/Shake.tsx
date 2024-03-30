@@ -25,7 +25,7 @@ export default function ShakeComponent({
             <Link href="../user" className="flex justify-start">
                 <Image src="../shake/arrow-back.svg" alt="arrow-back" width={25} height={25} />                    
             </Link>
-            <div className="h-full flex flex-col items-center justify-between space-y-4 mb-10">
+            <div className="h-full flex flex-col items-center justify-between space-y-2 mb-10">
                 <Image src="../shake/cu-tu-ball-logo.svg" alt="cu-tu-ball-logo" width={60} height={104} ></Image>
                 <Image src={university == 'cu' ? "../shake/chula-logo.svg" : "../shake/tu-logo.svg"} alt="chula-logo" width={65} height={104} ></Image>
                 <h1 className="font-bold">{university == 'cu' ? '#ทีมจุฬาฯ' : '#ทีมมธ.'}</h1>
