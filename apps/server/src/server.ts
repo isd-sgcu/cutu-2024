@@ -33,6 +33,7 @@ export async function initServer(app: Express, server: HTTPServer) {
   const subClient = pubClient.duplicate()
 
   await pubClient.connect()
+  await subClient.connect()
 
   await sequelizeConnection
     .authenticate()
