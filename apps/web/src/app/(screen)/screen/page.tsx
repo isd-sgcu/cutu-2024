@@ -20,7 +20,7 @@ const Screen = () => {
   const overlayRef = useRef(null);
   const displayRef = useRef(null);
 
-  console.log(data);
+  // console.log(data);
   //console.log('show: ', showedPage)
 
   useEffect(() => {
