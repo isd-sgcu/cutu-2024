@@ -26,7 +26,7 @@ export const options = {
 export default function() {
   const url = 'wss://api.cutu2024.sgcu.in.th/api/ws/?EIO=4&transport=websocket';
 
-  const team = ["CU", "TU"][randomIntBetween(0, 1)];
+  const team = ["cu", "tu"][randomIntBetween(0, 1)];
   
   const handshakeSocket = ws.connect(url, {}, socket => {
     socket.on('open', () => handleOpen(socket, team));
