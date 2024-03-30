@@ -1,10 +1,13 @@
 name: 'CI'
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Image tag'
+        default: 'latest'
+        required: false
+        type: string
 
 env:
   IMAGE_NAME: registry.digitalocean.com/cutu2024/cutu2024-backend
@@ -40,6 +43,6 @@ jobs:
         with:
           push: true
           context: "{{defaultContext}}:apps/server"
-          tags: ${{ env.IMAGE_NAME }}:latest
+          tags: ${{ env.IMAGE_NAME }}:${{ inputs.tag }}
           cache-from: type=gha,ref=${{ env.IMAGE_NAME }}:buildcache
           cache-to: type=gha,ref=${{ env.IMAGE_NAME }}:buildcache,mode=max

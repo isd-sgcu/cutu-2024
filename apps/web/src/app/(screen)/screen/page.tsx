@@ -4,26 +4,26 @@ import { useEffect, useState } from "react";
 import OverLay from "./components/Overlay";
 import Display from "./components/Display";
 import Cookies from "universal-cookie";
-import FingerprintJS from "@fingerprintjs/fingerprintjs";
 import { Socket, io } from "socket.io-client";
+import { v4 as uuidv4 } from 'uuid';
 
 const Screen = () => {
+    let fid: string | null = null;
     const [showedPage, setShowPage] = useState<"overlay" | "display">("overlay");
     const [ data, setData ] = useState({
         status: "waiting",
-        cu: 0,
-        tu: 0
+        cu: 50,
+        tu: 50
     })
-    const cookies = new Cookies( null, { path: "/" } )
-    //console.log(data)
+    const cookies = new Cookies( null, {httpOnly: true} )
+    console.log(data)
+    //console.log('show: ', showedPage)
 
     useEffect(() => {
         const handleConnect = (socket: Socket) => {
             console.log('Client has connected to the server!');
-            setTimeout(() => {
-                console.log('Subscribing');
-                socket.emit('subscribe', '123');
-            }, 3000);
+            console.log('Subscribing');
+            socket.emit('subscribe', '123');
         };
 
         const handleScoreBoard = (scoreString: string) => {
@@ -33,13 +33,13 @@ const Screen = () => {
             const cuScore = Math.round(parseFloat(parts[1]));
             const tuScore = Math.round(parseFloat(parts[3]));
             
-            //console.log({cuScore, tuScore}  )
-            setData({...data, cu: cuScore, tu: tuScore})
+            //console.log({cuScore, tuScore})
+            setData(data => ({...data, cu: cuScore, tu: tuScore}))
         }
 
         const handleScreen = (screen: string) => {
-            //console.log(screen);
-            //setShowPage('full' ? 'overlay' : 'display')
+            console.log(screen);
+            setShowPage(screen == 'overlay' ? 'overlay' : 'display')
         }
 
         const handleCid = (serverCid: string) => {
@@ -54,7 +54,7 @@ const Screen = () => {
 
         const handleEvents = (events: string) => {
             console.log(events)
-            setData({...data, status: events})
+            setData(data =>  ({...data, status: events}))
         }
 
         const handleDisconnect = () => {
@@ -62,20 +62,17 @@ const Screen = () => {
         };
 
         (async () => {
-            const savedCid = cookies.get('cid');
-
-            if(!cookies.get('fid')){
-                const fp = await FingerprintJS.load();
-                const result = await fp.get();
-                const fid = result.visitorId;
-                cookies.set('fid', fid)
+            fid = cookies.get('fid');
+            if (!fid) {
+                fid = uuidv4(); 
+                cookies.set('fid', fid);
             }
-
-            const fid = cookies.get('fid')
-            
+        
+            const savedCid = cookies.get('cid');
+        
             const extraHeaders: { [key: string]: string } = {
-                fid: fid,
-                name: 'pun1'
+                fid: fid || '',
+                name: 'john'
             };
 
             if (savedCid) {
@@ -97,17 +94,17 @@ const Screen = () => {
             socket.on('events', handleEvents);
             socket.on('screen', handleScreen);
             
-            
             return () => {
                 socket?.disconnect();
             };
+            
         })();
     }, []);   
 
     return (  
-        <div>
+        <div className="bg-[#3dff3d]">
             {showedPage == "overlay" ? <OverLay data={data}/> : <Display data={data}/>}
-            <button className="w-[200px] h-[200px] bg-white" onClick={() => setShowPage(prev => prev == "overlay" ? "display" : "overlay")}>เปลี่ยนหน้า</button>
+            {/* <button className="w-[200px] h-[200px] bg-white" onClick={() => setShowPage(prev => prev == "overlay" ? "display" : "overlay")}>เปลี่ยนหน้า</button> */}
         </div>
     );
 }
