@@ -16,14 +16,14 @@ export default function UserLayout({
             <div className="flex items-center rounded-full bg-white w-20 h-20 justify-center ">
               <Image
                   src="user/sgcu.svg"
-                  width={30}
-                  height={30}
+                  width={70}
+                  height={70}
                   alt="sgcu"
-                  className="drop-shadow-lg"
+                 
               />
             </div>
             <Link 
-              href="/credit"
+              href="https://isd.sgcu.in.th/"
               className="flex items-center rounded-full bg-black w-20 h-20 justify-center drop-shadow"
             >
               <Image
