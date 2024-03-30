@@ -22,9 +22,7 @@ export default function RootLayout({
         <link rel="icon" href="/user/logo.svg" sizes="any" />
       </head>
       <body className={anuphan.className}>
-        <React.StrictMode>
         {children}
-        </React.StrictMode>
       </body>
     </html>
   );

@@ -5,26 +5,41 @@ import OverLay from "./components/Overlay";
 import Display from "./components/Display";
 import Cookies from "universal-cookie";
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
-import { io } from "socket.io-client";
+import { Socket, io } from "socket.io-client";
 
 const Screen = () => {
     const [showedPage, setShowPage] = useState<"overlay" | "display">("overlay");
     const [ data, setData ] = useState({
-        status: "none",
-        cu: 10,
+        status: "waiting",
+        cu: 0,
         tu: 0
     })
     const cookies = new Cookies( null, { path: "/" } )
+    //console.log(data)
 
     useEffect(() => {
-        const handleConnect = () => {
+        const handleConnect = (socket: Socket) => {
             console.log('Client has connected to the server!');
+            setTimeout(() => {
+                console.log('Subscribing');
+                socket.emit('subscribe', '123');
+            }, 3000);
         };
 
         const handleScoreBoard = (scoreString: string) => {
-            console.log(scoreString);
-            // TODO : handle scoreboard
-            // NOTE: expect the the score to be percentage
+            //console.log(scoreString);
+            const parts = scoreString.split(" ");
+            //console.log(parts)
+            const cuScore = Math.round(parseFloat(parts[1]));
+            const tuScore = Math.round(parseFloat(parts[3]));
+            
+            //console.log({cuScore, tuScore}  )
+            setData({...data, cu: cuScore, tu: tuScore})
+        }
+
+        const handleScreen = (screen: string) => {
+            //console.log(screen);
+            //setShowPage('full' ? 'overlay' : 'display')
         }
 
         const handleCid = (serverCid: string) => {
@@ -47,10 +62,16 @@ const Screen = () => {
         };
 
         (async () => {
-            const fp = await FingerprintJS.load();
-            const result = await fp.get();
-            const fid = result.visitorId;
             const savedCid = cookies.get('cid');
+
+            if(!cookies.get('fid')){
+                const fp = await FingerprintJS.load();
+                const result = await fp.get();
+                const fid = result.visitorId;
+                cookies.set('fid', fid)
+            }
+
+            const fid = cookies.get('fid')
             
             const extraHeaders: { [key: string]: string } = {
                 fid: fid,
@@ -60,17 +81,23 @@ const Screen = () => {
             if (savedCid) {
                 extraHeaders.cid = savedCid;
             }
+
+            console.log(extraHeaders)
+
             const socket = io('wss://api.cutu2024.sgcu.in.th', { 
                 auth: extraHeaders,
                 path: "/api/ws", 
                 transports: ['websocket'],
             });
 
-            socket.on('connect', handleConnect);
+            socket.on('connect', () => handleConnect(socket))
             socket.on('cid', handleCid);
             socket.on('scoreboard', handleScoreBoard)
             socket.on('disconnect', handleDisconnect);
             socket.on('events', handleEvents);
+            socket.on('screen', handleScreen);
+            
+            
             return () => {
                 socket?.disconnect();
             };
