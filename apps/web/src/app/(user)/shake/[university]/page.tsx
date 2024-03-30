@@ -22,7 +22,7 @@ export default function Shake() {
     const cookies = new Cookies();
     const [ socketState, setSocketState ] = useState<Socket | null>(null)    
 
-    /* const temp = setTimeout(() => {
+    const temp = setTimeout(() => {
         setCount(prevCount => {
             const newCount = prevCount + 1;
             if (socketState?.connected) {
@@ -30,7 +30,7 @@ export default function Shake() {
             }
             return newCount;
         });
-    }, 100) */
+    }, 100) 
 
     useEffect(() => {
         const handleConnect = () => {
@@ -53,9 +53,15 @@ export default function Shake() {
         };
 
         (async () => {
-            const fp = await FingerprintJS.load();
-            const result = await fp.get();
-            fid = result.visitorId;
+            fid = cookies.get('fid');
+            if (!fid) {
+                const fp = await FingerprintJS.load();
+                const result = await fp.get();
+                fid = result.visitorId;
+                cookies.set('fid', fid);
+            }
+
+
             const savedCid = cookies.get('cid');
             
             const extraHeaders: { [key: string]: string } = {
@@ -66,7 +72,7 @@ export default function Shake() {
             if (savedCid) {
                 extraHeaders.cid = savedCid;
             }
-            console.log(extraHeaders);
+
             const socket = io('wss://api.cutu2024.sgcu.in.th', { 
                 auth: extraHeaders,
                 path: "/api/ws", 
@@ -187,14 +193,6 @@ export default function Shake() {
         <>
             <Suspense fallback={<div>Loading...</div>} >
                 <ShakeComponent university={university} count={count} onClick={handleRequestMotion}/>
-                {/* <button className="bg-yellow-300" onClick={() => {
-                    setCount(prevCount => {
-                        const newCount = prevCount + 1;
-                        console.log('sdsd')
-                        socketState?.emit("submit", `${university} ${newCount}`);
-                        return newCount;
-                    });
-                }}>shake</button> */}
             </Suspense>
         </>
     );
