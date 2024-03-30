@@ -4,38 +4,38 @@ import FootBallSlider from "../../display/components/FootBallSlider";
 
 const Page = () => {
     return (  
-        <div className="w-[1920px] h-[1080px] bg-[#3dff3d] text-white">
+        <div className="w-full h-full bg-[#3dff3d] text-white text-3xl font-bold flex flex-col justify-between p-[50px]">
             <div className="flex justify-between">
                 <div className="flex flex-col items-center gap-10">
                     <Image
                         src="user/logo.svg"
-                        width={70}
-                        height={70}
+                        width={100}
+                        height={100}
                         alt="live feedback"
                     />
-                    <QrCode size={100} imageUrl='/qrcode.png'/>
+                    <QrCode size={150} imageUrl='/qrcode.png'/>
                 </div>
-                <div className="flex flex-col items-center gap-[50px]">
+                <div className="flex flex-col items-center gap-[20px]">
                     <div className="flex flex-col items-center gap-10">
                         <Image
                             src="user/live.svg"
-                            width={50}
-                            height={50}
+                            width={80}
+                            height={80}
                             alt="live feedback"
                         />
                         <span>LIVE FEEDBACK</span>
                     </div>
-                    <div className="flex gap-[40px]">
+                    <div className="flex gap-[20px]">
                         <Image
                             src="user/sgcu.svg"
-                            width={120}
-                            height={120}
+                            width={80}
+                            height={80}
                             alt="sgcu"
                         />
                         <Image
                             src="user/isd.svg"
-                            width={120}
-                            height={120}
+                            width={80}
+                            height={80}
                             alt="isd"
                         />
                     </div>
@@ -46,8 +46,8 @@ const Page = () => {
                     <div className="flex flex-col items-center">
                         <Image
                             src="overlay/team-cu.svg"
-                            width={140}
-                            height={140}
+                            width={120}
+                            height={120}
                             alt="cu-team"
                         />
                         <span>#ทีมจุฬาฯ</span>
@@ -55,14 +55,14 @@ const Page = () => {
                     <div className="flex flex-col items-center">
                         <Image
                             src="overlay/team-tu.svg"
-                            width={140}
-                            height={140}
+                            width={120}
+                            height={120}
                             alt="tu-team"
                         />
                         <span>#ทีมมธ</span>
                     </div>
                 </div>
-                <FootBallSlider sliderHeight='[50px]' ballSize={250} />
+                <FootBallSlider sliderHeight='[20px]' ballSize={0} />
             </div>
         </div>
     );
@@ -71,7 +71,8 @@ const Page = () => {
 
 const overlay = () => {
     return (  
-        <div className="">
+        <div className="w-[3840px] h-[1080px] flex">
+            <Page />
             <Page />
         </div>
     );

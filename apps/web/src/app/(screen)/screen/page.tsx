@@ -5,7 +5,7 @@ import OverLay from "./components/Overlay";
 import Display from "./components/Display";
 
 const Screen = () => {
-    const [showedPage, setShowPage] = useState<"overlay" | "display">("display");
+    const [showedPage, setShowPage] = useState<"overlay" | "display">("overlay");
 
     return (  
         <div>
