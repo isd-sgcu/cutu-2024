@@ -1,9 +1,6 @@
 "use client";
 import React, { useEffect, useMemo } from "react";
 import Image from "next/image";
-import { useState } from "react";
-import { Socket, io } from "socket.io-client";
-import FingerprintJS from "@fingerprintjs/fingerprintjs";
 import Cookies from "universal-cookie";
 
 interface FootBallSliderProps {
