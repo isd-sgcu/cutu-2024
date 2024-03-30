@@ -8,8 +8,7 @@ export class PlayerController {
   constructor(
     private readonly io: Server,
     private readonly playerService: PlayerService,
-  ) {
-  }
+  ) {}
 
   async authenticateSocket(socket: Socket) {
     const cid = (socket.handshake.headers.cid ||
@@ -55,11 +54,14 @@ export class PlayerController {
     })
 
     socket.on('subscribe', (m, cb) => {
-      socket.join('scoreboard');
+      socket.join('scoreboard')
       this.playerService.getGameState().then((game) => {
         if (game.id && game.game && game.status === 'playing')
           this.playerService
-            .getScoreboard(game.id, game.game.actions.map((a) => a.key))
+            .getScoreboard(
+              game.id,
+              game.game.actions.map((a) => a.key),
+            )
             .then((score) => {
               socket.emit('scoreboard', score)
             })
@@ -67,24 +69,26 @@ export class PlayerController {
     })
 
     socket.on('submit', async (message) => {
-      this.logger.debug("Received message: " + String(message).trim())
+      this.logger.debug('Received message: ' + String(message).trim())
       const data = String(message).trim().split(' ')
       this.playerService
         .submit(socket.user, data[0], parseInt(data[1]))
         .then((game) => {
           this.logger.debug(`Incremented: ${String(message).trim()}`)
           if (game.id && game.game) {
-            this.logger.debug("Getting scoreboard updated")
+            this.logger.debug('Getting scoreboard updated')
             return this.playerService
-              .getScoreboard(game.id, game.game.actions.map((a) => a.key))
+              .getScoreboard(
+                game.id,
+                game.game.actions.map((a) => a.key),
+              )
               .then((score) =>
                 this.io.to('scoreboard').emit('scoreboard', score),
               )
           }
-        }
-        )
+        })
         .catch((err) => {
-          this.logger.warn("Failed to increment: " + err)
+          this.logger.warn('Failed to increment: ' + err)
           socket.disconnect(true)
         })
     })

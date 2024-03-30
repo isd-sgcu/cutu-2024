@@ -41,7 +41,8 @@ export async function initServer(app: Express, server: HTTPServer) {
       logger.info(' Database Connection has been established successfully.')
     })
     .catch((err) => {
-      logger.error('Unable to connect to the database:', { err })
+      console.error(err)
+      logger.error(`Unable to connect to the database: ${err}`)
     })
   sequelizeConnection.sync({ force: process.env.FORCE_DB_SYNC === 'true' })
 

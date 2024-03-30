@@ -5,7 +5,7 @@ export class AdminService {
   constructor(
     private readonly gameRepository: GameRepository,
     private readonly gameHistoryRepository: GameHistoryRepository,
-  ) { }
+  ) {}
 
   async getGameByID(id: string) {
     return this.gameRepository.getGameById(id)
@@ -42,9 +42,13 @@ export class AdminService {
       .then((score) => {
         const total_vote = score.reduce((acc, s) => acc + s.vote, 0)
         if (total_vote === 0) {
-          return score.map((s) => `${s.key} ${(100 / score.length).toFixed(2)}`).join(' ')
+          return score
+            .map((s) => `${s.key} ${(100 / score.length).toFixed(2)}`)
+            .join(' ')
         }
-        return score?.map((s) => `${s.key} ${(s.vote / total_vote * 100).toFixed(2)}`).join(' ')
+        return score
+          ?.map((s) => `${s.key} ${((s.vote / total_vote) * 100).toFixed(2)}`)
+          .join(' ')
       })
   }
 

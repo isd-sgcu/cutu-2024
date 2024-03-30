@@ -9,7 +9,7 @@ export class PlayerService {
     private readonly gameRepository: GameRepository,
     private readonly clientRepository: ClientRepository,
     private readonly gameHistoryRepository: GameHistoryRepository,
-  ) { }
+  ) {}
 
   async getGame(id: string) {
     return await this.gameRepository.getGameById(id).catch((err) => ({ err }))
@@ -80,9 +80,13 @@ export class PlayerService {
       .then((score) => {
         const total_vote = score.reduce((acc, s) => acc + s.vote, 0)
         if (total_vote === 0) {
-          return score.map((s) => `${s.key} ${(100 / score.length).toFixed(2)}`).join(' ')
+          return score
+            .map((s) => `${s.key} ${(100 / score.length).toFixed(2)}`)
+            .join(' ')
         }
-        return score?.map((s) => `${s.key} ${(s.vote / total_vote * 100).toFixed(2)}`).join(' ')
+        return score
+          ?.map((s) => `${s.key} ${((s.vote / total_vote) * 100).toFixed(2)}`)
+          .join(' ')
       })
   }
 }

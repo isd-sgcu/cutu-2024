@@ -5,7 +5,8 @@ import { GameHistory } from './history.model'
 
 export class Game
   extends Model<GameAttributes, GameInput>
-  implements GameAttributes {
+  implements GameAttributes
+{
   public id!: string
   public title!: string
   public description!: string

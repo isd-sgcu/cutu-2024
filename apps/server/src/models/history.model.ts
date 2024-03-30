@@ -15,7 +15,8 @@ import { Game } from './game.model'
 
 export class GameHistory
   extends Model<GameHistoryAttributes, GameHistoryInput>
-  implements GameHistoryAttributes {
+  implements GameHistoryAttributes
+{
   public game_id!: string
   public player_id!: string
   public key!: string
@@ -58,7 +59,7 @@ export class GameHistoryRepository {
       RedisFunctions,
       RedisScripts
     >,
-  ) { }
+  ) {}
 
   async createHistory(
     game_id: string,
@@ -70,8 +71,8 @@ export class GameHistoryRepository {
     this.redis.keys(`game::${game_id}::*`).then(async (keys) => {
       keys.forEach(async (k) => {
         if (k !== `game::${game_id}::${key}`) {
-          const kTotal = parseInt(await this.redis.get(k) || '0')
-          const decrease = ((Math.floor(Math.abs(total - kTotal) * vote / 100)))
+          const kTotal = parseInt((await this.redis.get(k)) || '0')
+          const decrease = Math.floor((Math.abs(total - kTotal) * vote) / 100)
           const remain = kTotal - decrease
           if (remain > 0) this.redis.decrBy(k, decrease)
         }
@@ -147,5 +148,4 @@ export class GameHistoryRepository {
       }))
     })
   }
-
 }

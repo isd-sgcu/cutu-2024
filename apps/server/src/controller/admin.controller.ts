@@ -8,7 +8,7 @@ export class AdminController {
   constructor(
     private readonly io: Server,
     private readonly adminService: AdminService,
-  ) { }
+  ) {}
   async listGames(req: Request, res: Response) {
     const games = await this.adminService.listGames()
     res.json(games)
@@ -41,7 +41,13 @@ export class AdminController {
       'state',
       await this.adminService.getGameState().then((game) => game.id),
     )
-    this.io.sockets.to('scoreboard').emit('scoreboard', await this.adminService.getScoreboard(game.id, game.actions.map((a) => a.key)))
+    this.io.sockets.to('scoreboard').emit(
+      'scoreboard',
+      await this.adminService.getScoreboard(
+        game.id,
+        game.actions.map((a) => a.key),
+      ),
+    )
   }
 
   async endGame(req: Request, res: Response) {
@@ -58,7 +64,10 @@ export class AdminController {
   async getGameSummary(req: Request, res: Response) {
     const game = await this.adminService.getGameByID(req.params.id)
     if (!game) return res.status(404).send({ err: 'Game not found' })
-    const summary = await this.adminService.getGameSummary(game.id, game.actions.map((a) => a.key))
+    const summary = await this.adminService.getGameSummary(
+      game.id,
+      game.actions.map((a) => a.key),
+    )
     res.json(summary)
   }
 
