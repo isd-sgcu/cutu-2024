@@ -5,8 +5,7 @@ import { GameHistory } from './history.model'
 
 export class Game
   extends Model<GameAttributes, GameInput>
-  implements GameAttributes
-{
+  implements GameAttributes {
   public id!: string
   public title!: string
   public description!: string
@@ -69,10 +68,11 @@ export class GameRepository {
   async getLastActiveGame() {
     const game = await Game.findOne({
       order: [['updatedAt', 'DESC']],
-      attributes: ['id', 'open'],
+      attributes: ['id', 'open', 'actions'],
       limit: 1,
     }).then((res) => ({
       id: res?.id,
+      game: res,
       status: res?.open ? 'playing' : 'waiting',
     }))
     return game

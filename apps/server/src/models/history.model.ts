@@ -52,10 +52,12 @@ GameHistory.init(
 
 export class GameHistoryRepository {
   logger = createLogger('GameHistoryRepository')
-  private keys: string[] = []
   constructor(
     private readonly redis: RedisClientType<
-      RedisDefaultModules, RedisFunctions, RedisScripts>
+      RedisDefaultModules,
+      RedisFunctions,
+      RedisScripts
+    >,
   ) { }
 
   async createHistory(
@@ -65,14 +67,18 @@ export class GameHistoryRepository {
     vote: number,
   ) {
     await this.redis.incrBy(`game::${game_id}::${key}`, vote)
-    return GameHistory.findOne({ where: { game_id, player_id, key } }).then(async res => {
-      if (res) {
-        return GameHistory.increment({ vote }, { where: { game_id, player_id, key } })
-      }
-      else {
-        return GameHistory.create({ game_id, player_id, key, vote })
-      }
-    })
+    return GameHistory.findOne({ where: { game_id, player_id, key } }).then(
+      async (res) => {
+        if (res) {
+          return GameHistory.increment(
+            { vote },
+            { where: { game_id, player_id, key } },
+          )
+        } else {
+          return GameHistory.create({ game_id, player_id, key, vote })
+        }
+      },
+    )
   }
 
   async getHistoryByPlayerID(game_id: string, player_id: string) {
@@ -83,15 +89,14 @@ export class GameHistoryRepository {
     return GameHistory.findAll({ where: { game_id } })
   }
 
-  async summaryGame(game_id: string) {
-    const keys = this.keys.map((key) => `game::${game_id}::${key}`)
+  async summaryGame(game_id: string, game_keys: string[]) {
+    const keys = game_keys.map((key) => `game::${game_id}::${key}`)
     const votes = await this.redis.mGet(keys)
 
     return keys.map((key, index) => ({
       key: key.split('::')[2],
       vote: votes[index],
     }))
-
   }
 
   async setScreenState(state: 'full' | 'overlay') {
@@ -108,20 +113,21 @@ export class GameHistoryRepository {
   }
 
   async startGame(id: string, reset: boolean) {
-    return Game.findByPk(id).then(async (game) => {
-
-      if (game) {
-        this.keys = game.actions.map((action) => action.key)
-        if (reset) {
-          game.actions.forEach((action) => {
-            this.redis.set(`game::${id}::${action.key}`, 0)
-          })
-          await GameHistory.update({ vote: 0 }, { where: { game_id: id } })
+    return Game.findByPk(id)
+      .then(async (game) => {
+        if (game) {
+          if (reset) {
+            game.actions.forEach((action) => {
+              this.redis.set(`game::${id}::${action.key}`, 0)
+            })
+            await GameHistory.update({ vote: 0 }, { where: { game_id: id } })
+          }
         }
-      }
-    }).then(() => "OK").catch((err) => {
-      this.logger.error(err)
-      throw new Error("Can't set game redis keys")
-    })
+      })
+      .then(() => 'OK')
+      .catch((err) => {
+        this.logger.error(err)
+        throw new Error("Can't set game redis keys")
+      })
   }
 }

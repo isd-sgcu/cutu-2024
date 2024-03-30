@@ -22,7 +22,13 @@ export class PlayerService {
   async submit(client: Client, action: string, vote: number) {
     const game = await this.gameRepository.getLastActiveGame()
     if (game && game.id && game.status === 'playing') {
-      return await this.gameHistoryRepository.createHistory(game.id, client.id, action, vote)
+      await this.gameHistoryRepository.createHistory(
+        game.id,
+        client.id,
+        action,
+        vote,
+      )
+      return game
     }
     throw Error('No game is playing')
   }
@@ -68,15 +74,9 @@ export class PlayerService {
     return await this.gameHistoryRepository.getScreenState()
   }
 
-  async getScoreboard() {
-    const game = await this.gameRepository.getLastActiveGame()
-    if (game?.id && game.status === 'playing') {
-      return this.gameHistoryRepository
-        .summaryGame(game.id)
-        .then((score) =>
-          score?.map((s) => `${s.key} ${s.vote}`).join(' '),
-        )
-    }
-    return undefined
+  async getScoreboard(game_id: string, game_keys: string[]) {
+    return this.gameHistoryRepository
+      .summaryGame(game_id, game_keys)
+      .then((score) => score?.map((s) => `${s.key} ${s.vote}`).join(' '))
   }
 }

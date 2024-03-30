@@ -13,7 +13,7 @@ export class PlayerController {
     this.interval = setInterval(async () => {
       await this.playerService
         .getScreenState()
-        .then(state => this.io.sockets.to('scoreboard').emit('screen', state))
+        .then((state) => this.io.sockets.to('scoreboard').emit('screen', state))
         .catch((err) => {
           this.logger.error(err)
         })
@@ -62,22 +62,26 @@ export class PlayerController {
       socket.emit('events', game.status)
     })
 
-    socket.on('subscribe', (m, cb) => socket.join('scoreboard') && cb("OK"))
+    socket.on('subscribe', (m, cb) => socket.join('scoreboard') && cb('OK'))
 
     socket.on('submit', async (message) => {
       this.logger.info('Received message', message)
       const data = message.split(' ')
       this.playerService
         .submit(socket.user, data[0], parseInt(data[1]))
+        .then((game) => {
+          console.log(game)
+          if (game.id && game.game)
+            return this.playerService
+              .getScoreboard(game.id, game.game.actions.map((a) => a.key))
+              .then((score) =>
+                this.io.sockets.to('scoreboard').emit('scoreboard', score),
+              )
+        }
+        )
         .catch((err) => {
           this.logger.error(err)
           socket.disconnect(true)
-        })
-      await this.playerService
-        .getScoreboard()
-        .then((score) => this.io.sockets.to('scoreboard').emit('scoreboard', score))
-        .catch((err) => {
-          this.logger.error(err)
         })
     })
 

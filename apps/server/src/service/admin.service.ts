@@ -8,7 +8,7 @@ export class AdminService {
   ) { }
 
   async getGameByID(id: string) {
-    return this.gameRepository.getGameById(id).catch((error) => ({ error }))
+    return this.gameRepository.getGameById(id)
   }
 
   async listGames() {
@@ -40,13 +40,11 @@ export class AdminService {
     return this.gameRepository.endGame(id)
   }
 
-  async getGameSummary(id: string) {
-    return this.gameHistoryRepository.summaryGame(id)
+  async getGameSummary(id: string, game_keys: string[]) {
+    return this.gameHistoryRepository.summaryGame(id, game_keys)
   }
 
   async setScreenState(state: 'full' | 'overlay') {
     return this.gameHistoryRepository.setScreenState(state)
   }
-
-
 }

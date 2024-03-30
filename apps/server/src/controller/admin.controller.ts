@@ -16,6 +16,7 @@ export class AdminController {
 
   async getGameByID(req: Request, res: Response) {
     const game = await this.adminService.getGameByID(req.params.id)
+    if (!game) return res.status(404).send({ err: 'Game not found' })
     res.json(game)
   }
 
@@ -30,7 +31,10 @@ export class AdminController {
   }
 
   async startGame(req: Request, res: Response) {
-    const game = await this.adminService.startGame(req.params.id, req.query.reset === 'true')
+    const game = await this.adminService.startGame(
+      req.params.id,
+      req.query.reset === 'true',
+    )
     res.json(game)
     this.io.sockets.emit('events', 'start')
     this.io.sockets.emit(
@@ -51,7 +55,9 @@ export class AdminController {
   }
 
   async getGameSummary(req: Request, res: Response) {
-    const summary = await this.adminService.getGameSummary(req.params.id)
+    const game = await this.adminService.getGameByID(req.params.id)
+    if (!game) return res.status(404).send({ err: 'Game not found' })
+    const summary = await this.adminService.getGameSummary(game.id, game.actions.map((a) => a.key))
     res.json(summary)
   }
 
