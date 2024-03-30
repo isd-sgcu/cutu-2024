@@ -16,19 +16,11 @@
       devShells = forEachSupportedSystem ({ pkgs }: {
         default = pkgs.mkShell {
           packages = with pkgs; [
-            go
-
-            # goimports, godoc, etc.
-            gotools
-
-            gopls
-
-            # https://github.com/golangci/golangci-lint
-            golangci-lint
-
             typescript
             nodePackages_latest.typescript-language-server
             nodejs_20
+
+            bun
           ];
         };
       });
