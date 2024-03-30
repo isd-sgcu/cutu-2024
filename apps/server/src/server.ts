@@ -16,6 +16,7 @@ import { ClientRepository } from './models/client.model'
 import cors from 'cors'
 import { createLogger } from './utils/logger'
 import createMorganLogger from './middleware/logger.middleware'
+import { GameHistoryRepository } from './models/history.model'
 
 export async function initServer(app: Express, server: HTTPServer) {
   app.use(cors())
@@ -42,6 +43,7 @@ export async function initServer(app: Express, server: HTTPServer) {
 
   const gameRepository = new GameRepository()
   const clientRepository = new ClientRepository()
+  const gameHistoryRepository = new GameHistoryRepository(pubClient)
 
   const playerIO = new Server(server, {
     adapter: createAdapter(pubClient, subClient),
@@ -56,7 +58,7 @@ export async function initServer(app: Express, server: HTTPServer) {
   })
   const playerController = new PlayerController(
     playerIO,
-    new PlayerService(gameRepository, clientRepository),
+    new PlayerService(gameRepository, clientRepository, gameHistoryRepository),
   )
   playerIO.on(
     'connection',
@@ -65,7 +67,7 @@ export async function initServer(app: Express, server: HTTPServer) {
 
   const adminController = new AdminController(
     playerIO,
-    new AdminService(gameRepository),
+    new AdminService(gameRepository, gameHistoryRepository),
   )
 
   const playerRouter = new PlayerRouter(playerController)

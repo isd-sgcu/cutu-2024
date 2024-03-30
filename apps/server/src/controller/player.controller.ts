@@ -49,11 +49,20 @@ export class PlayerController {
     setInterval(async () => {
       await this.playerService
         .getScoreboard()
-        .then((score) => score && this.io.emit('scoreboard', score))
+        .then((score) => this.io.sockets.emit('scoreboard', score))
         .catch((err) => {
           this.logger.error(err)
         })
-    }, 500)
+    }, 200)
+
+    setInterval(async () => {
+      await this.playerService
+        .getScreenState()
+        .then(state => this.io.sockets.emit('screen', state))
+        .catch((err) => {
+          this.logger.error(err)
+        })
+    }, 5000)
   }
 
   async onConnection(socket: Socket) {
@@ -72,7 +81,6 @@ export class PlayerController {
         .submit(socket.user, data[0], parseInt(data[1]))
         .catch((err) => {
           this.logger.error(err)
-
           socket.disconnect(true)
         })
     })

@@ -1,7 +1,11 @@
 import { Game, GameRepository } from '$/models/game.model'
+import { GameHistoryRepository } from '$/models/history.model'
 
 export class AdminService {
-  constructor(private readonly gameRepository: GameRepository) { }
+  constructor(
+    private readonly gameRepository: GameRepository,
+    private readonly gameHistoryRepository: GameHistoryRepository,
+  ) { }
 
   async getGameByID(id: string) {
     return this.gameRepository.getGameById(id).catch((error) => ({ error }))
@@ -27,11 +31,20 @@ export class AdminService {
     return this.gameRepository.createGame(gameModel)
   }
 
-  async startGame(id: string) {
+  async startGame(id: string, reset: boolean) {
+    this.gameHistoryRepository.startGame(id, reset)
     return this.gameRepository.startGame(id)
   }
 
   async endGame(id: string) {
     return this.gameRepository.endGame(id)
+  }
+
+  async getGameSummary(id: string) {
+    return this.gameHistoryRepository.summaryGame(id)
+  }
+
+  async setScreenState(state: 'full' | 'overlay') {
+    return this.gameHistoryRepository.setScreenState(state)
   }
 }

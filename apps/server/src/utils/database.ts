@@ -11,7 +11,7 @@ function createConnectionPool() {
     sync: {
       force: (process.env.NODE_ENV || 'development') !== 'production',
     },
-    logging: false,
+    logging: (process.env.NODE_ENV || 'development') !== 'production',
   })
 }
 

@@ -5,7 +5,8 @@ import { GameHistory } from './history.model'
 
 export class Game
   extends Model<GameAttributes, GameInput>
-  implements GameAttributes {
+  implements GameAttributes
+{
   public id!: string
   public title!: string
   public description!: string
@@ -96,14 +97,16 @@ export class GameRepository {
   async startGame(game_id: string) {
     return Game.findOne({ where: { open: true } }).then(async (game) => {
       await game?.update({ open: false })
-      return Game.update({ open: true }, { where: { id: game_id }, returning: true }).then((res) => {
+      return Game.update(
+        { open: true },
+        { where: { id: game_id }, returning: true },
+      ).then((res) => {
         if (!res[1][0]) {
           throw Error('Game not found')
         }
         return res[1][0]
       })
-    }
-    )
+    })
   }
 
   async calculateVotes(game_id: string) {
@@ -154,10 +157,7 @@ export class GameRepository {
           const winner = votes?.reduce((prev, current) =>
             prev.total_vote > current.total_vote ? prev : current,
           )
-          return Game.update(
-            { winner },
-            { where: { id }, returning: true },
-          )
+          return Game.update({ winner }, { where: { id }, returning: true })
         })
     })
   }

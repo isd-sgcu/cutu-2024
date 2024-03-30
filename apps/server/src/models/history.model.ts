@@ -4,7 +4,14 @@ import {
   GameHistoryInput,
 } from '$/interface/history.interface'
 import { sequelizeConnection } from '$/utils/database'
-import { RedisClientType } from '@redis/client'
+import {
+  RedisClientType,
+  RedisDefaultModules,
+  RedisFunctions,
+  RedisScripts,
+} from 'redis'
+import { createLogger } from '$/utils/logger'
+import { Game } from './game.model'
 
 export class GameHistory
   extends Model<GameHistoryAttributes, GameHistoryInput>
@@ -44,7 +51,79 @@ GameHistory.init(
 )
 
 export class GameHistoryRepository {
-  constructor(private readonly redis: RedisClientType) { }
+  logger = createLogger('GameHistoryRepository')
+  constructor(
+    private readonly redis: RedisClientType<
+      RedisDefaultModules,
+      RedisFunctions,
+      RedisScripts
+    >,
+  ) { }
 
-  getHistory(game_id: string) { }
+  async createHistory(
+    game_id: string,
+    player_id: string,
+    key: string,
+    vote: number,
+  ) {
+    await this.redis.incrBy(`game::${game_id}::${key}`, vote)
+    return GameHistory.findOne({ where: { game_id, player_id, key } }).then(async res => {
+      if (res) {
+        return GameHistory.increment({ vote }, { where: { game_id, player_id, key } })
+      }
+      else {
+        return GameHistory.create({ game_id, player_id, key, vote })
+      }
+    })
+  }
+
+  async getHistoryByPlayerID(game_id: string, player_id: string) {
+    return GameHistory.findAll({ where: { game_id, player_id } })
+  }
+
+  async getHistoryByGameID(game_id: string) {
+    return GameHistory.findAll({ where: { game_id } })
+  }
+
+  async summaryGame(game_id: string) {
+    const game = await Game.findByPk(game_id)
+    if (!game) {
+      throw new Error('Game not found')
+    }
+    const keys = await this.redis.keys(`game::${game_id}::*`)
+    const votes = await this.redis.mGet(keys)
+
+    return keys.map((key, index) => ({
+      key: key.split('::')[2],
+      vote: votes[index],
+    }))
+
+  }
+
+  async setScreenState(state: 'full' | 'overlay') {
+    return this.redis.set('state::screen', state).catch((err) => {
+      this.logger.error(err)
+      throw new Error("Can't set screen state")
+    })
+  }
+
+  async getScreenState() {
+    return await this.redis
+      .get('state::screen')
+      .then((state) => state || 'full')
+  }
+
+  async startGame(id: string, reset: boolean) {
+    return Game.findByPk(id).then(async (game) => {
+      if (game && reset) {
+        game.actions.forEach((action) => {
+          this.redis.set(`game::${id}::${action.key}`, 0)
+        })
+        await GameHistory.update({ vote: 0 }, { where: { game_id: id } })
+      }
+    }).then(() => "OK").catch((err) => {
+      this.logger.error(err)
+      throw new Error("Can't set game redis keys")
+    })
+  }
 }

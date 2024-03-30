@@ -1,5 +1,6 @@
 import { Client, ClientRepository } from '$/models/client.model'
 import { GameRepository } from '$/models/game.model'
+import { GameHistoryRepository } from '$/models/history.model'
 import { createLogger } from '$/utils/logger'
 
 export class PlayerService {
@@ -7,7 +8,8 @@ export class PlayerService {
   constructor(
     private readonly gameRepository: GameRepository,
     private readonly clientRepository: ClientRepository,
-  ) {}
+    private readonly gameHistoryRepository: GameHistoryRepository,
+  ) { }
 
   async getGame(id: string) {
     return await this.gameRepository.getGameById(id).catch((err) => ({ err }))
@@ -19,10 +21,10 @@ export class PlayerService {
 
   async submit(client: Client, action: string, vote: number) {
     const game = await this.gameRepository.getLastActiveGame()
-    if (game?.id && game.status === 'playing') {
-      return this.gameRepository.createHistory(game.id, client.id, action, vote)
+    if (game && game.id && game.status === 'playing') {
+      return await this.gameHistoryRepository.createHistory(game.id, client.id, action, vote)
     }
-    throw Error('NO GAME ON')
+    throw Error('No game is playing')
   }
 
   async getMyID(ipAddr?: string, cid?: string, sid?: string) {
@@ -50,10 +52,10 @@ export class PlayerService {
   async getScoreboard() {
     const game = await this.gameRepository.getLastActiveGame()
     if (game?.id && game.status === 'playing') {
-      return this.gameRepository
-        .calculateVotes(game.id)
+      return this.gameHistoryRepository
+        .summaryGame(game.id)
         .then((score) =>
-          score?.map((s) => `${s.key} ${s.total_vote}`).join(' '),
+          score?.map((s) => `${s.key} ${s.vote}`).join(' '),
         )
     }
     return undefined
@@ -72,5 +74,9 @@ export class PlayerService {
         this.logger.warn(err)
         throw new Error('Bad CID Authentication')
       })
+  }
+
+  async getScreenState() {
+    return await this.gameHistoryRepository.getScreenState()
   }
 }
