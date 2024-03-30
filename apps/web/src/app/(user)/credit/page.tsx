@@ -46,7 +46,11 @@ const Credit = () => {
           <section className="flex flex-col items-center">
             <h2 className="font-bold mb-1">UX/UI Designer</h2>
             <ul className="flex flex-col items-center">
-              <li>พิชญา พูลเพียร</li>
+              <li>
+                <a href="https://www.instagram.com/klonqdoublek/">
+                  พิชญา พูลเพียร
+                </a>
+              </li>
             </ul>
           </section>
           <section className="flex flex-col items-center">
