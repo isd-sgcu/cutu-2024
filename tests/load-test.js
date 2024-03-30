@@ -2,25 +2,25 @@ import ws from 'k6/ws';
 import { check } from 'k6';
 import { uuidv4, randomIntBetween } from 'https://jslib.k6.io/k6-utils/1.4.0/index.js';
 
-const fid = uuidv4();
-const name = uuidv4();
-var count = 0;
-
 export const options = {
-    "stages": [
-    {
-      "duration": "2m",
-      "target": 500
-    },
-    {
-      "duration": "2m",
-      "target": 1500
-    },
-    {
-      "duration": "1m",
-      "target": 0
-    }
-  ],
+    stages: [
+      {
+        duration: "30s",
+        target: 1,
+      },
+      {
+        duration: "2m",
+        target: 1500
+      },
+      {
+        duration: "3m",
+        target: 1500,
+      },
+      {
+        duration: "3m",
+        target: 0
+      }
+    ],
 };
 
 export default function() {
@@ -39,19 +39,22 @@ export default function() {
 
 function handleMessage(socket, message) {
   const packetType = message[0];
+  // const packetContent = message.substr(1);
 
   switch (packetType) {
   case '2':
     socket.send('3');
     break;
   case '4':
-    console.log(packetContent);
+    // console.log(packetContent);
     break;
   }
 }
 
 function handleOpen(socket, team) {
   console.log('open');
+  const fid = uuidv4();
+  const name = uuidv4();
   const header = {
     fid,
     name,
@@ -59,15 +62,20 @@ function handleOpen(socket, team) {
 
   // auth
   const msg = `40${JSON.stringify(header)}`;
-  console.log(`Sending ${msg}`);
+  // console.log(`Sending ${msg}`);
   socket.send(msg);
+
+  // subscribe to scoreboard
+  // socket.setTimeout(() => {
+    // console.log(`Subscribing`);
+    // socket.send('42["subscribe"]');
+  // }, 500);
 
   // main loop
   socket.setInterval(() => {
-    const msg = `42["submit","${team} ${count}"]`;
-    console.log(`Sending ${msg}`);
+    const msg = `42["submit","${team} 1"]`;
+    // console.log(`Sending ${msg}`);
     socket.send(msg);
-    count += randomIntBetween(0, 10);
   }, 500)
 }
 
