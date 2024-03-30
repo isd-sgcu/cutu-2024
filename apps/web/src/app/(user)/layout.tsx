@@ -9,17 +9,16 @@ export default function UserLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="h-screen w-screen flex flex-col">
+    <div className="h-full w-full flex flex-col">
         {children}
         <footer className="flex flex-col items-center justify-center text-xs bg-white bg-opacity-80 p-5 space-y-5">
           <div className="flex space-x-3 items-center justify-center">
             <div className="flex items-center rounded-full bg-white w-20 h-20 justify-center ">
               <Image
                   src="user/sgcu.svg"
-                  width={40}
-                  height={40}
+                  width={55}
+                  height={55}
                   alt="sgcu"
-                 
               />
             </div>
             <Link 
