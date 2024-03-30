@@ -81,12 +81,14 @@ export class PlayerController {
         .submit(socket.user, data[0], parseInt(data[1]))
         .then((game) => {
           this.logger.debug(`Incremented: ${String(message).trim()}`)
-          if (game.id && game.game)
+          if (game.id && game.game) {
+            this.logger.debug("Getting scoreboard updated")
             return this.playerService
               .getScoreboard(game.id, game.game.actions.map((a) => a.key))
               .then((score) =>
                 this.io.sockets.to('scoreboard').emit('scoreboard', score),
               )
+          }
         }
         )
         .catch((err) => {
