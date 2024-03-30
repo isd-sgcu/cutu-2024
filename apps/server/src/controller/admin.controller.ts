@@ -66,7 +66,7 @@ export class AdminController {
     if (req.params.state !== 'full' && req.params.state !== 'overlay')
       return res.status(400)
     const response = await this.adminService.setScreenState(req.params.state)
-    this.io.sockets.to('scoreboard').emit('screen', req.params.state)
+    this.io.to('scoreboard').emit('screen', req.params.state)
     res.json(response)
   }
 }

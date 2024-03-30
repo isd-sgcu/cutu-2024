@@ -5,19 +5,10 @@ import { createLogger } from '$/utils/logger'
 
 export class PlayerController {
   private readonly logger = createLogger('PlayerController')
-  private interval: NodeJS.Timeout | null = null
   constructor(
     private readonly io: Server,
     private readonly playerService: PlayerService,
   ) {
-    this.interval = setInterval(async () => {
-      await this.playerService
-        .getScreenState()
-        .then((state) => this.io.sockets.to('scoreboard').emit('screen', state))
-        .catch((err) => {
-          this.logger.error(err)
-        })
-    }, 5000)
   }
 
   async authenticateSocket(socket: Socket) {
@@ -86,7 +77,7 @@ export class PlayerController {
             return this.playerService
               .getScoreboard(game.id, game.game.actions.map((a) => a.key))
               .then((score) =>
-                this.io.sockets.to('scoreboard').emit('scoreboard', score),
+                this.io.to('scoreboard').emit('scoreboard', score),
               )
           }
         }
