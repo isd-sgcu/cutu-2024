@@ -10,14 +10,14 @@ import { io } from "socket.io-client";
 const cookies = new Cookies(null, { path: '/' });
 
 const Display= () => {
-  const [state, setState] = useState<'cu' | 'tu' | 'none'>('cu');
+  const [state, setState] = useState<'cu' | 'tu' | 'none'>('none');
   const [isStart, setIsStart] = useState(false);
   const [tu, setTu] = useState(62);
   const [cu, setCu] = useState(48);
 
   
 
-  useEffect(() => {
+  /* useEffect(() => {
       const handleConnect = () => {
           console.log('Client has connected to the server!');
       };
@@ -86,7 +86,7 @@ const Display= () => {
               socket?.disconnect();
           };
       })();
-  }, []);
+  }, []); */
   
   return (
     <div className='w-auto h-screen flex'>
@@ -132,7 +132,7 @@ const Display= () => {
                 </div>
             </>
         }
-        {state == 'tu' && 
+        {/* {state == 'tu' && 
                 <>
                     <div className='w-1/2 h-full flex items-center justify-center flex-col bg-gradient-to-b from-tu-dark-orange via-tu-orange to-tu-light-orange space-y-10'>
                         <div className='flex items-center justify-center'>
@@ -180,7 +180,7 @@ const Display= () => {
                     </div>
                 </div>
             </>
-        }
+        } */}
     </div>
   )
 }
