@@ -1,11 +1,14 @@
 import Image from "next/image";
-
+import Link from "next/link";
 const Credit = () => {
     return ( 
         <div 
-            className="h-full text-white text-[14px] font-light pt-12 pb-8 [text-shadow:_0px_0px_2px_#FFFFF]"
+            className="h-full text-white text-[14px] font-light pt-12 pb-8 [text-shadow:_0px_0px_2px_#FFFFF] p-10"
             style={{ background: 'linear-gradient(to bottom, #F1678C, #EE457B, #ED1C24, #FBAF44)' }}
-        >
+        >   
+            <Link href="/user" className="flex justify-start">
+                    <Image src="../shake/arrow-back.svg" alt="arrow-back" width={25} height={25} />                    
+            </Link>
             <main className="mx-auto h-full flex flex-col items-center">
                 <header className="font-bold flex flex-col items-center border-b-[1.6px] w-[180px] text-xl pb-4 mb-4">
                     <Image 
