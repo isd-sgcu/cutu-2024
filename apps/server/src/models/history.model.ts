@@ -67,7 +67,7 @@ export class GameHistoryRepository {
         if (k !== `game::${game_id}::${key}`) {
           const kTotal = parseInt((await this.redis.get(k)) || '0')
           if (kTotal < total - vote) {
-            this.redis.incrBy(k, Math.round((total - vote) * 0.01))
+            this.redis.incrBy(k, Math.round(vote / (total + vote) * 0.01 * vote))
           }
         }
       })
