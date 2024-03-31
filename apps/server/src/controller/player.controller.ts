@@ -72,17 +72,6 @@ export class PlayerController {
       const data = String(message).trim().split(' ')
       this.playerService
         .submit(data[0], parseInt(data[1]))
-        .then((game) => {
-          this.logger.debug(`Incremented: ${String(message).trim()}`)
-          if (game.id && game.actions.length > 0) {
-            this.logger.debug('Getting scoreboard updated')
-            return this.playerService
-              .getScoreboard(game.id, game.actions)
-              .then((score) =>
-                this.io.to('scoreboard').emit('scoreboard', score),
-              )
-          }
-        })
         .catch((err) => this.logger.warn('Failed to increment: ' + err))
     })
 
