@@ -69,7 +69,7 @@ export class PlayerController {
       this.logger.debug('Received message: ' + String(message).trim())
       const data = String(message).trim().split(' ')
       this.playerService
-        .submit(socket.user, data[0], parseInt(data[1]))
+        .submit(data[0], parseInt(data[1]))
         .then((game) => {
           this.logger.debug(`Incremented: ${String(message).trim()}`)
           if (game.id && game.actions.length > 0) {

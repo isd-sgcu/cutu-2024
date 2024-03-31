@@ -19,15 +19,10 @@ export class PlayerService {
     return this.gameHistoryRepository.getLastActiveGame()
   }
 
-  async submit(client: Client, action: string, vote: number) {
+  async submit(action: string, vote: number) {
     const game = await this.gameHistoryRepository.getLastActiveGame()
     if (game && game.id && game.status === 'playing') {
-      await this.gameHistoryRepository.createHistory(
-        game.id,
-        client.id,
-        action,
-        vote,
-      )
+      await this.gameHistoryRepository.createHistory(game.id, action, vote)
       return game
     }
     throw Error('No game is playing')

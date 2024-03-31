@@ -5,7 +5,7 @@ export class AdminService {
   constructor(
     private readonly gameRepository: GameRepository,
     private readonly gameHistoryRepository: GameHistoryRepository,
-  ) { }
+  ) {}
 
   async getGameByID(id: string) {
     return this.gameRepository.getGameById(id)
