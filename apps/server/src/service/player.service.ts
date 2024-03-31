@@ -23,7 +23,7 @@ export class PlayerService {
         const game = await this.gameHistoryRepository.getLastActiveGame()
         if (game && game.id && game.status === 'playing') {
           this.getScoreboard(game.id, game.actions).then((screen) => {
-            io.sockets.to('scoreboard').emit('scoreboard', screen)
+            io.local.to('scoreboard').emit('scoreboard', screen)
           })
         }
       }, 100)
