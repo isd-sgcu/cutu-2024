@@ -17,11 +17,11 @@ const Screen = () => {
     tu: 50,
   });
   const cookies = new Cookies(null, { httpOnly: true });
-/*   const lastTimeOutRef = useRef<Timeout>("");
-  const adderRef = useRef(10); */
-  const lastTickRef = useRef(new Date())
+  const lastTickRef = useRef(new Date());
+  /*   const lastTimeOutRef = useRef<Timeout>("");
+  const adderRef = useRef(10);
 
-/*   clearTimeout(lastTimeOutRef.current);
+  clearTimeout(lastTimeOutRef.current);
   lastTimeOutRef.current = setTimeout(() => {
     setData((prev) => {
       if (prev.cu >= 100 || prev.cu <= 0) {
@@ -46,11 +46,11 @@ const Screen = () => {
     };
 
     const handleScoreBoard = (scoreString: string) => {
-      const nowTick = new Date()
-      if(nowTick.getTime() - lastTickRef.current.getTime() < 250) return
+      const nowTick = new Date();
+      if (nowTick.getTime() - lastTickRef.current.getTime() < 250) return;
 
       //console.log(scoreString);
-      lastTickRef.current = nowTick
+      lastTickRef.current = nowTick;
       const parts = scoreString.split(" ");
       //console.log(parts)
       const cuScore = Math.round(parseFloat(parts[1]));
@@ -154,14 +154,14 @@ const Screen = () => {
           </Transition>
         )}
       </TransitionGroup>
-      <button
+      {/* <button
         className="w-[200px] h-[200px] bg-white"
         onClick={() =>
           setShowPage((prev) => (prev == "overlay" ? "display" : "overlay"))
         }
       >
         เปลี่ยนหน้า
-      </button>
+      </button> */}
     </div>
   );
 };
