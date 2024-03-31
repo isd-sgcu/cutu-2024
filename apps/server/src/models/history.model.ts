@@ -62,17 +62,19 @@ export class GameHistoryRepository {
   ) {}
 
   async createHistory(game_id: string, key: string, vote: number) {
-    const total = await this.redis.incrBy(`game::${game_id}::${key}`, vote)
+    const others: number[] = []
+    var now = 0
     this.redis.keys(`game::${game_id}::*`).then(async (keys) => {
       keys.forEach(async (k) => {
         if (k !== `game::${game_id}::${key}`) {
-          const kTotal = parseInt((await this.redis.get(k)) || '0')
-          if (kTotal > total - vote) {
-            this.redis.decrBy(k, Math.floor((kTotal - total + vote) * 0.1))
-          }
+          others.push(parseInt((await this.redis.get(k)) || '0'))
+        } else {
+          now = parseInt((await this.redis.get(k)) || '0')
         }
       })
     })
+    const follow = others.map(x => Math.max(0, x - now)).reduce((acc, x) => acc + x)
+    await this.redis.incrBy(`game::${game_id}::${key}`, (1.0 + follow * 0.001) * vote)
   }
 
   async getHistoryByPlayerID(game_id: string, player_id: string) {
