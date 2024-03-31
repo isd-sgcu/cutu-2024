@@ -11,7 +11,7 @@ export class PlayerService {
     private readonly gameRepository: GameRepository,
     private readonly clientRepository: ClientRepository,
     private readonly gameHistoryRepository: GameHistoryRepository,
-  ) { }
+  ) {}
 
   async getGame(id: string) {
     return await this.gameRepository.getGameById(id).catch((err) => ({ err }))
