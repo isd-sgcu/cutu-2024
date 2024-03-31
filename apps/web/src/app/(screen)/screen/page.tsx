@@ -12,13 +12,25 @@ const Screen = () => {
   let fid: string | null = null;
   const [showedPage, setShowPage] = useState<"overlay" | "display">("overlay");
   const [data, setData] = useState({
-    status: "waiting",
+    status: "playing",
     cu: 50,
     tu: 50,
   });
   const cookies = new Cookies(null, { httpOnly: true });
-  const overlayRef = useRef(null);
-  const displayRef = useRef(null);
+  const lastTimeOutRef = useRef<Timeout>("")
+  const adderRef = useRef(10)
+
+  clearTimeout(lastTimeOutRef.current)
+  lastTimeOutRef.current = setTimeout(() => {
+    setData(prev => {
+      if(prev.cu >= 100 || prev.cu <= 0){
+        adderRef.current *= -1 
+      }
+      return {...prev, cu: prev.cu + adderRef.current, tu: prev.tu - adderRef.current}
+    })
+  } , 500)
+  
+
 
   // console.log(data);
   //console.log('show: ', showedPage)

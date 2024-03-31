@@ -1,0 +1,16 @@
+.entering {
+  opacity: 0;
+  transition: opacity 500ms ease;
+}
+.entered {
+  opacity: 1;
+  transition: opacity 500ms ease;
+}
+.exiting {
+  opacity: 1;
+  transition: opacity 500ms ease;
+}
+.exited {
+  opacity: 0;
+  transition: opacity 500ms ease;
+}

@@ -1,7 +1,6 @@
 "use client";
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import Image from "next/image";
-import Cookies from "universal-cookie";
 
 interface FootBallSliderProps {
   sliderHeight: string;
@@ -14,20 +13,32 @@ interface FootBallSliderProps {
   };
 }
 
-const MAX_LENGTH = 800;
-const cookies = new Cookies(null, { path: "/" });
 
 const FootBallSlider = (props: FootBallSliderProps) => {
   //console.log(position)
   const { status, cu } = props.data;
+  const [lastTick , setLastTick ] = useState(new Date())
+  const [ lastCu, setLastCu ] = useState(50)
 
+  
   const position = useMemo(() => {
     if (status == "waiting" || status == "stop") {
       return 50;
     }
+    
+    const nowTick = new Date()
+    if(nowTick.getTime() - lastTick.getTime() <  500){
+      //console.log(nowTick.getTime() , lastTick.getTime())
+      return lastCu 
+    }
+    
+    setLastCu(cu)
+    setLastTick(nowTick)
     return cu;
   }, [cu, status])
-
+  
+  //const position = 0
+  //console.log(position)
   return (
     <div className="relative px-[75px]">
       <div
@@ -49,7 +60,7 @@ const FootBallSlider = (props: FootBallSliderProps) => {
           style={{
             left: `${position}%`,
             transform: `translateX(-${position}%)`,
-            transition: "left 2s ease",
+            transition: "all 0.5s ease",
           }}
         >
           <div className="relative w-[250px] h-[250px]"><Image
