@@ -2,17 +2,32 @@ import { Client, ClientRepository } from '$/models/client.model'
 import { GameRepository } from '$/models/game.model'
 import { GameHistoryRepository } from '$/models/history.model'
 import { createLogger } from '$/utils/logger'
+import { Server } from 'socket.io'
 
 export class PlayerService {
   logger = createLogger('PlayerService')
+  private intervalScoreboard?: NodeJS.Timeout
   constructor(
     private readonly gameRepository: GameRepository,
     private readonly clientRepository: ClientRepository,
     private readonly gameHistoryRepository: GameHistoryRepository,
-  ) {}
+  ) { }
 
   async getGame(id: string) {
     return await this.gameRepository.getGameById(id).catch((err) => ({ err }))
+  }
+
+  async setupScoreboardEmitter(io: Server) {
+    if (!this.intervalScoreboard) {
+      this.intervalScoreboard = setInterval(async () => {
+        const game = await this.gameHistoryRepository.getLastActiveGame()
+        if (game && game.id && game.status === 'playing') {
+          this.getScoreboard(game.id, game.actions).then((screen) => {
+            io.sockets.to('scoreboard').emit('scoreboard', screen)
+          })
+        }
+      }, 100)
+    }
   }
 
   async getGameState() {

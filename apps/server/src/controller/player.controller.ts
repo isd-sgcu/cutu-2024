@@ -8,7 +8,9 @@ export class PlayerController {
   constructor(
     private readonly io: Server,
     private readonly playerService: PlayerService,
-  ) {}
+  ) {
+    this.playerService.setupScoreboardEmitter(io)
+  }
 
   async authenticateSocket(socket: Socket) {
     const cid = (socket.handshake.headers.cid ||
