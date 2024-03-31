@@ -1,7 +1,7 @@
 import Image from "next/image";
 import QrCode from "../../display/components/QrCode";
 import FootBallSlider from "../../display/components/FootBallSlider";
-import { useState } from "react";
+import { useRef, useState } from "react";
 interface OverLayProps {
     data : {
         status: string;
@@ -10,8 +10,13 @@ interface OverLayProps {
     };
 }
 
+
 const Page = ({data} : OverLayProps) => {
     //console.log(data)
+    //const lastCu = useRef(50)
+    
+
+
     return (  
         <div className="w-full h-full bg-[#3dff3d] text-white text-3xl font-bold flex flex-col justify-between p-[50px] pb-[100px]">
             <div className="flex justify-between">
@@ -79,7 +84,13 @@ const Page = ({data} : OverLayProps) => {
  
 
 const OverLay = ({data}: OverLayProps) => {
-    const [lastTick, setLastTick] = useState(new Date())
+    const lastTick = useRef(new Date())
+
+    const nowTick = new Date()
+    if(nowTick.getTime() - lastTick.current.getTime() <  500){
+      //console.log(nowTick.getTime() , lastTick.getTime())
+      return   
+    }
 
     return (  
         <div className="w-[3840px] h-[1080px] flex">

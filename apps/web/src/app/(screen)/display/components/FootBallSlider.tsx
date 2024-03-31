@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import Image from "next/image";
 
 interface FootBallSliderProps {
@@ -17,23 +17,23 @@ interface FootBallSliderProps {
 const FootBallSlider = (props: FootBallSliderProps) => {
   //console.log(position)
   const { status, cu } = props.data;
-  const [lastTick , setLastTick ] = useState(new Date())
-  const [ lastCu, setLastCu ] = useState(50)
+/*   const lastCu = useRef(50)
+  const lastTick = useRef(new Date()) */
 
   
   const position = useMemo(() => {
     if (status == "waiting" || status == "stop") {
       return 50;
     }
-    
+/*     
     const nowTick = new Date()
-    if(nowTick.getTime() - lastTick.getTime() <  250){
+    if(nowTick.getTime() - lastTick.current.getTime() <  500){
       //console.log(nowTick.getTime() , lastTick.getTime())
       return lastCu 
     }
     
-    setLastCu(cu)
-    setLastTick(nowTick)
+    lastCu.current = cu
+    lastTick.current = nowTick */
     return cu;
   }, [cu, status])
   
@@ -60,7 +60,7 @@ const FootBallSlider = (props: FootBallSliderProps) => {
           style={{
             left: `${position}%`,
             transform: `translateX(-${position}%)`,
-            transition: "all 0.25s ease",
+            transition: "all 1s ease",
           }}
         >
           <div className="relative w-[250px] h-[250px]"><Image
