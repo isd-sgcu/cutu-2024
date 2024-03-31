@@ -47,7 +47,7 @@ const Screen = () => {
 
     const handleScoreBoard = (scoreString: string) => {
       const nowTick = new Date();
-      if (nowTick.getTime() - lastTickRef.current.getTime() < 250) return;
+      if (nowTick.getTime() - lastTickRef.current.getTime() < 1000) return;
 
       //console.log(scoreString);
       lastTickRef.current = nowTick;
