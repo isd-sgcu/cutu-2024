@@ -27,7 +27,7 @@ const FootBallSlider = (props: FootBallSliderProps) => {
     }
     
     const nowTick = new Date()
-    if(nowTick.getTime() - lastTick.getTime() <  500){
+    if(nowTick.getTime() - lastTick.getTime() <  250){
       //console.log(nowTick.getTime() , lastTick.getTime())
       return lastCu 
     }
@@ -60,7 +60,7 @@ const FootBallSlider = (props: FootBallSliderProps) => {
           style={{
             left: `${position}%`,
             transform: `translateX(-${position}%)`,
-            transition: "all 0.5s ease",
+            transition: "all 0.25s ease",
           }}
         >
           <div className="relative w-[250px] h-[250px]"><Image

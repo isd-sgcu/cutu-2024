@@ -12,7 +12,7 @@ const Screen = () => {
   let fid: string | null = null;
   const [showedPage, setShowPage] = useState<"overlay" | "display">("overlay");
   const [data, setData] = useState({
-    status: "playing",
+    status: "waiting",
     cu: 50,
     tu: 50,
   });
@@ -20,7 +20,7 @@ const Screen = () => {
   const lastTimeOutRef = useRef<Timeout>("")
   const adderRef = useRef(10)
 
-  clearTimeout(lastTimeOutRef.current)
+/*   clearTimeout(lastTimeOutRef.current)
   lastTimeOutRef.current = setTimeout(() => {
     setData(prev => {
       if(prev.cu >= 100 || prev.cu <= 0){
@@ -28,7 +28,7 @@ const Screen = () => {
       }
       return {...prev, cu: prev.cu + adderRef.current, tu: prev.tu - adderRef.current}
     })
-  } , 500)
+  } , 250) */
   
 
 
