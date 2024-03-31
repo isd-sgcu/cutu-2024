@@ -56,12 +56,9 @@ export class PlayerController {
     socket.on('subscribe', (m, cb) => {
       socket.join('scoreboard')
       this.playerService.getGameState().then((game) => {
-        if (game.id && game.game && game.status === 'playing')
+        if (game.id && game.actions && game.status === 'playing')
           this.playerService
-            .getScoreboard(
-              game.id,
-              game.game.actions.map((a) => a.key),
-            )
+            .getScoreboard(game.id, game.actions)
             .then((score) => {
               socket.emit('scoreboard', score)
             })
@@ -75,22 +72,16 @@ export class PlayerController {
         .submit(socket.user, data[0], parseInt(data[1]))
         .then((game) => {
           this.logger.debug(`Incremented: ${String(message).trim()}`)
-          if (game.id && game.game) {
+          if (game.id && game.actions.length > 0) {
             this.logger.debug('Getting scoreboard updated')
             return this.playerService
-              .getScoreboard(
-                game.id,
-                game.game.actions.map((a) => a.key),
-              )
+              .getScoreboard(game.id, game.actions)
               .then((score) =>
                 this.io.to('scoreboard').emit('scoreboard', score),
               )
           }
         })
-        .catch((err) => {
-          this.logger.warn('Failed to increment: ' + err)
-          socket.disconnect(true)
-        })
+        .catch((err) => this.logger.warn('Failed to increment: ' + err))
     })
 
     socket.on('disconnect', () => {

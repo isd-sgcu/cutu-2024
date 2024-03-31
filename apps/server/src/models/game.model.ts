@@ -66,19 +66,6 @@ export class GameRepository {
     return await Game.findByPk(id)
   }
 
-  async getLastActiveGame() {
-    const game = await Game.findOne({
-      order: [['updatedAt', 'DESC']],
-      attributes: ['id', 'open', 'actions'],
-      limit: 1,
-    }).then((res) => ({
-      id: res?.id,
-      game: res,
-      status: res?.open ? 'playing' : 'waiting',
-    }))
-    return game
-  }
-
   async createGame(game: Game) {
     return Game.create(game)
   }
@@ -111,33 +98,14 @@ export class GameRepository {
   }
 
   async endGame(id: string) {
-    return Game.update({ open: false }, { where: { id } }).then(() => {
-      const keys = Game.findOne({
-        where: { id },
-        attributes: ['actions'],
-      }).then((res) => res?.actions.map((action: any) => action.key))
-      return GameHistory.findAll({
-        where: { game_id: id },
-        attributes: ['key', [fn('sum', col('vote')), 'total_vote']],
-        group: ['key'],
-      })
-        .then(async (votes) => {
-          return keys.then((keys) => {
-            return keys?.map((key: string) => {
-              const vote = votes.find((vote) => vote.key === key)
-              return {
-                key,
-                total_vote: parseInt(vote?.dataValues.total_vote || '0'),
-              }
-            })
-          })
-        })
-        .then((votes) => {
-          const winner = votes?.reduce((prev, current) =>
-            prev.total_vote > current.total_vote ? prev : current,
-          )
-          return Game.update({ winner }, { where: { id }, returning: true })
-        })
+    return Game.update(
+      { open: false },
+      { where: { id }, returning: true },
+    ).then((res) => {
+      if (!res[1][0]) {
+        throw Error('Game not found')
+      }
+      return res[1][0] as Game
     })
   }
 }

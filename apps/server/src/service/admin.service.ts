@@ -5,7 +5,7 @@ export class AdminService {
   constructor(
     private readonly gameRepository: GameRepository,
     private readonly gameHistoryRepository: GameHistoryRepository,
-  ) {}
+  ) { }
 
   async getGameByID(id: string) {
     return this.gameRepository.getGameById(id)
@@ -53,7 +53,7 @@ export class AdminService {
   }
 
   async endGame(id: string) {
-    return this.gameRepository.endGame(id)
+    return this.gameHistoryRepository.endGame(id)
   }
 
   async getGameSummary(id: string, game_keys: string[]) {

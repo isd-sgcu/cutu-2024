@@ -15,8 +15,7 @@ import { Game } from './game.model'
 
 export class GameHistory
   extends Model<GameHistoryAttributes, GameHistoryInput>
-  implements GameHistoryAttributes
-{
+  implements GameHistoryAttributes {
   public game_id!: string
   public player_id!: string
   public key!: string
@@ -59,7 +58,7 @@ export class GameHistoryRepository {
       RedisFunctions,
       RedisScripts
     >,
-  ) {}
+  ) { }
 
   async createHistory(
     game_id: string,
@@ -72,9 +71,9 @@ export class GameHistoryRepository {
       keys.forEach(async (k) => {
         if (k !== `game::${game_id}::${key}`) {
           const kTotal = parseInt((await this.redis.get(k)) || '0')
-          const decrease = Math.floor((Math.abs(total - kTotal) * vote) / 100)
-          const remain = kTotal - decrease
-          if (remain > 0) this.redis.decrBy(k, decrease)
+          if (kTotal > total - vote) {
+            this.redis.decrBy(k, Math.round((kTotal - total + vote) * 0.1))
+          }
         }
       })
     })
@@ -119,7 +118,22 @@ export class GameHistoryRepository {
             this.redis.set(`game::${id}::${action.key}`, 0)
           })
         }
-        return this.redis.set('state::game', id)
+        return this.redis
+          .set('state::game', id)
+          .then(() =>
+            this.redis
+              .set('state::status', 'playing')
+              .then(
+                async () =>
+                  game &&
+                  (await this.redis
+                    .set(
+                      'state::actions',
+                      game.actions.map((g) => g.key).join(' '),
+                    )
+                    .then(() => 'OK')),
+              ),
+          )
       })
       .then(() => 'OK')
       .catch((err) => {
@@ -128,24 +142,48 @@ export class GameHistoryRepository {
       })
   }
 
+  async endGame(id: string) {
+    return this.redis
+      .set('state::status', 'waiting')
+      .then(async () =>
+        this.getLastActiveGame().then((game) =>
+          this.summaryGame(id, game.actions)
+            .then((score) => {
+              return score.reduce((acc, s) => (s.vote > acc.vote ? s : acc))
+            })
+            .then((winner) =>
+              Game.update(
+                {
+                  winner: { key: winner.key, total_vote: winner.vote },
+                  open: false,
+                },
+                { where: { id }, returning: true },
+              ).then((res) => {
+                if (!res[1][0]) {
+                  throw Error('Game not found')
+                }
+                return res[1][0] as Game
+              }),
+            ),
+        )
+      )
+      .catch((err) => {
+        this.logger.error(err)
+        throw new Error("Can't set game redis keys")
+      })
+  }
+
   async getLastActiveGame() {
-    return await this.redis.get('state::game').then((game) => {
-      if (game) {
-        return Game.findByPk(game).then((res) => ({
-          id: res?.id,
-          game: res,
-          status: res?.open ? 'playing' : 'waiting',
-        }))
-      }
-      return Game.findOne({
-        order: [['updatedAt', 'DESC']],
-        attributes: ['id', 'open', 'actions'],
-        limit: 1,
-      }).then((res) => ({
-        id: res?.id,
-        game: res,
-        status: res?.open ? 'playing' : 'waiting',
-      }))
+    return await this.redis.get('state::game').then(async (game) => {
+      return this.redis.get('state::status').then((status) =>
+        this.redis.get('state::actions').then((actions) => {
+          return {
+            id: game,
+            status: status || 'waiting',
+            actions: actions ? actions.split(' ') : [],
+          }
+        }),
+      )
     })
   }
 }

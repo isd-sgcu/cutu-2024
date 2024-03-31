@@ -31,34 +31,45 @@ export class AdminController {
   }
 
   async startGame(req: Request, res: Response) {
-    const game = await this.adminService.startGame(
-      req.params.id,
-      req.query.reset === 'true',
-    )
-    res.json(game)
-    this.io.sockets.emit('events', 'start')
-    this.io.sockets.emit(
-      'state',
-      await this.adminService.getGameState().then((game) => game.id),
-    )
-    this.io.sockets.to('scoreboard').emit(
-      'scoreboard',
-      await this.adminService.getScoreboard(
-        game.id,
-        game.actions.map((a) => a.key),
-      ),
-    )
+    await this.adminService
+      .startGame(req.params.id, req.query.reset === 'true')
+      .then(async (game) => {
+        res.json(game)
+        this.io.sockets.emit('events', 'start')
+        this.io.sockets.emit(
+          'state',
+          await this.adminService.getGameState().then((game) => game.id),
+        )
+        this.io.sockets.to('scoreboard').emit(
+          'scoreboard',
+          await this.adminService.getScoreboard(
+            game.id,
+            game.actions.map((a) => a.key),
+          ),
+        )
+      })
+      .catch((err) => {
+        this.logger.error(err)
+        res.status(500).send({ err: err.message })
+      })
   }
 
   async endGame(req: Request, res: Response) {
-    const game = await this.adminService.endGame(req.params.id)
-    res.json(game)
-    this.io.sockets.emit('events', 'stop')
-    this.io.sockets.emit(
-      'state',
-      await this.adminService.getGameState().then((game) => game.id),
-    )
-    this.io.engine.emit('stop')
+    await this.adminService
+      .endGame(req.params.id)
+      .then(async (game) => {
+        res.json(game)
+        this.io.sockets.emit('events', 'stop')
+        this.io.sockets.emit(
+          'state',
+          await this.adminService.getGameState().then((game) => game.id),
+        )
+        this.io.engine.emit('stop')
+      })
+      .catch((err) => {
+        this.logger.error(err)
+        res.status(500).send({ err: err.message })
+      })
   }
 
   async getGameSummary(req: Request, res: Response) {

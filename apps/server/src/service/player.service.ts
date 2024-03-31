@@ -16,7 +16,7 @@ export class PlayerService {
   }
 
   async getGameState() {
-    return this.gameRepository.getLastActiveGame()
+    return this.gameHistoryRepository.getLastActiveGame()
   }
 
   async submit(client: Client, action: string, vote: number) {
