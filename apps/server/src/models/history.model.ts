@@ -73,7 +73,7 @@ export class GameHistoryRepository {
         }
       })
     })
-    const follow = others.map(x => Math.max(0, x - now)).reduce((acc, x) => acc + x)
+    const follow = others.map(x => Math.max(0, x - now)).reduce((acc, x) => acc + x, 0)
     const t = (1.0 + follow * 0.001) * vote
     this.logger.info({follow, others, t, now})
     await this.redis.incrBy(`game::${game_id}::${key}`, (1.0 + follow * 0.001) * vote)
